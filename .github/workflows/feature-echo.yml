@@ -16,14 +16,25 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install awscli
-          if ${{github.ref}} == refs/heads/feature1
-           echo "Feature 1"
-          fi
-          if ${{github.ref}} == refs/heads/feature2
-            echo "Feature 2"
-          fi
-          if ${{github.ref}} == refs/heads/feature3
-            echo "Feature 3"
-          fi
-
+          pip install awscli          
+  feature1-test:
+    runs-on: ubuntu-latest
+    needs: refresh-autoscale
+    if: github.ref == 'refs/heads/feature1'
+    steps:
+      - name: Feature 1
+        run: echo "Inside feature1 branch"
+  feature2-test:
+    runs-on: ubuntu-latest
+    needs: refresh-autoscale
+    if: github.ref == 'refs/heads/feature2'
+    steps:
+      - name: Feature 2
+        run: echo "Inside feature2 branch"
+  feature3-test:
+    runs-on: ubuntu-latest
+    needs: refresh-autoscale
+    if: github.ref == 'refs/heads/feature3'
+    steps:
+      - name: Feature 3
+        run: echo "Inside feature3 branch"
