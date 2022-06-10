@@ -1,4 +1,4 @@
-name: Refresh Instance
+name: Print Branch
 on: 
   push:
     branches:
