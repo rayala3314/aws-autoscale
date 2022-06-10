@@ -2,7 +2,7 @@ name: Refresh Instance
 on: 
   push:
     branches:
-      -main
+      - main
 jobs:
   refresh-autoscale:
     runs-on: ubuntu-latest
