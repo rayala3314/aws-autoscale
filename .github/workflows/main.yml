@@ -3,8 +3,8 @@ on:
   push:
     branches: 
       - main
-      - '*/feature1'
-      - 'releases/**'
+      - 'refs/head/feature2'
+'
 
   pull_request:
     branches:
