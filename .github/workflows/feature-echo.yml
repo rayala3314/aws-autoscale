@@ -17,9 +17,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install awscli
-      - if: ${{github.ref}} == refs/heads/feature1
-        run: echo "Feature 1"
-      - if: ${{github.ref}} == refs/heads/feature2
-        run: echo "Feature 2"
-      - if: ${{github.ref}} == refs/heads/feature3
-        run: echo "Feature3"
+          if ${{github.ref}} == refs/heads/feature1
+           echo "Feature 1"
+          fi
+          if ${{github.ref}} == refs/heads/feature2
+            echo "Feature 2"
+          fi
+          if ${{github.ref}} == refs/heads/feature3
+            echo "Feature 3"
+          fi
+
