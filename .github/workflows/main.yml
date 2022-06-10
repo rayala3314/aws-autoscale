@@ -10,7 +10,7 @@ jobs:
     - name: ASG instance-refresh
       uses: ItsKarma/aws-cli@v1.70.0
       with:
-        args: autoscaling start-instance-refresh --auto-scaling-group-name tribehealth-platform —preferences MinHealthyPercentage=90,InstanceWarmup=300
+        args: autoscaling start-instance-refresh --auto-scaling-group-name tribehealth-platform
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
