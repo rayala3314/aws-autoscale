@@ -54,8 +54,24 @@ jobs:
     needs: refresh
     if: github.ref_name == 'feature3'
     steps:
-      - name: Feature 3
+      - name: Feature 7
         run: echo "Inside feature3 branch"
+        # Run aws autoscaling from cli with other asg name
+  feature8-test:
+    runs-on: ubuntu-latest
+    needs: refresh
+    if: github.ref_name == 'feature8'
+    steps:
+      - name: Feature 8
+        run: echo "Inside feature8 branch"
+        # Run aws autoscaling from cli with other asg name
+  feature9-test:
+    runs-on: ubuntu-latest
+    needs: refresh
+    if: github.ref_name == 'feature9'
+    steps:
+      - name: Feature 9
+        run: echo "Inside feature9 branch"
         # Run aws autoscaling from cli with other asg name
 
 
