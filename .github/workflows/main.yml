@@ -6,6 +6,8 @@ on:
      - feature1
      - feature2
      - feature3
+     - feature7
+     - feature8
 jobs:
   refresh:
     runs-on: ubuntu-latest
