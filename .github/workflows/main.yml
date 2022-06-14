@@ -26,7 +26,7 @@ jobs:
   feature1-test:
       runs-on: ubuntu-latest
       needs: refresh
-      if: ${{github.ref_name == 'feature1'}}
+      if: github.ref_name == 'feature1'
       steps:
         - name: Feature 1
           run: echo "Inside feature1 branch"
@@ -34,7 +34,7 @@ jobs:
   feature2-test:
     runs-on: ubuntu-latest
     needs: refresh
-    if: ${{ github.ref_name == 'feature2'}}
+    if: github.ref_name == 'feature2'
     steps:
       - name: Feature 2
         run: echo "Inside feature2 branch"
@@ -42,7 +42,7 @@ jobs:
   feature3-test:
     runs-on: ubuntu-latest
     needs: refresh
-    if: ${{github.ref_name == 'feature3'}}
+    if: github.ref_name == 'feature3'
     steps:
       - name: Feature 3
         run: echo "Inside feature3 branch"
