@@ -31,7 +31,7 @@ jobs:
         - name: main 1
           run: | 
             echo "Inside main branch"
-            echo $${{CI_COMMIT_BRANCH}}
+            echo ${{CI_COMMIT_BRANCH}}
           
   feature1-test:
       runs-on: ubuntu-latest
