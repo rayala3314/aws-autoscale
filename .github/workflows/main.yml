@@ -3,16 +3,8 @@ on:
   push:
     branches: 
      - main
-<<<<<<< Updated upstream
-     - feature1
-     - feature2
-     - feature3
-     - feature7
-     - feature8
-=======
      - stage
      - dev
->>>>>>> Stashed changes
 jobs:
   aws-cli:
     runs-on: ubuntu-latest
