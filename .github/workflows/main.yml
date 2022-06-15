@@ -5,6 +5,10 @@ on:
      - main
      - stage
      - dev
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: "us-west-2"
 jobs:
   aws-cli:
     runs-on: ubuntu-latest
@@ -24,10 +28,10 @@ jobs:
       steps:
         - name: Refresh Main Instance
           run: aws autoscaling start-instance-refresh --auto-scaling-group-name tribehealth-platform          
-          env:
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_DEFAULT_REGION: "us-west-2"
+          #env:
+           # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            #AWS_DEFAULT_REGION: "us-west-2"
   
   stage-refresh:
       runs-on: ubuntu-latest
@@ -36,10 +40,10 @@ jobs:
       steps:
         - name: Refresh Stage Instance
           run: aws autoscaling start-instance-refresh --auto-scaling-group-name 'ASGGROUPNAME'          
-          env:
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            AWS_DEFAULT_REGION: "us-west-2"
+          #env:
+           # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            #AWS_DEFAULT_REGION: "us-west-2"
   
   dev-refresh:
     runs-on: ubuntu-latest
@@ -48,7 +52,7 @@ jobs:
     steps:
       - name: Refresh Dev Instance
         run: aws autoscaling start-instance-refresh --auto-scaling-group-name 'ASGGROUPNAME'          
-        env: 
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "us-west-2"
+        #env: 
+          #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          #AWS_DEFAULT_REGION: "us-west-2"
