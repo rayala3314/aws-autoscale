@@ -1,0 +1,15 @@
+name: Second YAML
+on:
+  workflow_run:
+    workflows: ["CI Build"]
+    types:
+      - completed
+
+
+jobs:
+  second:
+    runs-on: ubuntu-lates
+
+    steps:
+      - name: Echo Second
+        run: echo "Second YAML File"
