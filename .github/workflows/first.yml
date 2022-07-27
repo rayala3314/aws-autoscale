@@ -6,6 +6,8 @@ on:
     branches:
       - main
       - feature1
+env:
+  GITHUB_CONTEXT: ${{ toJson(github)}}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,4 +16,4 @@ jobs:
       - name: Echo
         run: |
           echo "First YAML File"
-          echo "${{git rev-list --ancestry-path branch..main | tail -1}}"
+          echo "$GITHUB_CONTEXT"
