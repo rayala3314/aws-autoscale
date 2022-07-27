@@ -19,3 +19,4 @@ jobs:
           echo "$GITHUB_CONTEXT"
           echo "test"
           echo "Testing"
+          echo "testing after"
