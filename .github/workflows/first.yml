@@ -17,7 +17,6 @@ jobs:
         run: |
           echo "First YAML File"
           echo "$GITHUB_CONTEXT"
-          exit 1
           echo "test"
           echo "Testing"
           echo "testing after"
