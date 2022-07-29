@@ -7,10 +7,10 @@ on:
 
 
 jobs:
-  if: ${{github.event.workflow_run.conclusion == 'success'}}
   second:
     runs-on: ubuntu-latest
 
+  if: ${{github.event.workflow_run.conclusion == 'success'}}
     steps:
       - name: Echo Second
         run: |
