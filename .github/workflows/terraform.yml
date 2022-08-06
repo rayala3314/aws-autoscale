@@ -1,6 +1,9 @@
 # inside .github/workflows/your-action.yml
 name: Add File to Bucket
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
