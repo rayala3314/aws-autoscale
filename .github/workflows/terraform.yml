@@ -1,5 +1,3 @@
-
-
 name: 'Terraform'
 on:
   push:
@@ -32,7 +30,7 @@ jobs:
       run: terraform validate -no-color
     - name: Terraform Plan
       id: plan
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'push'
       run: terraform plan -no-color -input=false
       continue-on-error: true
     - name: Terraform Plan Status
