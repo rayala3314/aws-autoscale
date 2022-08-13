@@ -16,7 +16,7 @@ resource "aws_vpc" "testapp" {
 }
 
 resource "aws_subnet" "testapp_public_subnet" {
-  # Number of public subnet is defined in vars
+  # Number of public subnet is defined in vars.t
   count = var.number_of_public_subnets
 
   availability_zone       = data.aws_availability_zones.available.names[count.index]
@@ -30,7 +30,7 @@ resource "aws_subnet" "testapp_public_subnet" {
 }
 
 resource "aws_subnet" "testapp_private_subnet" {
-  # Number of private subnet is defined in vars.tf
+  # Number of private subnet is defined in vars.t
   count = var.number_of_private_subnets
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
