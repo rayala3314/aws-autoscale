@@ -122,6 +122,7 @@ resource "aws_instance" "web" {
   }
 }
 /*
+--
 data "aws_ami" "ami" {
   most_recent = true
   owners      = ["amazon"]
