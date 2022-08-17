@@ -30,8 +30,7 @@ resource "aws_ssm_activation" "foo" {
   registration_limit = "5"
   depends_on         = [aws_iam_role_policy_attachment.test_attach]
 }
-
-
+/*
 data "aws_ami" "ami" {
   most_recent = true
   owners      = ["amazon"]
@@ -41,13 +40,15 @@ data "aws_ami" "ami" {
   }
 }
 
-resource "aws_instance" "ssm_testing" {
-  ami                    = "ami-01aa7875bae3d46b3" 
-  instance_type = "t3.micro"
+*/ 
+resource "aws_instance" "web" {
+  ami           = "ami-090fa75af13c156b4"
+  instance_type = "t2.micro"
   iam_instance_profile   = "${aws_iam_instance_profile.test_profile.name}"
-  subnet_id              = "${aws_subnet.testapp_private_subnet.id}"
+  subnet_id              = "${vpc.aws_subnet.testapp_private_subnet.id}"
 
   tags = {
-    Name = "HelloSSM"
+    Name = "HelloWorld"
   }
 }
+
