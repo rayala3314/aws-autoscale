@@ -113,7 +113,7 @@ resource "aws_ssm_activation" "foo" {
 }
 
 resource "aws_instance" "web" {
-  depends_on = aws_iam_role.test_role
+  depends_on = [aws_iam_role.test_role]
   ami           = "ami-090fa75af13c156b4"
   instance_type = "t2.micro"
   iam_instance_profile   = aws_iam_instance_profile.test_profile.name
