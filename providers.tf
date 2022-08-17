@@ -1,5 +1,5 @@
 # Provider configuration
-provider "aws" {
+required_providers "aws" {
   region  = var.region
   version = "~> 3.0"
   profile = "testapp"
