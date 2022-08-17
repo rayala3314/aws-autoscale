@@ -42,7 +42,7 @@ data "aws_ami" "ami" {
 }
 
 resource "aws_instance" "ssm_testing" {
-  ami           = data.aws_ami.ami.id
+  ami                    = "ami-01aa7875bae3d46b3" 
   instance_type = "t3.micro"
   iam_instance_profile   = "${aws_iam_instance_profile.test_profile.name}"
   subnet_id              = "${aws_subnet.testapp_private_subnet.id}"
