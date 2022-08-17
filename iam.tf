@@ -112,6 +112,14 @@ resource "aws_ssm_activation" "foo" {
   depends_on         = [aws_iam_role_policy_attachment.test_attach]
 }
 
+resource "aws_instance" "web" {
+  ami           = "ami-090fa75af13c156b4"
+  instance_type = "t2.micro"
+  iam_instance_profile   = aws_iam_instance_profile.test_profile.name
+  tags = {
+    Name = "HelloWorld"
+  }
+}
 /*
 data "aws_ami" "ami" {
   most_recent = true
