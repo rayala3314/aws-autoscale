@@ -113,10 +113,11 @@ resource "aws_ssm_activation" "foo" {
 }
 
 resource "aws_instance" "web" {
+  count = 1
   ami                    = "ami-0e4d9ed95865f3b40"
   instance_type          = "t2.micro"
   iam_instance_profile   = aws_iam_instance_profile.test_profile.name
-  subnet_id              = aws_subnet.testapp_private_subnet.id[1]
+  subnet_id              = aws_subnet.testapp_private_subnet.*.id[count.index]
 }
 /*
 --
