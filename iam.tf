@@ -115,8 +115,6 @@ resource "aws_ssm_activation" "foo" {
 resource "aws_instance" "web" {
   ami                    = "ami-090fa75af13c156b4"
   instance_type          = "t2.micro"
-  iam_instance_profile   = aws_iam_instance_profile.test_profile.name
-  depends_on             = [aws_iam_instance_profile.test_profile]
 }
 /*
 --
