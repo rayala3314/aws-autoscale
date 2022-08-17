@@ -37,6 +37,6 @@ resource "aws_launch_template" "ssm_testing" {
   image_id               = data.aws_ami.ami.id
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.tribehealth_platform.id]
-  iam_instance_profile   = aws_iam_instance_profile.test_profile.name
+  iam_instance_profile   = [aws_iam_instance_profile.test_profile.name]
   subnet_id              = "${aws_subnet.testapp_private_subnet.id}"
 }
