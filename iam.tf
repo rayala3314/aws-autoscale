@@ -113,13 +113,10 @@ resource "aws_ssm_activation" "foo" {
 }
 
 resource "aws_instance" "web" {
-  depends_on = [aws_iam_instance_profile.test_profile]
-  ami           = "ami-090fa75af13c156b4"
-  instance_type = "t2.micro"
+  ami                    = "ami-090fa75af13c156b4"
+  instance_type          = "t2.micro"
   iam_instance_profile   = aws_iam_instance_profile.test_profile.name
-  tags = {
-    Name = "HelloWorld"
-  }
+  depends_on             = [aws_iam_instance_profile.test_profile]
 }
 /*
 --
