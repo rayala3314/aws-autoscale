@@ -30,6 +30,7 @@ resource "aws_ssm_activation" "foo" {
   registration_limit = "5"
   depends_on         = [aws_iam_role_policy_attachment.test_attach]
 }
+
 /*
 data "aws_ami" "ami" {
   most_recent = true
@@ -40,8 +41,15 @@ data "aws_ami" "ami" {
   }
 }
 
-*/ 
+*/
+
 resource "aws_instance" "web" {
+    depends_on = [
+    aws_vpc.testapp,
+    aws_subnet.testapp_public_subnet,
+    aws_subnet.testapp_private_subnet
+  ]
+
   ami           = "ami-090fa75af13c156b4"
   instance_type = "t2.micro"
   iam_instance_profile   = "${aws_iam_instance_profile.test_profile.name}"
