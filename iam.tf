@@ -122,8 +122,6 @@ data "aws_ami" "ami" {
   }
 }
 
-*/
-
 resource "aws_instance" "web" {
     depends_on = [
     aws_vpc.testapp,
@@ -141,3 +139,4 @@ resource "aws_instance" "web" {
   }
 }
 
+*/
