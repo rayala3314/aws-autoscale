@@ -45,7 +45,7 @@ resource "aws_instance" "web" {
   ami           = "ami-090fa75af13c156b4"
   instance_type = "t2.micro"
   iam_instance_profile   = "${aws_iam_instance_profile.test_profile.name}"
-  subnet_id              = vpc.aws_subnet.testapp_private_subnet.id[1]
+  subnet_id              = aws_subnet.testapp_private_subnet.id[1]
 
   tags = {
     Name = "HelloWorld"
