@@ -120,7 +120,7 @@ resource "aws_instance" "web" {
   subnet_id              = aws_subnet.testapp_private_subnet.*.id[count.index]
 }
 /*
---
+--1
 data "aws_ami" "ami" {
   most_recent = true
   owners      = ["amazon"]
