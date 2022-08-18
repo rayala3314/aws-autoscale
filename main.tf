@@ -100,8 +100,8 @@ resource "aws_iam_role_policy_attachment" "test_attach" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_instance_profile" "test_profile3" {
-  name = "test_profile3"
+resource "aws_iam_instance_profile" "test_profile4" {
+  name = "test_profile4"
   role = aws_iam_role.test_role.name
 }
 
@@ -117,8 +117,12 @@ resource "aws_instance" "web" {
   count = 1
   ami                    = "ami-0e4d9ed95865f3b40"
   instance_type          = "t2.micro"
-  iam_instance_profile   = aws_iam_instance_profile.test_profile3.name
+  iam_instance_profile   = aws_iam_instance_profile.test_profile4.name
   subnet_id              = aws_subnet.testapp_private_subnet.*.id[count.index]
+  user_data              = filebase64("${path.module}/userdata.tpl")
+  tags = {
+    "Environment" = "ManagedInstance"
+  }
 }
 /*
 --1aa
@@ -140,10 +144,20 @@ resource "aws_instance" "web" {
 
   ami           = "ami-090fa75af13c156b4"
   instance_type = "t2.micro"
+    user_data              = filebase64("${path.module}/userdata.tpl")
+a
 
   tags = {
     Name = "HelloWorld"
   }
 }
+
+
+
+#!/bin/bash
+cd /tmp
+sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+sudo systemctl enable amazon-ssm-agent
+sudo systemctl start amazon-ssm-agent
 
 */
