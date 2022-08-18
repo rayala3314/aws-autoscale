@@ -99,8 +99,8 @@ resource "aws_iam_role_policy_attachment" "test_attach" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_instance_profile" "test_profile2" {
-  name = "test_profile2"
+resource "aws_iam_instance_profile" "test_profile3" {
+  name = "test_profile3"
   role = aws_iam_role.test_role.name
 }
 
@@ -116,7 +116,7 @@ resource "aws_instance" "web" {
   count = 1
   ami                    = "ami-0e4d9ed95865f3b40"
   instance_type          = "t2.micro"
-  iam_instance_profile   = aws_iam_instance_profile.test_profile2.name
+  iam_instance_profile   = aws_iam_instance_profile.test_profile3.name
   subnet_id              = aws_subnet.testapp_private_subnet.*.id[count.index]
 }
 /*
