@@ -4,6 +4,7 @@
 #   - Private subnet(s)
 #   - Internet Gateway
 #   - Routing table
+#   - EC2 with IAM Role Attached
 
 resource "aws_vpc" "testapp" {
   cidr_block           = "10.0.0.0/16"
