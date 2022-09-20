@@ -1,0 +1,23 @@
+
+name: run_test
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - main
+env:
+  GITHUB_CONTEXT: ${{ github.event.pull_request.head.sha}}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Echo
+        run: |
+          echo "First YAML File"
+          echo "$GITHUB_CONTEXT"
+          echo "test"
+          echo "Testing"
+          echo "testing after"
