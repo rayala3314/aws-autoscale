@@ -1,13 +1,14 @@
-name: CI Build
+
+name: run_test
 on:
   pull_request:
     types:
       - opened
+      - synchronize
     branches:
       - main
-      - feature1
 env:
-  GITHUB_CONTEXT: ${{ github.event.pull_request.head.sha}}
+  GITHUB_CONTEXT: ${{ github.event.pull_request.draft}}
 jobs:
   build:
     runs-on: ubuntu-latest
