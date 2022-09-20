@@ -8,7 +8,7 @@ on:
     branches:
       - main
 env:
-  GITHUB_CONTEXT: ${{ github.event.pull_request.head.sha}}
+  GITHUB_CONTEXT: ${{ github.event.pull_request.draft}}
 jobs:
   build:
     runs-on: ubuntu-latest
