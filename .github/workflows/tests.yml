@@ -11,6 +11,7 @@ env:
   GITHUB_CONTEXT: ${{ github.event.pull_request.draft}}
 jobs:
   build:
+    if: ${{!GITHUB_CONTEXT}}
     runs-on: ubuntu-latest
     
     steps:
@@ -21,3 +22,5 @@ jobs:
           echo "test"
           echo "Testing"
           echo "testing after"
+      - name: Echo 2
+        run: echo "Made it to second echo"
