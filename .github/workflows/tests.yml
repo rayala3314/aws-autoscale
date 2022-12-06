@@ -38,5 +38,5 @@ jobs:
           echo ${{ needs.build.outputs.workingBranch }}
           echo "test"
       - name: Test
-        if: github.ref == ${{ needs.build.outputs.workingBranch }}
+        if: github.ref == '${{ needs.build.outputs.workingBranch }}'
         run: echo 'True'
