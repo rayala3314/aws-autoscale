@@ -12,16 +12,22 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Main Branch
-        if: github.ref == 'refs/heads/main'
-        env:
-          workingDirectory: ./environments/prod
-      - name: Feature Branch
-        if: github.ref == 'refs/heads/feature1'
-        env:
-          workingDirectory: ./environments/stage
+      - name: Branch Check
+        id: branch_check
+        run: |
+          echo "Running on branch ${{ github.ref }}"
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "workingDirectory=./environments/prod" >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref }}" = "refs/heads/feature1" ]; then
+            echo "workingDirectory=./environments/stage" >> $GITHUB_OUTPUT
+          fi       
         
       - name: Echo
         run: |
-          echo ${{env.workingDirectory}}
+          echo ${{ steps.branch_check.outputs.workingDirectory }}
           echo "test"
+          
+          
+        
+    outputs:
+      workingDirectory: ${{ steps.branch_check.outputs.workingDirectory }}
