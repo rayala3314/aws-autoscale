@@ -22,15 +22,17 @@ jobs:
           elif [ "${{ github.ref }}" = "refs/heads/feature1" ]; then
             echo "workingDirectory=./environments/stage" >> $GITHUB_OUTPUT
           fi       
-        
+                  
+    outputs:
+      workingDirectory: ${{ steps.branch_check.outputs.workingDirectory }}
+      workingBranch: ${{ steps.branch_check.outputs.workingBranch }}
+      
+  echoNames:
+    runs-on: ubuntu-latest
+    
+    steps:
       - name: Echo
         run: |
           echo ${{ steps.branch_check.outputs.workingDirectory }}
           echo ${{ steps.branch_check.outputs.workingBranch }}
           echo "test"
-          
-          
-        
-    outputs:
-      workingDirectory: ${{ steps.branch_check.outputs.workingDirectory }}
-      workingBranch: ${{ steps.branch_check.outputs.workingBranch }}
