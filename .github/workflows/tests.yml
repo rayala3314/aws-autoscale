@@ -18,6 +18,7 @@ jobs:
           echo "Running on branch ${{ github.ref }}"
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "workingDirectory=./environments/prod" >> $GITHUB_OUTPUT
+            echo "workingBranch=refs/heads/main" >> $GITHUB_OUTPUT
           elif [ "${{ github.ref }}" = "refs/heads/feature1" ]; then
             echo "workingDirectory=./environments/stage" >> $GITHUB_OUTPUT
           fi       
@@ -25,9 +26,11 @@ jobs:
       - name: Echo
         run: |
           echo ${{ steps.branch_check.outputs.workingDirectory }}
+          echo ${{ steps.branch_check.outputs.workingBranch }}
           echo "test"
           
           
         
     outputs:
       workingDirectory: ${{ steps.branch_check.outputs.workingDirectory }}
+      workingBranch: ${{ steps.branch_check.outputs.workingBranch }}
