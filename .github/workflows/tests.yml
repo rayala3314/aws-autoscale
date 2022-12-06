@@ -1,23 +1,27 @@
 
 name: run_test
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
+  push:
     branches:
       - main
-env:
-  GITHUB_CONTEXT: ${{ github.event.pull_request.draft}}
+      - feature1
+  pull_request:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Main Branch
+        if: github.ref == 'refs/heads/main'
+        env:
+          workingDirectory: ./environments/prod
+      - name: Feature Branch
+        if: github.ref == 'refs/heads/feature1'
+        env:
+          workingDirectory: ./environments/stage
+        
       - name: Echo
         run: |
-          echo "First YAML File"
-          echo "$GITHUB_CONTEXT"
+          echo ${{env.workingDirectory}}
           echo "test"
-          echo "Testing"
-          echo "testing after"
