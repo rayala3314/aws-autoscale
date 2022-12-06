@@ -35,5 +35,5 @@ jobs:
       - name: Echo
         run: |
           echo ${{ needs.build.outputs.workingDirectory }}
-          echo ${{ steps.branch_check.outputs.workingBranch }}
+          echo ${{ needs.build.outputs.workingBranch }}
           echo "test"
