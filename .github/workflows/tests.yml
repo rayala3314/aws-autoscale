@@ -29,10 +29,11 @@ jobs:
       
   echoNames:
     runs-on: ubuntu-latest
+    needs: build
     
     steps:
       - name: Echo
         run: |
-          echo ${{ steps.branch_check.outputs.workingDirectory }}
+          echo ${{ needs.build.outputs.workingDirectory }}
           echo ${{ steps.branch_check.outputs.workingBranch }}
           echo "test"
