@@ -119,7 +119,6 @@ resource "aws_instance" "web" {
   instance_type          = "t2.micro"
   iam_instance_profile   = aws_iam_instance_profile.test_profile4.name
   subnet_id              = aws_subnet.testapp_private_subnet.*.id[count.index]
-  user_data              = filebase64("${path.module}/userdata.tpl")
   tags = {
     "Environment" = "ManagedInstance"
   }
