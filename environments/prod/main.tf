@@ -12,7 +12,7 @@ resource "aws_vpc" "testapp" {
   enable_dns_hostnames = true # Internal host name
 
   tags = {
-    Name = "testapp-vpc"
+    Name = "testapp-vpc-prod"
   }
 }
 
@@ -47,7 +47,7 @@ resource "aws_internet_gateway" "testapp_internet_gateway" {
   vpc_id = aws_vpc.testapp.id
 
   tags = {
-    Name = "testapp-internet-gateway"
+    Name = "testapp-internet-gateway-prod"
   }
 }
 
