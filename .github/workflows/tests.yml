@@ -8,7 +8,8 @@ on:
   pull_request:
 
 jobs:
-  build:
+                  
+  echoNames:
     runs-on: ubuntu-latest
     
     steps:
@@ -21,22 +22,14 @@ jobs:
             echo "workingBranch=refs/heads/main" >> $GITHUB_OUTPUT
           elif [ "${{ github.ref }}" = "refs/heads/feature1" ]; then
             echo "workingDirectory=./environments/stage" >> $GITHUB_OUTPUT
-          fi       
-                  
+          fi           
+    
+      - name: Echo
+        run: |
+          echo ${{ steps.branch_check.outputs.workingDirectory }}
+          echo ${{ steps.branch_check.outputs.workingBranch }}
+          echo "test"
+          
     outputs:
       workingDirectory: ${{ steps.branch_check.outputs.workingDirectory }}
       workingBranch: ${{ steps.branch_check.outputs.workingBranch }}
-      
-  echoNames:
-    runs-on: ubuntu-latest
-    needs: build
-    
-    steps:
-      - name: Echo
-        run: |
-          echo ${{ needs.build.outputs.workingDirectory }}
-          echo ${{ needs.build.outputs.workingBranch }}
-          echo "test"
-      - name: Test
-        if: github.ref == '${{ needs.build.outputs.workingBranch }}'
-        run: echo 'True'
