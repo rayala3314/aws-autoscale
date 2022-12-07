@@ -1,0 +1,2 @@
+access_key = AKIASF7KMHMKS655IIMN
+secret_key = 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
