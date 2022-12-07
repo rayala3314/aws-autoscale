@@ -44,7 +44,9 @@ jobs:
     - name: Terraform Validate
       working-directory: ${{ steps.branch_check.outputs.workingDirectory }}
       id: validate
-      run: terraform validate -no-color
+      run: |
+        terraform validate -no-color
+        echo ${{ steps.branch_check.outputs.workingDirectory }}
     - name: Terraform Plan
       id: plan
       working-directory: ${{ steps.branch_check.outputs.workingDirectory }}
