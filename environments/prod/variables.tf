@@ -18,7 +18,7 @@ variable "subnet_id" {
 
 variable "ami_id" {
         description = "The AMI to use"
-        default = "ami-02b972fec07f1e659"
+        default = "ami-0f5e8a042c8bfcd5e"
 }
 
 variable "number_of_instances" {
