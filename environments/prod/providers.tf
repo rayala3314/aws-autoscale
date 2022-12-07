@@ -5,7 +5,3 @@ provider "aws" {
   profile = "testapp"
 }
 
-# Use data sources allow configuration to be
-# generic for any region
-data "aws_region" "current" {}
-data "aws_availability_zones" "available" {}
