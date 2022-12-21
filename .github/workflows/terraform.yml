@@ -25,8 +25,8 @@ jobs:
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           ec2-image-id: ami-0ce8e3ecdb4340478
           ec2-instance-type: t2.micro
-          subnet-id: subnet-04bd7be904a677269
-          security-group-id: sg-08b5d8d16ef2d1e84
+          subnet-id: subnet-02bdcbed981b69efa
+          security-group-id: sg-08b544ba8e9765152
   do-the-job:
     name: Do the job on the runner
     needs: start-runner # required to start the main job when the runner is ready
