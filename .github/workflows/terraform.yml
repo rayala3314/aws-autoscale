@@ -25,7 +25,7 @@ jobs:
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           ec2-image-id: ami-0965890c3b2315bd5
           ec2-instance-type: t2.micro
-          subnet-id: subnet-03c1e8239d60581bf 
+          subnet-id: subnet-0cfe1aef200548f09
           security-group-id: sg-0d389502ddb410bf3
   do-the-job:
     name: Do the job on the runner
