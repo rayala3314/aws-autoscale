@@ -33,7 +33,7 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
     steps:
       - name: Ping EC2
-        run: ping -t10 172.31.40.161
+        run: ping -w 5 172.31.40.161
   stop-runner:
     name: Stop self-hosted EC2 runner
     needs:
