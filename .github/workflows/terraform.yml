@@ -23,17 +23,17 @@ jobs:
         with:
           mode: start
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-          ec2-image-id: ami-08764947f74d16347
+          ec2-image-id: ami-09193ed683ec45522
           ec2-instance-type: t2.micro
-          subnet-id: subnet-008d22c213dcf5ffd
-          security-group-id: sg-069c9bc166076d1dc
+          subnet-id: subnet-0964830a84cd3b7f0
+          security-group-id: sg-0c5e907129964d76c
   do-the-job:
     name: Do the job on the runner
     needs: start-runner # required to start the main job when the runner is ready
     runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
     steps:
-      - name: Hello World
-        run: echo 'Hello World!'
+      - name: Ping EC2
+        run: ping 172.31.40.161
   stop-runner:
     name: Stop self-hosted EC2 runner
     needs:
