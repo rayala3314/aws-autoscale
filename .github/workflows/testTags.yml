@@ -40,7 +40,7 @@ jobs:
         run: |
           raw=$(git branch -a --contains ${{ steps.vars.outputs.tag }})
           commitHash=$(git rev-list -n 1 ${{steps.vars.outputs.tag}})
-          git_branch=$(git branch -a --contains $commitHash)
+          git_branch=$(git branch -a --contains ${{commitHash}})
           echo "Branch is $raw."
           echo "Branch is $commitHash"
           echo "Branch from commit is $git_branch"
