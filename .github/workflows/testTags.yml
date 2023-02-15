@@ -30,6 +30,12 @@ jobs:
         run: |
           echo $RELEASE_VERSION
           echo ${{ steps.vars.outputs.tag }}
+  Branch Name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo branch
+        run: echo "${{ github.event.base_ref }}"
+
 # Depending on what branch do an autoscale refresh to that environment
 # If brannch = stage
   # Refresh to stage environment
