@@ -20,6 +20,7 @@ jobs:
   getTB:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: GitHub Tag Name example
         id: get_tag
         run: |
