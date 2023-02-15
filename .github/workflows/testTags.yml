@@ -16,7 +16,8 @@ on:
       - 'v*.*.*'
 
 jobs:
-  test:
+# Get the latest Tag's branch and store into variable
+  Get Tag Branch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,3 +30,19 @@ jobs:
         run: |
           echo $RELEASE_VERSION
           echo ${{ steps.vars.outputs.tag }}
+# Depending on what branch do an autoscale refresh to that environment
+# If brannch = stage
+  # Refresh to stage environment
+# If branch = develop
+  # Refresh to Develop
+# If branch = main
+  # Refresh to Production
+
+
+# If tests are a success - update last working commit on param store
+
+
+# Else
+  # Grab the latest commit from param store
+  # Call workflow again
+  # Refresh with this last working commit
