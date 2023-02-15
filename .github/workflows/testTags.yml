@@ -30,14 +30,14 @@ jobs:
         run: |
           raw=$(git branch -l --contains ${{ github.ref_name }})
           echo "Branch is $raw."
-     - name: checkout source code
-       uses: actions/checkout@v1
-     - name: Get Branch
-       run: |
-         raw=$(git branch -r --contains ${{ github.ref }})
-         branch=${raw/origin\/}
-         echo ::set-env name=BRANCH::$branch
-     - run: echo ${{ env.BRANCH }}
+      - name: checkout source code
+        uses: actions/checkout@v1
+      - name: Get Branch
+        run: |
+          raw=$(git branch -r --contains ${{ github.ref }})
+          branch=${raw/origin\/}
+          echo ::set-env name=BRANCH::$branch
+      - run: echo ${{ env.BRANCH }}
 
 # Depending on what branch do an autoscale refresh to that environment
 # If brannch = stage
