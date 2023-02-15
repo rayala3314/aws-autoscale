@@ -35,8 +35,7 @@ jobs:
         id: check_step
         run: |
           raw=$(git branch -r --contains ${{ steps.vars.outputs.tag }})
-          branch=${{$raw}}
-          echo "Branch is $branch."
+          echo "Branch is $raw."
 
 # Depending on what branch do an autoscale refresh to that environment
 # If brannch = stage
