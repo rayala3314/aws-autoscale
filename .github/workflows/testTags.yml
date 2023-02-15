@@ -1,5 +1,16 @@
+# Get Latest Tag name
+#       |
+
+# Check what branch the tag was on
+#         |
+# If tagged with wrong branch: error out 
+# Else: refresh autoscale
+# Then: Update last working commit on param store
+# If tests failed: pull last working tag from param store and call workflow again with that commit
+
 name: Get Branch of Tag
 on:
+  workflow_call:
   push:
     tags:
       - 'v*.*.*'
