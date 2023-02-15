@@ -38,9 +38,9 @@ jobs:
       - name: Get current branch
         id: check_step
         run: |
-          raw=$(git branch --contains ${{ github.ref_name }})
+          raw=$(git branch -l --contains ${{ github.ref_name }})
           commitHash=$(git rev-list -n 1 ${{steps.vars.outputs.tag}})
-          git_branch=$(git branch -a --contains ${commitHash})
+          git_branch=$(git branch -l --contains ${commitHash})
           echo "Branch is $raw."
           echo "Branch is $commitHash"
           echo "Branch from commit is $git_branch"
