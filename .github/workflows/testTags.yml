@@ -30,6 +30,11 @@ jobs:
         run: |
           echo $RELEASE_VERSION
           echo ${{ steps.vars.outputs.tag }}
+      - name: GitHub Tag Name example
+       run: |
+         echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+         echo "Tag name from github.ref_name: ${{  github.ref_name }}"
+
 
       - name: Get current branch
         id: check_step
