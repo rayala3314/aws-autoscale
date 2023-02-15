@@ -17,7 +17,7 @@ on:
 
 jobs:
 # Get the latest Tag's branch and store into variable
-  Get Tag Branch:
+  getTB:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
         run: |
           echo $RELEASE_VERSION
           echo ${{ steps.vars.outputs.tag }}
-  Branch Name:
+  getBName:
     runs-on: ubuntu-latest
     steps:
       - name: Echo branch
