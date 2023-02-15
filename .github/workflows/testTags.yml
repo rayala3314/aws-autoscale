@@ -30,11 +30,14 @@ jobs:
         run: |
           echo $RELEASE_VERSION
           echo ${{ steps.vars.outputs.tag }}
-  getBName:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Echo branch
-        run: echo "${{ github.event.base_ref }}"
+
+      - name: Get current branch
+        id: check_step
+        run: |
+          raw=$(git branch -r --contains ${{ steps.vars.outputs.tag }})
+          branch=${raw##*/}
+          echo "::set-output name=branch::$branch"
+          echo "Branch is $branch."
 
 # Depending on what branch do an autoscale refresh to that environment
 # If brannch = stage
