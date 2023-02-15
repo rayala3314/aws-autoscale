@@ -39,7 +39,10 @@ jobs:
         id: check_step
         run: |
           raw=$(git branch -a --contains ${{ steps.vars.outputs.tag }})
+          commitHash = $(git rev-list -n 1 ${{steps.vars.outputs.tag}})
+          git_branch=$(git for-each-ref | grep $commitHash | grep origin | sed "s/.*\///")
           echo "Branch is $raw."
+          echo "Branch is $git_branch"
 
 # Depending on what branch do an autoscale refresh to that environment
 # If brannch = stage
