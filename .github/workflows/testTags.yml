@@ -33,7 +33,7 @@ jobs:
       - name: Get Branch
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
-          branch=${raw}
+          branch=$raw
           echo "Branch is $branch"
 
 # Depending on what branch do an autoscale refresh to that environment
