@@ -14,9 +14,8 @@ on:
   push:
     tags:
       - 'v*.*.*'
-
 jobs:
-# Get the latest Tag's branch and store into variable
+# Get the latest Tag's branch and store into variable 
   getTB:
     runs-on: ubuntu-latest
     steps:
