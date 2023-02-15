@@ -34,8 +34,7 @@ jobs:
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
           branch=${raw/origin\/}
-          echo ::set-env name=BRANCH::$branch
-      - run: echo ${{ env.BRANCH }}
+          echo "Branch is $branch"
 
 # Depending on what branch do an autoscale refresh to that environment
 # If brannch = stage
