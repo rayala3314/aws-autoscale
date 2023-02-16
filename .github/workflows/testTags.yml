@@ -41,7 +41,7 @@ jobs:
   main-s3:
     runs-on: ubuntu-latest
     needs: getTB
-    if: needs.getTB.outputs.bName == 'main'
+    if: needs.getTB.outputs.bName == '  main'
     steps:
     - name: uploading to S3
       run: |
