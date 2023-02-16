@@ -27,7 +27,7 @@ jobs:
           raw=$(git branch -r --contains ${{ github.ref }})
           branch=${raw/origin\/}
           echo "Branch is $branch"
-          echo "B_NAME=$branch" >> $GITHUB_ENV
+          echo "B_NAME=${raw/origin\/}" >> $GITHUB_ENV
   uploads3:
     runs-on: ubuntu-latest
     needs: [getTB]
