@@ -32,7 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [getTB]
     if: ${{ env.B_NAME == 'main'}}
-    run: echo "Uploading to min s3"
+    steps:
+    - name: uploading to S3
+      run: echo "Uploading to min s3"
         
 
 # Depending on what branch do an autoscale refresh to that environment
