@@ -61,7 +61,7 @@ jobs:
         aws-region: us-west-1
   
     - name: 'Another example step'
-      run: echo " Refreshing - ${{ steps.parameter.outputs.value }} "
+      run: echo " Refreshing- ${{ steps.parameter.outputs.value }} "
 
   feature1-refresh:
     runs-on: ubuntu-latest
@@ -84,7 +84,7 @@ jobs:
         aws-region: us-west-1
   
     - name: 'Another example step'
-      run: echo " Refreshing - ${{ steps.parameter.outputs.value }} "
+      run: echo " Refreshing- ${{ steps.parameter.outputs.value }} "
 
 
 
