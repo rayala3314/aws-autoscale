@@ -18,20 +18,34 @@ jobs:
 # Get the latest Tag's branch and store into variable 
   getTB:
     runs-on: ubuntu-latest
+    outputs: 
+      bName: ${{steps.branch-name.outputs.branchN}}
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: GitHub Tag Name example
-        id: get_tag
-        run: |
-         echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
-         echo "Tag name from github.ref_name: ${{  github.head_ref }}"
       - name: Get Branch
+        id: branch-name
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
           branch=${raw/origin\/}
-          echo "Branch is $branch"
+          echo "branchN=$branch" >> $GITHUB_OUTPUT
+  main-s3:
+    runs-on: ubuntu-latest
+    needs: [getTB]
+    if:  ${{needs.getTB.outputs.bName}} == 'main'
+    steps:
+    - name: uploading to S3
+      run: echo "Uploading to main s3"
+  feature1-s3:
+    runs-on: ubuntu-latest
+    needs: [getTB]
+    if:  ${{needs.getTB.outputs.bName}} == 'feature1'
+    steps:
+    - name: uploading to S3
+      run: echo "Uploading to feature1 s3"
+
+        
 
 # Depending on what branch do an autoscale refresh to that environment
 # If brannch = stage
@@ -48,4 +62,4 @@ jobs:
 # Else
   # Grab the latest commit from param store
   # Call workflow again
-  # Refresh with this last working commit
+  # Refresh with this last working commit 
