@@ -23,7 +23,7 @@ jobs:
           branch=${raw/origin\/}
           echo "branchN=$branch" >> $GITHUB_OUTPUT
           echo "Branch is $branch"
-          tagStripped=${tag/v1.2.10-\/}
+          tagStripped=${tag/refs\/}
           echo "Tag is $tag"
           echo "Tag Stripped is $tagStripped"
   debug:
