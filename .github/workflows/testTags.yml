@@ -18,7 +18,7 @@ jobs:
       - name: Get Branch
         id: branch-name
         run: |
-          tag=${{github.ref}}
+          tag=${{github.ref_name}}
           raw=$(git branch -r --contains ${{ github.ref }})
           branch=${raw/origin\/}
           echo "branchN=$branch" >> $GITHUB_OUTPUT
