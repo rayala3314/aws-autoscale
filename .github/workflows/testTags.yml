@@ -41,7 +41,7 @@ jobs:
   main-s3:
     runs-on: ubuntu-latest
     needs: [getTB]
-    if:  env.branchN == 'main'
+    if:  ${{env.branchN == 'main'}}
     steps:
     - name: uploading to S3
       run: echo "Uploading to main s3"
