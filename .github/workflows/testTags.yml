@@ -46,7 +46,7 @@ jobs:
     - name: uploading to S3
       run: |
         echo "Uploading to main s3"
-        echo "${{needs.getTB.outputs.bName}}"
+        echo " branch is ${needs.getTB.outputs.bName}"
 
   feature1-s3:
     runs-on: ubuntu-latest
