@@ -31,7 +31,7 @@ jobs:
   uploads3:
     runs-on: ubuntu-latest
     needs: [getTB]
-    if: ${{ env.B_NAME == 'main'}}
+    if:  env.B_NAME == 'main'
     steps:
     - name: uploading to S3
       run: echo "Uploading to min s3"
