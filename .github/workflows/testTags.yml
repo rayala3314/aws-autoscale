@@ -33,14 +33,15 @@ jobs:
   main-s3:
     runs-on: ubuntu-latest
     needs: [getTB]
-    if:  ${{needs.getTB.outputs.bName}} == 'main'
+    if:  ${{needs.getTB.outputs.bName == 'main'}}
     steps:
     - name: uploading to S3
       run: echo "Uploading to main s3"
+
   feature1-s3:
     runs-on: ubuntu-latest
     needs: [getTB]
-    if:  ${{needs.getTB.outputs.bName}} == 'feature1'
+    if:  ${{needs.getTB.outputs.bName == 'feature1'}}
     steps:
     - name: uploading to S3
       run: echo "Uploading to feature1 s3"
