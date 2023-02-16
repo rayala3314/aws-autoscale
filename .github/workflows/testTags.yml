@@ -19,7 +19,6 @@ jobs:
         id: branch-name
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
-          rawTwo=$(git branch -l --contains ${{ github.ref }})
           branch=${raw/origin\/}
           echo "branchN=$branch" >> $GITHUB_OUTPUT
           echo "Branch is $branch"
