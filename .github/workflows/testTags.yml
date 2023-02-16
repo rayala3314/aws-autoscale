@@ -81,6 +81,8 @@ jobs:
       # The part before equals is the ssm parameterName, and after is the ENV Variable name for the workflow.
       # No limit on number of parameters. You can put new lines and spaces in as desired, they get trimmed out.
         withDecryption: "true" # defaults to true
+    - name: Print Param Value
+      run: echo "env.AWS_ACCOUNT_ALIAS"
 
 # Depending on what branch do an autoscale refresh to that environment
 # If brannch = stage
