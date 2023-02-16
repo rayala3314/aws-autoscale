@@ -23,7 +23,9 @@ jobs:
           branch=${raw/origin\/}
           echo "branchN=$branch" >> $GITHUB_OUTPUT
           echo "Branch is $branch"
+          tagStripped=${tag/refs/tags/v1.2.10-\/}
           echo "Tag is $tag"
+          echo "Tag is $tagStripped"
   debug:
     needs: getTB
     runs-on: ubuntu-latest
