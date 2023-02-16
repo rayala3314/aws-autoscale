@@ -80,7 +80,7 @@ jobs:
       id: parameter
       uses: poad/get-aws-ssm-parameter@v1.0.0
       with: 
-        parameter-name: /featueRefresh
+        parameter-name: /featureRefresh
         aws-region: us-west-1
   
     - name: 'Another example step'
