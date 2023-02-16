@@ -66,17 +66,21 @@ jobs:
   getParameter:
     runs-on: ubuntu-latest
     steps:
-    - name: 'Get value from Parameter Store'
-      id: parameter
-      uses: poad/get-aws-ssm-parameter@v1.0.0
-      with: 
-        parameter-name: /stableCommit
+    - name: Configure AWS credentials
+      id: aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
         aws-region: us-west-1
-  
-    - name: 'Another example step'
-      run: echo ${{ steps.parameter.outputs.value }}
 
-        
+    - uses: dkershner6/aws-ssm-getparameters-action@v1
+    with:
+      parameterPairs: "/region/primary = PRIMARY_AWS_REGION,
+          /stableCommit = AWS_ACCOUNT_ALIAS"
+      # The part before equals is the ssm parameterName, and after is the ENV Variable name for the workflow.
+      # No limit on number of parameters. You can put new lines and spaces in as desired, they get trimmed out.
+      withDecryption: "true" # defaults to true
 
 # Depending on what branch do an autoscale refresh to that environment
 # If brannch = stage
