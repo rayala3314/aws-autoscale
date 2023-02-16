@@ -18,20 +18,22 @@ jobs:
 # Get the latest Tag's branch and store into variable 
   getTB:
     runs-on: ubuntu-latest
+    outputs: 
+      bName: ${{steps.branch-name.outputs.branchN}}
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
       - name: Get Branch
+        id: branch-name
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
           branch=${raw/origin\/}
-          echo "Branch is $branch"
-          echo "B_NAME=${raw/origin\/}" >> $GITHUB_ENV
+          echo "branchN=$branch" >> $GITHUB_OUTPUT
   uploads3:
     runs-on: ubuntu-latest
     needs: [getTB]
-    if:  env.B_NAME == 'main'
+    if:  ${{needs.getTB.outputs.bName}} == 'main'
     steps:
     - name: uploading to S3
       run: echo "Uploading to min s3"
