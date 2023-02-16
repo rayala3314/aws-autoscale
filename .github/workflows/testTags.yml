@@ -1,12 +1,3 @@
-# Get Latest Tag name
-#       |
-
-# Check what branch the tag was on
-#         |
-# If tagged with wrong branch: error out 
-# Else: refresh autoscale
-# Then: Update last working commit on param store
-# If tests failed: pull last working tag from param store and call workflow again with that commit
 
 name: Get Branch of Tag
 on:
@@ -28,6 +19,7 @@ jobs:
         id: branch-name
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
+          rawTwo=$(git branch -l --contains ${{ github.ref }})
           branch=${raw/origin\/}
           echo "branchN=$branch" >> $GITHUB_OUTPUT
           echo "Branch is $branch"
@@ -38,33 +30,7 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ toJson(needs.getTB) }}"
-  main-s3:
-    runs-on: ubuntu-latest
-    needs: getTB
-    if: needs.getTB.outputs.bName == '  main'
-    steps:
-    - name: uploading to S3
-      run: |
-        echo "Uploading to main s3"
-        echo " branch is ${{needs.getTB.outputs.bName}}"
 
-  feature1-s3:
-    runs-on: ubuntu-latest
-    needs: [getTB]
-    if: needs.getTB.outputs.bName == '  feature1'
-    steps:
-    - name: Upload file to bucket
-      uses: zdurham/s3-upload-github-action@master
-      with:
-        args: --acl public-read
-      env:
-        FILE: ./index.html
-        AWS_REGION: 'us-west-1'
-        S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-        
 
 # Depending on what branch do an autoscale refresh to that environment
 # If brannch = stage
@@ -73,12 +39,80 @@ jobs:
   # Refresh to Develop
 # If branch = main
   # Refresh to Production  
+# ___________________________________________________________________
+  main-s3:
+    runs-on: ubuntu-latest
+    needs: getTB
+    if: needs.getTB.outputs.bName == '  main'
+    steps:
+    - name: Configure AWS credentials
+      id: aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    - name: 'Get value from Parameter Store'
+      id: parameter
+      uses: poad/get-aws-ssm-parameter@v1.0.0
+      with: 
+        parameter-name: /mainRefresh
+        aws-region: us-west-1
+  
+    - name: 'Another example step'
+      run: echo " Refreshing - ${{ steps.parameter.outputs.value }} "
+
+  feature1-s3:
+    runs-on: ubuntu-latest
+    needs: [getTB]
+    if: needs.getTB.outputs.bName == '  feature1'
+    steps:
+    - name: Configure AWS credentials
+      id: aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    - name: 'Get value from Parameter Store'
+      id: parameter
+      uses: poad/get-aws-ssm-parameter@v1.0.0
+      with: 
+        parameter-name: /featueRefresh
+        aws-region: us-west-1
+  
+    - name: 'Another example step'
+      run: echo " Refreshing - ${{ steps.parameter.outputs.value }} "
+
 
 
 # If tests are a success - update last working commit on param store
-
-
 # Else
   # Grab the latest commit from param store
   # Call workflow again
   # Refresh with this last working commit 
+# _______________________________________________________________________
+  getParameter:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure AWS credentials
+      id: aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    - name: 'Get value from Parameter Store'
+      id: parameter
+      uses: poad/get-aws-ssm-parameter@v1.0.0
+      with: 
+        parameter-name: /stableCommit
+        aws-region: us-west-1
+  
+    - name: 'Another example step'
+      run: echo ${{ steps.parameter.outputs.value }}
+
+
