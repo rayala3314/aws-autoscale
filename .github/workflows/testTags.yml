@@ -29,7 +29,7 @@ jobs:
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
           branch=${raw/origin\/}
-          echo "branchN=$branch" >> $GITHUB_ENV
+          echo "branchN=$branch" >> $GITHUB_OUTPUTS
           echo "$branchN"
   debug:
     needs: getTB
