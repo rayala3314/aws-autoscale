@@ -63,6 +63,18 @@ jobs:
         S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  getParameter:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Get value from Parameter Store'
+      id: parameter
+      uses: poad/get-aws-ssm-parameter@v1.0.0
+      with: 
+        parameter-name: /stableCommit
+        aws-region: us-west-1
+  
+    - name: 'Another example step'
+      run: echo ${{ steps.parameter.outputs.value }}
 
         
 
