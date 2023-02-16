@@ -29,7 +29,7 @@ jobs:
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
           branch=${raw/origin\/}
-          echo "branchN=$branch" >> $GITHUB_OUTPUT
+          echo "branchN=$branch" >> $GITHUB_ENV
           echo "$branchN"
   debug:
     needs: getTB
@@ -41,7 +41,7 @@ jobs:
   main-s3:
     runs-on: ubuntu-latest
     needs: [getTB]
-    if:  needs.getTB.outputs.bName == 'main'
+    if:  env.branchN == 'main'
     steps:
     - name: uploading to S3
       run: echo "Uploading to main s3"
