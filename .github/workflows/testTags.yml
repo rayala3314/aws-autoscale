@@ -42,7 +42,8 @@ jobs:
     steps:
       - name: Message
         run: |
-          echo "Tag does not belong with ${{needs.getTB.outputs.bName}} branch!"
+          echo "Changes not deployed!!"
+          echo "${{github.ref_name}} does not belong with${{needs.getTB.outputs.bName}} branch!"
 
 
 # Depending on what branch do an autoscale refresh to that environment
