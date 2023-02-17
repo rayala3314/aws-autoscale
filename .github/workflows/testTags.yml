@@ -36,7 +36,7 @@ jobs:
   check-string:
     needs: getTB
     runs-on: ubuntu-latest
-    if: ${{ contains('${needs.getTB.outputs.bName}'', 'dev')}}
+    if: ${{ contains(github.ref_name, 'dev')}}
     steps:
       - name: String Output
         run: |
