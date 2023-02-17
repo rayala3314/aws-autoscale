@@ -89,7 +89,7 @@ jobs:
 
   feature1-refresh:
     runs-on: ubuntu-latest
-    needs: [get-branch]
+    needs: get-branch
     if: ${{ contains(github.ref_name, 'feature1')  && needs.get-branch.outputs.bName == '  feature1'}}
     steps:
     - name: Configure AWS credentials
