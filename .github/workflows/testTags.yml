@@ -54,7 +54,7 @@ jobs:
   main-refresh:
     runs-on: ubuntu-latest
     needs: getTB
-    if: ${{ contains(github.ref_name, 'feature1') && needs.getTB.outputs.bName == '  main' }}
+    if: ${{ contains(github.ref_name, 'main') && needs.getTB.outputs.bName == '  main' }}
     steps:
     - name: Configure AWS credentials
       id: aws-credentials
