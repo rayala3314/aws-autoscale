@@ -40,7 +40,7 @@ jobs:
     steps:
       - name: String Output
         run: |
-          echo "Tag does not match branch,"
+          echo "Tag does not match branch"
 
 
 # Depending on what branch do an autoscale refresh to that environment
