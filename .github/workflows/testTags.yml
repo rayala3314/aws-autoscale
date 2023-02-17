@@ -33,6 +33,14 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ toJson(needs.getTB) }}"
+  check-string:
+    needs: getTB
+    runs-on: ubuntu-latest
+    if: ${{ contains(${needs.getTB.outputs.bName}, 'dev')}}
+    steps:
+      - name: String Output
+        run: |
+          echo "contains the substring"
 
 
 # Depending on what branch do an autoscale refresh to that environment
