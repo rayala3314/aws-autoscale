@@ -30,6 +30,7 @@ jobs:
           tagStripped=${tag/v1\/}
           echo "Tag is $tag"
           echo "Tag Stripped is $tagStripped"
+          echo "Event that triggered it is ${{github.event_name}}"
   debug:
     needs: get-branch
     runs-on: ubuntu-latest
