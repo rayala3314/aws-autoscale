@@ -38,6 +38,13 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ toJson(needs.get-branch) }}"
+  prod-test:
+    needs: get-branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        run: |
+          echo "${{ github.event_name }}"
 
 # Check that tag is on correct branch
   check-tag-with-branch:
