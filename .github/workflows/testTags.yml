@@ -51,6 +51,7 @@ jobs:
     needs: get-branch
     runs-on: ubuntu-latest
     if: |
+      (contains(github.event_name, 'push')) &&
       (needs.get-branch.outputs.bName == '  main' && !(contains(github.ref_name, '-main'))) ||
       (needs.get-branch.outputs.bName == '  feature1' && !(contains(github.ref_name, '-feature1')))
     steps:
