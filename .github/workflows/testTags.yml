@@ -36,11 +36,11 @@ jobs:
   check-string:
     needs: getTB
     runs-on: ubuntu-latest
-    if: ${{ contains(github.ref_name, 'feature1')}}
+    if: ${{ !(contains(github.ref_name, 'feature1') && needs.getTB.outputs.bName == '  feature1')}}
     steps:
       - name: String Output
         run: |
-          echo "contains the substring"
+          echo "Tag does not match branch"
 
 
 # Depending on what branch do an autoscale refresh to that environment
