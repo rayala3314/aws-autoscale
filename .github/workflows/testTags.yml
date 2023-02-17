@@ -36,7 +36,7 @@ jobs:
   check-string:
     needs: getTB
     runs-on: ubuntu-latest
-    if: needs.getTB.outputs.bName == '  main' $$ !(contains(github.ref_name, 'main'))
+    if: needs.getTB.outputs.bName == '  main' && !(contains(github.ref_name, 'main'))
     steps:
       - name: String Output
         run: |
