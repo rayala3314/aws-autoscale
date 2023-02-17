@@ -36,7 +36,9 @@ jobs:
   check-string:
     needs: getTB
     runs-on: ubuntu-latest
-    if: needs.getTB.outputs.bName == '  main' && !(contains(github.ref_name, 'main'))
+    if: |
+      ${{needs.getTB.outputs.bName == '  main' && !(contains(github.ref_name, 'main'))}} ||
+      ${{needs.getTB.outputs.bName == '  feature1' && !(contains(github.ref_name, 'feature1'))}}
     steps:
       - name: String Output
         run: |
