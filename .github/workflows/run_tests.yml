@@ -1,0 +1,7 @@
+# Will run remote tests
+# Check github event name and run based on that
+# Tests Failed:
+  # If it is a stage or Dev tag
+    # get ssm and call deploy workflow with the latest tag as input
+  # if release:
+    # delete the previous release
