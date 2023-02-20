@@ -11,14 +11,12 @@ name: Deploy Changes
 on:
   push:
     tags:
-      - 'v*.*.*-dev'
-      - 'v*.*.*-stage'
+      - 'v*.*.*-feature1' # Dev
+      - 'v*.*.*-feature2' # Stage
 
   release:
     types: 
       - created
-# TODO: 
-# - Check to see if you can run jobs depending on trigger event
 jobs:
 # Get the latest Tag's branch and store into variable 
   get-branch:
@@ -48,22 +46,24 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ toJson(needs.get-branch) }}"
-  prod-test:
+        
+  context-of-event:
     needs: get-branch
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
         run: |
-          echo "${{ github.event_name }}"
+          echo "${{ toJson(github.event_name) }}"
+        
 
 # Check that tag is on correct branch
   check-tag-with-branch:
     needs: get-branch
     runs-on: ubuntu-latest
     if: |
-      (contains(github.event_name, 'push')) &&
       (needs.get-branch.outputs.bName == '  main' && !(contains(github.ref_name, '-main'))) ||
-      (needs.get-branch.outputs.bName == '  feature1' && !(contains(github.ref_name, '-feature1')))
+      (needs.get-branch.outputs.bName == '  feature1' && !(contains(github.ref_name, '-feature1'))) ||
+      (needs.get-branch.outputs.bName == '  feature2' && !(contains(github.ref_name, '-feature2')))
     steps:
       - name: Message
         run: |
@@ -129,16 +129,10 @@ jobs:
     - name: 'Another example step'
       run: echo " Refreshing- ${{ steps.parameter.outputs.value }} "
 
-
-
-# If tests are a success - update last working commit on param store
-# Else
-  # Grab the latest commit from param store
-  # Call workflow again
-  # Refresh with this last working commit 
-# _______________________________________________________________________
-  get-latest-stable-commit:
+  feature2-refresh:
     runs-on: ubuntu-latest
+    needs: get-branch
+    if: ${{ contains(github.ref_name, 'feature2')  && needs.get-branch.outputs.bName == '  feature2'}}
     steps:
     - name: Configure AWS credentials
       id: aws-credentials
@@ -152,13 +146,11 @@ jobs:
       id: parameter
       uses: poad/get-aws-ssm-parameter@v1.0.0
       with: 
-        parameter-name: /stableCommit
+        parameter-name: /feature2Refresh
         aws-region: us-west-1
   
     - name: 'Another example step'
-      run: echo ${{ steps.parameter.outputs.value }}
+      run: echo " Refreshing- ${{ steps.parameter.outputs.value }} "
 
 
-# If tests failed and release event, delete the latest release
-# Should trigger workflow again since we are listening on this and rerun
 

@@ -5,3 +5,33 @@
     # get ssm and call deploy workflow with the latest tag as input
   # if release:
     # delete the previous release
+
+
+
+
+# If tests are a success - update last working commit on param store
+# Else
+  # Grab the latest commit from param store
+  # Call workflow again
+  # Refresh with this last working commit 
+# _______________________________________________________________________
+  get-latest-stable-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure AWS credentials
+      id: aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    - name: 'Get value from Parameter Store'
+      id: parameter
+      uses: poad/get-aws-ssm-parameter@v1.0.0
+      with: 
+        parameter-name: /stableCommit
+        aws-region: us-west-1
+  
+    - name: 'Another example step'
+      run: echo ${{ steps.parameter.outputs.value }}
