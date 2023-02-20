@@ -83,7 +83,7 @@ jobs:
 # possible to add check-tag... job into the needs
   main-refresh:
     runs-on: ubuntu-latest
-    needs: [get-branch, check-tag-with-branch]
+    needs: get-branch
     if: ${{ contains(github.event_name, 'release') && needs.get-branch.outputs.bName == '  main' }}
     steps:
     - name: Configure AWS credentials
