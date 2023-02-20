@@ -25,4 +25,4 @@ jobs:
     steps:
       - name: Debug output
         run: |
-          echo "${{ inputs.latest-commit }}"
+          echo "${{ inputs.last-commit }}"
