@@ -52,6 +52,7 @@ jobs:
           exit 1
   debug:
     needs: [get-branch, context-of-event]
+    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
