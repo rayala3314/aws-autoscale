@@ -76,7 +76,7 @@ jobs:
     needs: get-branch
     runs-on: ubuntu-latest
     if: |
-      (needs.get-branch.outputs.bName == '  feature1' && (contains(github.event_name, release'))) ||
+      (needs.get-branch.outputs.bName == '  feature1' && (contains(github.event_name, 'release'))) ||
       (needs.get-branch.outputs.bName == '  feature2' && (contains(github.event_name, 'release')))
     steps:
       - name: Message
