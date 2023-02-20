@@ -1,3 +1,12 @@
+# If tag push:
+  # Check that branching is correct
+  # If not error out
+  # else run autoscale refresh to that environment
+# If release created:
+  # Check if tag contains prod
+  # If not error out
+  # if yes check that tag is on correct branch deploy changes
+
 name: Deploy Changes
 on:
   push:
