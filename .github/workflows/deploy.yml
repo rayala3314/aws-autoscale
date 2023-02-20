@@ -1,0 +1,170 @@
+# If tag push:
+  # Check that branching is correct
+  # If not error out
+  # else run autoscale refresh to that environment
+# If release created:
+  # Check if tag contains prod
+  # If not error out
+  # if yes check that tag is on correct branch deploy changess
+
+name: Deploy Changes
+on:
+  push:
+    tags:
+      - 'v*.*.*-feature1' # Dev
+      - 'v*.*.*-feature2' # Stage
+
+  release:
+    types: 
+      - created
+jobs:
+# Get the latest Tag's branch and store into variable 
+  get-branch:
+    runs-on: ubuntu-latest
+    outputs: 
+      bName: ${{steps.branch-name.outputs.branchN}}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Get Branch From Tag
+        id: branch-name
+        run: |
+          tag=${{github.ref_name}}
+          raw=$(git branch -r --contains ${{ github.ref }})
+          branch=${raw/origin\/}
+          echo "branchN=$branch" >> $GITHUB_OUTPUT
+          echo "Branch is $branch"
+          tagStripped=${tag/v1\/}
+          echo "Tag is $tag"
+          echo "Tag Stripped is $tagStripped"
+          echo "Event that triggered it is ${{github.event_name}}"
+          echo "Ref name is ${{github.ref}}"
+        
+  context-of-event:
+    needs: get-branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        if: ${{ !(contains(github.ref, 'main')) }}
+        run: |
+          echo "${{ toJson(github.ref) }}"
+          exit 1
+  debug:
+    needs: [get-branch, context-of-event]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        run: |
+          echo "${{ toJson(needs.get-branch) }}"
+        
+
+# Check that tag is on correct branch
+  check-tag-with-branch:
+    needs: get-branch
+    runs-on: ubuntu-latest
+    # if: |
+    #   (needs.get-branch.outputs.bName == '  main' && !(contains(github.ref_name, '-main'))) ||
+    #   (needs.get-branch.outputs.bName == '  feature1' && !(contains(github.ref_name, '-feature1'))) ||
+    #   (needs.get-branch.outputs.bName == '  feature2' && !(contains(github.ref_name, '-feature2')))
+    steps:
+      - name: check dev
+        if: (needs.get-branch.outputs.bName == '  feature1' && !(contains(github.ref_name, '-feature1')))
+        run: |
+          echo "Changes not deployed!!"
+          echo "${{github.ref_name}} does not belong with${{needs.get-branch.outputs.bName}} branch!"
+          exit 1
+      - name: check stage
+        if: (needs.get-branch.outputs.bName == '  feature2' && !(contains(github.ref_name, '-feature2')))
+        run: |
+          echo "Changes not deployed!!"
+          echo "${{github.ref_name}} does not belong with${{needs.get-branch.outputs.bName}} branch!"
+          exit 1
+      - name: check prod
+        if: (needs.get-branch.outputs.bName == '  main' && !(contains(github.ref_name, '-main')))
+        run: |
+          echo "Changes not deployed!!"
+          echo "${{github.ref_name}} does not belong with${{needs.get-branch.outputs.bName}} branch!"
+          exit 1
+# Depending on what branch do an autoscale refresh to that environment,
+# If brannch = stage
+  # Refresh to stage environment
+# If branch = develop
+  # Refresh to Develop
+# If branch = main
+  # Refresh to Production  
+# ___________________________________________________________________
+
+# possible to add check-tag... job into the needss
+  main-refresh:
+    runs-on: ubuntu-latest
+    needs: [get-branch, check-tag-with-branch]
+    if: ${{ contains(github.event_name, 'release') && needs.get-branch.outputs.bName == '  main' }}
+    steps:
+    - name: Configure AWS credentials
+      id: aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    - name: 'Get value from Parameter Store'
+      id: parameter
+      uses: poad/get-aws-ssm-parameter@v1.0.0
+      with: 
+        parameter-name: /mainRefresh
+        aws-region: us-west-1
+  
+    - name: 'Another example step'
+      run: echo " Refreshing- ${{ steps.parameter.outputs.value }} "
+
+  feature1-refresh:
+    runs-on: ubuntu-latest
+    needs: [get-branch, check-tag-with-branch]
+    if: ${{ contains(github.ref_name, 'feature1')  && needs.get-branch.outputs.bName == '  feature1'}}
+    steps:
+    - name: Configure AWS credentials
+      id: aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    - name: 'Get value from Parameter Store'
+      id: parameter
+      uses: poad/get-aws-ssm-parameter@v1.0.0
+      with: 
+        parameter-name: /featureRefresh
+        aws-region: us-west-1
+  
+    - name: 'Another example step'
+      run: echo " Refreshing- ${{ steps.parameter.outputs.value }} "
+
+  feature2-refresh:
+    runs-on: ubuntu-latest
+    needs: [get-branch, check-tag-with-branch]
+    if: ${{ contains(github.ref_name, 'feature2')  && needs.get-branch.outputs.bName == '  feature2'}}
+    steps:
+    - name: Configure AWS credentials
+      id: aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    - name: 'Get value from Parameter Store'
+      id: parameter
+      uses: poad/get-aws-ssm-parameter@v1.0.0
+      with: 
+        parameter-name: /feature2Refresh
+        aws-region: us-west-1
+  
+    - name: 'Another example step'
+      run: echo " Refreshing- ${{ steps.parameter.outputs.value }} "
+
+
+  # run-tests:
+  #   uses: rayala3314/aws-autoscale/.github/workflows/run_tests.yml@main
