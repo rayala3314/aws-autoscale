@@ -72,6 +72,18 @@ jobs:
           echo "${{github.ref_name}} does not belong with${{needs.gtTB.outputs.bName}} branch!"
           exit 1
 # If tag is on prod exit with no error code and do the release event handling
+  check-release-from-branch:
+    needs: get-branch
+    runs-on: ubuntu-latest
+    if: |
+      (needs.get-branch.outputs.bName == '  feature1' && (contains(github.event_name, release'))) ||
+      (needs.get-branch.outputs.bName == '  feature2' && (contains(github.event_name, 'release')))
+    steps:
+      - name: Message
+        run: |
+          echo "Changes not deployed!!"
+          echo "Release does not belong with${{needs.gtTB.outputs.bName}} branch!"
+          exit 1
 
 
 # Depending on what branch do an autoscale refresh to that environment,
@@ -87,7 +99,7 @@ jobs:
   main-refresh:
     runs-on: ubuntu-latest
     needs: get-branch
-    if: ${{ contains(github.ref_name, 'main') && needs.get-branch.outputs.bName == '  main' }}
+    if: ${{ contains(github.event_name, 'release') && needs.get-branch.outputs.bName == '  main' }}
     steps:
     - name: Configure AWS credentials
       id: aws-credentials
