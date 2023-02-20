@@ -69,7 +69,7 @@ jobs:
       - name: Message
         run: |
           echo "Changes not deployed!!"
-          echo "${{github.ref_name}} does not belong with${{needs.gtTB.outputs.bName}} branch!"
+          echo "${{github.ref_name}} does not belong with ${{needs.get-branch.outputs.bName}} branch!"
           exit 1
 # Depending on what branch do an autoscale refresh to that environment,
 # If brannch = stage
