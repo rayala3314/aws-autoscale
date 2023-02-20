@@ -62,7 +62,7 @@ jobs:
     needs: get-branch
     runs-on: ubuntu-latest
     if: |
-      (needs.get-branch.outputs.bName == '  main' && !(contains(github.ref_name, '-main'))) ||
+      ((contains(github.event_name, 'release')) && needs.get-branch.outputs.bName == '  main' && !(contains(github.ref_name, '-main'))) ||
       (needs.get-branch.outputs.bName == '  feature1' && !(contains(github.ref_name, '-feature1'))) ||
       (needs.get-branch.outputs.bName == '  feature2' && !(contains(github.ref_name, '-feature2')))
     steps:
