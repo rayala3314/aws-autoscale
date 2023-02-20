@@ -40,6 +40,7 @@ jobs:
           echo "Tag Stripped is $tagStripped"
           echo "Event that triggered it is ${{github.event_name}}"
           echo "Ref name is ${{github.ref_name}}"
+          echo "Ref is ${{github.ref}}"
 
 
 # Check that tag is on correct branch
