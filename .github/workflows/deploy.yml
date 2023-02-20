@@ -104,7 +104,7 @@ jobs:
       run: echo " Refreshing- ${{ steps.parameter.outputs.value }} "
 
     - name: Update Tag
-      run: aws autoscaling create-or-update-tags --tags ResourceId=test-autoscaling, ResourceType=auto-scaling-group,Key=GithubTag, Value=${{github.ref_name}}, PropagateAtLaunch=true ResourceId=,ResourceType=,Key=,Value=,PropagateAtLaunch=
+      run: aws autoscaling create-or-update-tags --tags ResourceId=test-autoscaling,ResourceType=auto-scaling-group,Key=GithubTag, Value=${{github.ref_name}}, PropagateAtLaunch=true ResourceId=,ResourceType=,Key=,Value=,PropagateAtLaunch=
 
   feature1-refresh:
     runs-on: ubuntu-latest
