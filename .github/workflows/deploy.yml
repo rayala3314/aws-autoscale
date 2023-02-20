@@ -53,9 +53,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
-        if: contains(github.ref, 'feature5')
+        if: contains(github.ref, 'maint')
         run: |
           echo "${{ toJson(github.ref) }}"
+          exit 1
         
 
 # Check that tag is on correct branch
