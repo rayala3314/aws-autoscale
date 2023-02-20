@@ -46,13 +46,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
-        if: ${{ contains(github.ref, 'main') }}
+        if: ${{ !(contains(github.ref, 'main')) }}
         run: |
           echo "${{ toJson(github.ref) }}"
           exit 1
   debug:
     needs: [get-branch, context-of-event]
-    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
