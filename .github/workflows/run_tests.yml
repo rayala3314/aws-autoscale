@@ -47,5 +47,5 @@ jobs:
     needs: get-latest-stable-commit
     uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main
     with:
-      commit-hash: ${{ needs.get-latest-commit.outputs.last-commit }}
+      last-commit: ${{ needs.get-latest-commit.outputs.last-commit }}
 
