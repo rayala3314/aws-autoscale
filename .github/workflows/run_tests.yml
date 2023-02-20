@@ -22,6 +22,8 @@ on:
 jobs:
   get-latest-stable-commit:
     runs-on: ubuntu-latest
+    outputs:
+      last-commit: ${{steps.parameter.outputs.value}}
     steps:
     - name: Configure AWS credentials
       id: aws-credentials
@@ -45,5 +47,5 @@ jobs:
     needs: get-latest-stable-commit
     uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main
     with:
-      commit-hash: ${{steps.parameter.outputs.value}}
+      commit-hash: ${{ needs.get-latest-commit.outputs.last-commit }}
 
