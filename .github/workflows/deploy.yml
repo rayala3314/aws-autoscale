@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
-        if: needs.get-branch.outputs.bName == '  main'
+        if: ${{ contains(github.ref, 'main') }}
         run: |
           echo "${{ toJson(github.ref) }}"
           exit 1
