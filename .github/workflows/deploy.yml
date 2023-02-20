@@ -54,7 +54,7 @@ jobs:
     steps:
       - name: Debug output
         run: |
-          echo "${{ toJson(github.event_name) }}"
+          echo "${{ toJson(github.ref) }}"
         
 
 # Check that tag is on correct branch
