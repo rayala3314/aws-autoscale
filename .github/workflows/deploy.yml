@@ -5,7 +5,7 @@
 # If release created:
   # Check if tag contains prod
   # If not error out
-  # if yes check that tag is on correct branch deploy changes
+  # if yes check that tag is on correct branch deploy changess
 
 name: Deploy Changes
 on:
@@ -39,8 +39,8 @@ jobs:
           echo "Tag is $tag"
           echo "Tag Stripped is $tagStripped"
           echo "Event that triggered it is ${{github.event_name}}"
-          echo "Ref name is ${{github.ref}}"
-        
+          echo "Ref name is ${{github.ref_name}}"
+
 
 # Check that tag is on correct branch
   check-tag-with-branch:
@@ -151,3 +151,4 @@ jobs:
 
   # run-tests:
   #   uses: rayala3314/aws-autoscale/.github/workflows/run_tests.yml@main
+  # tests
