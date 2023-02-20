@@ -9,7 +9,7 @@ name: Rollback
 on:
   workflow_call:
     inputs:
-      latest-commit:
+      last-commit:
         description: 'The latest stable commit'
         required: true
         type: string
