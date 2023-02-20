@@ -166,4 +166,5 @@ jobs:
       run: echo " Refreshing- ${{ steps.parameter.outputs.value }} "
 
 
-
+  run-tests:
+    uses: rayala3314/aws-autoscale/.github/workflows/run_tests.yml@main

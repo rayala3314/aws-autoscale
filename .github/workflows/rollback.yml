@@ -8,6 +8,11 @@
 name: Rollback
 on:
   workflow_call:
+    inputs:
+      latest-commit:
+        description: 'The latest stable commit'
+        required: true
+        type: string
   release:
     types: 
       - deleted
@@ -15,23 +20,9 @@ on:
 # - Check to see if you can run jobs depending on trigger event
 jobs:
 # Get the latest Tag's branch and store into variable 
-  get-branch:
+  debug:
     runs-on: ubuntu-latest
-    outputs: 
-      bName: ${{steps.branch-name.outputs.branchN}}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Get Branch From Tag
-        id: branch-name
+      - name: Debug output
         run: |
-          tag=${{github.ref_name}}
-          raw=$(git branch -r --contains ${{ github.ref }})
-          branch=${raw/origin\/}
-          echo "branchN=$branch" >> $GITHUB_OUTPUT
-          echo "Branch is $branch"
-          tagStripped=${tag/v1\/}
-          echo "Tag is $tag"
-          echo "Tag Stripped is $tagStripped"
-          echo "Event that triggered it is ${{github.event_name}}"
+          echo "${{ inputs.latest-commit }}"

@@ -15,6 +15,11 @@
   # Call workflow again
   # Refresh with this last working commit 
 # _______________________________________________________________________
+name: Run Tests
+on:
+  workflow_call:
+
+jobs:
   get-latest-stable-commit:
     runs-on: ubuntu-latest
     steps:
@@ -35,3 +40,10 @@
   
     - name: 'Another example step'
       run: echo ${{ steps.parameter.outputs.value }}
+
+  rollback-environment:
+    needs: get-latest-stable-commit
+    uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main
+    with:
+      commit-hash: ${{steps.parameter.outputs.value}}
+
