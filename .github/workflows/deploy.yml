@@ -40,13 +40,6 @@ jobs:
           echo "Tag Stripped is $tagStripped"
           echo "Event that triggered it is ${{github.event_name}}"
           echo "Ref name is ${{github.ref_name}}"
-  debug:
-    needs: get-branch
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug output
-        run: |
-          echo "${{ toJson(needs.get-branch) }}"
         
   context-of-event:
     needs: get-branch
@@ -57,6 +50,13 @@ jobs:
         run: |
           echo "${{ toJson(github.ref) }}"
           exit 1
+  debug:
+    needs: [get-branch, context-of-event]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        run: |
+          echo "${{ toJson(needs.get-branch) }}"
         
 
 # Check that tag is on correct branch
