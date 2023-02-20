@@ -39,7 +39,7 @@ jobs:
           echo "Tag is $tag"
           echo "Tag Stripped is $tagStripped"
           echo "Event that triggered it is ${{github.event_name}}"
-          echo "Ref name is ${{github.ref}}"
+          echo "Ref name is ${{github.ref_name}}"
         
   context-of-event:
     needs: get-branch
