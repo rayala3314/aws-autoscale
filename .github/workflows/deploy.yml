@@ -39,14 +39,14 @@ jobs:
           echo "Tag is $tag"
           echo "Tag Stripped is $tagStripped"
           echo "Event that triggered it is ${{github.event_name}}"
-          echo "Ref name is ${{github.ref_name}}"
+          echo "Ref name is ${{github.ref}}"
         
   context-of-event:
     needs: get-branch
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
-        if: contains(github.ref, 'main')
+        if: needs.get-branch.outputs.bName == '  main'
         run: |
           echo "${{ toJson(github.ref) }}"
           exit 1
