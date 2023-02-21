@@ -65,7 +65,6 @@ jobs:
           echo "${{github.ref_name}} does not belong with${{needs.get-branch.outputs.bName}} branch!"
           exit 1
       - name: check prod
-        id: branch-check
         if: (needs.get-branch.outputs.bName == '  main' && !(contains(github.ref_name, '-main')))
         run: |
           echo "Changes not deployed!!"
@@ -75,7 +74,7 @@ jobs:
   slackNotification:
     name: Slack Notification
     runs-on: ubuntu-latest
-    if: check-tag-with-branch.steps.branch-check.outcome != 'success'
+    if: ${{ contains(needs.check-tag-with-branch.result, 'failure') }}
     steps:
       - uses: actions/checkout@v2
       - name: Branch Check Failed
