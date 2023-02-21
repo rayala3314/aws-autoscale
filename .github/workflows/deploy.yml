@@ -75,7 +75,7 @@ jobs:
   slackNotification:
     name: Slack Notification
     runs-on: ubuntu-latest
-    if: steps.branch-check.outcome != 'success'
+    if: check-tag-with-branch.steps.branch-check.outcome != 'success'
     steps:
       - uses: actions/checkout@v2
       - name: Branch Check Failed
