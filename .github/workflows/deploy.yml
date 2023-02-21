@@ -74,7 +74,7 @@ jobs:
   slackNotification:
     name: Slack Notification
     runs-on: ubuntu-latest
-    needs: check-tag-with-branch
+    needs: [check-tag-with-branch, get-branch]
     if: failure()
     steps:
       - uses: actions/checkout@v2
@@ -86,7 +86,7 @@ jobs:
           SLACK_COLOR: ${{ job.status }} 
           SLACK_USERNAME: CantuaCoders
           SLACK_TITLE: Message
-          SLACK_MESSAGE: ":warning: ${{ github.ref_name}} does not match ${{needs.get-branch.outputs.bName}} :warning:"
+          SLACK_MESSAGE: ":bangbang: ${{ github.ref_name}} does not match ${{needs.get-branch.outputs.bName}} :bangbang:"
 # Depending on what branch do an autoscale refresh to that environment,
 # If brannch = stage
   # Refresh to stage environment
