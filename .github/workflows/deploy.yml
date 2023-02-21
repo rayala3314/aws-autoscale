@@ -43,7 +43,7 @@ jobs:
           echo "Ref is ${{github.ref}}"
 
 
-# Check that tag is on correct branch
+# Check that tag is on correct branch(s)
   check-tag-with-branch:
     needs: get-branch
     runs-on: ubuntu-latest
