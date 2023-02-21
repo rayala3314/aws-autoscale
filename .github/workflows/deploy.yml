@@ -72,13 +72,13 @@ jobs:
           echo "${{github.ref_name}} does not belong with${{needs.get-branch.outputs.bName}} branch!"
           exit 1
 
-   slackNotification:
+  slackNotification:
     name: Slack Notification
     runs-on: ubuntu-latest
     if: steps.branch-check.outcome != 'success'
     steps:
       - uses: actions/checkout@v2
-      - name: Migrations Modified
+      - name: Branch Check Failed
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
