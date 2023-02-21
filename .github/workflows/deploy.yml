@@ -75,7 +75,7 @@ jobs:
     name: Slack Notification
     runs-on: ubuntu-latest
     needs: check-tag-with-branch
-    if: ${{ contains(needs.check-tag-with-branch.result, 'failure') }}
+    if: failure()
     steps:
       - uses: actions/checkout@v2
       - name: Branch Check Failed
