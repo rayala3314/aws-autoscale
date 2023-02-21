@@ -70,7 +70,7 @@ jobs:
   slackNotification:
     name: Slack Notification
     runs-on: ubuntu-latest
-    needs: check-tag-with-branch
+    needs: [check-tag-with-branch, get-branch]
     if: failure()
     steps:
       - uses: actions/checkout@v2
