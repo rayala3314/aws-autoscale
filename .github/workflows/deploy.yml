@@ -47,7 +47,6 @@ jobs:
   check-tag-with-branch:
     needs: get-branch
     runs-on: ubuntu-latest
-    id: branch-check
     # if: |
     #   (needs.get-branch.outputs.bName == '  main' && !(contains(github.ref_name, '-main'))) ||
     #   (needs.get-branch.outputs.bName == '  feature1' && !(contains(github.ref_name, '-feature1'))) ||
@@ -66,6 +65,7 @@ jobs:
           echo "${{github.ref_name}} does not belong with${{needs.get-branch.outputs.bName}} branch!"
           exit 1
       - name: check prod
+        id: branch-check
         if: (needs.get-branch.outputs.bName == '  main' && !(contains(github.ref_name, '-main')))
         run: |
           echo "Changes not deployed!!"
