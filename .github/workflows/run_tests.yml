@@ -17,7 +17,7 @@
 # _______________________________________________________________________
 name: Run Tests
 on:
-  workflow_call:
+  workflow_dispatch:
 
 jobs:
   get-latest-stable-commit:
