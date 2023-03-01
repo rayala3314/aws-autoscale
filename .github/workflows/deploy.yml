@@ -64,15 +64,13 @@ jobs:
       - name: Github Commit Hash
         run: |
           echo "${{ github.sha }}"
-          calculatedSha=$(git rev-parse --short ${{ github.sha }})
-          echo "Short hash is : $calculatedSha"
   tag-the-commit:
     runs-on: ubuntu-latest
     steps:
     - name: Tag commit
       uses: tvdias/github-tagger@v0.0.1
       with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        repo-token: "${{ secrets.GHU_TOKEN }}"
         tag: "${{github.sha}}-dev"
         commit-sha: ${{github.sha}}
         
