@@ -63,7 +63,7 @@ jobs:
     steps:
       - name: Github Commit Hash
         run: |
-          echo "${{ github.sha::7 }}"
+          echo "${{ github.sha }}"
           calculatedSha=$(git rev-parse --short ${{ github.sha }})
           echo "Short hash is : $calculatedSha"
         
