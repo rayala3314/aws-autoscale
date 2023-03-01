@@ -72,7 +72,7 @@ jobs:
     - name: Tag commit
       uses: tvdias/github-tagger@v0.0.1
       with:
-        repo-token: "${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}"
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
         tag: "${{github.sha}}-dev"
         commit-sha: ${{github.sha}}
         
