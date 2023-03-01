@@ -66,16 +66,21 @@ jobs:
           echo "${{ github.sha }}"
           calculatedSha=$(git rev-parse --short ${{ github.sha }})
           echo "Short hash is : $calculatedSha"
+  tag-the-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Tag commit
+      uses: tvdias/github-tagger@v0.0.1
+      with:
+        repo-token: "${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}"
+        tag: "${{github.sha}}-dev"
+        commit-sha: ${{github.sha}}
         
 
 # Check that tag is on correct branch
   check-tag-with-branch:
     needs: get-branch
     runs-on: ubuntu-latest
-    # if: |
-    #   (needs.get-branch.outputs.bName == '  main' && !(contains(github.ref_name, '-main'))) ||
-    #   (needs.get-branch.outputs.bName == '  feature1' && !(contains(github.ref_name, '-feature1'))) ||
-    #   (needs.get-branch.outputs.bName == '  feature2' && !(contains(github.ref_name, '-feature2')))
     steps:
       - name: check dev
         if: (needs.get-branch.outputs.bName == '  feature1' && !(contains(github.ref_name, '-feature1')))
