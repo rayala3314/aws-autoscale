@@ -64,15 +64,16 @@ jobs:
       - name: Github Commit Hash
         run: |
           echo "${{ github.sha }}"
-  tag-the-commit:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Tag commit
-      uses: tvdias/github-tagger@v0.0.1
-      with:
-        repo-token: "${{ secrets.GHU_TOKEN }}"
-        tag: "${{github.sha}}-dev"
-        commit-sha: ${{github.sha}}
+          echo "${{ github.ref_name }}"
+  # tag-the-commit:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Tag commit
+  #     uses: tvdias/github-tagger@v0.0.1
+  #     with:
+  #       repo-token: "${{ secrets.GHU_TOKEN }}"
+  #       tag: "${{github.sha}}-dev"
+  #       commit-sha: ${{github.sha}}
         
 
 # Check that tag is on correct branch
