@@ -63,7 +63,7 @@ jobs:
     steps:
       - name: Github Commit Hash
         run: |
-          echo "${{ GITHUB_SHA:0:7 }}"
+          echo "${{ GITHUB_SHA }}"
         
 
 # Check that tag is on correct branch
