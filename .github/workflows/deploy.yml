@@ -64,6 +64,8 @@ jobs:
       - name: Github Commit Hash
         run: |
           echo "${{ github.sha::7 }}"
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "Short hash is : $calculatedSha"
         
 
 # Check that tag is on correct branch
