@@ -175,6 +175,6 @@ jobs:
     if: failure()
     uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@feature2
     with:
-      last-commit: ${{ needs.get-latest-commit.outputs.last-commit-stage }}
+      last-commit: ${{ needs.get-latest-stable-commit.outputs.last-commit-stage }}
       # - name: Rolling back Production
       #   uses:
