@@ -172,7 +172,7 @@ jobs:
   rollback-environment:
     name: Rollback Environment
     runs-on: ubuntu-latest
-    needs: [get-latest-commit, feature1-tests, feature2-tests, main-tests]
+    needs: [get-latest-stable-commit, feature1-tests, feature2-tests, main-tests]
     if: failure()
     steps:
       - name: Rolling back Develop or Stage
