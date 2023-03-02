@@ -1,0 +1,183 @@
+# Will trigger the same as the deploy changes
+name: Run Tests
+on:
+  push:
+    branches:
+      - main     # Production
+      - feature1 # Develop
+      - feature2 # Stage
+
+jobs:
+# Run Internal Remote tests
+  feature1-tests:
+    if: github.ref_name == 'feature1'
+    name: Run Internal Remote Tests on Develop
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test Develop
+      run: |
+        echo "Running Develop Tests......."
+
+
+  feature2-tests:
+    if: github.ref_name == 'feature2'
+    name: Run Internal Remote Tests on Stage
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test Stage
+      run: |
+        echo "Running Stage Tests......."
+        exit 1
+
+
+
+  main-tests:
+    if: github.ref_name == 'main'
+    name: Run Internal Remote Tests on Main
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test Production
+      run: |
+        echo "Running Prodcution Tests......"
+
+  # aws-cli:
+  #     name: Configure AWS credentials
+  #     runs-on: ubuntu-latest
+  #     id: aws-credentials
+  #     uses: aws-actions/configure-aws-credentials@v1
+  #     with:
+  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       aws-region: us-west-1
+
+
+# Pull the latest stable commit that lives on parameter store
+  get-latest-stable-commit:
+    runs-on: ubuntu-latest
+    outputs:
+      last-commit-develop: ${{steps.parameter-develop.outputs.value}}
+      last-commit-stage: ${{steps.parameter-stage.outputs.value}}
+
+    steps:
+    - name: Configure AWS credentials
+      id: aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    - name: 'Get Develop Value from Parameter Store'
+      if: github.ref_name == 'feature1'
+      id: parameter-develop
+      uses: poad/get-aws-ssm-parameter@v1.0.0
+      with: 
+        parameter-name: /developStable
+        aws-region: us-west-1
+    - name: 'Print out parameter'
+      run: echo ${{ steps.parameter-develop.outputs.value }}
+
+    - name: 'Get Stage Value from Parameter Store'
+      if: github.ref_name == 'feature2'
+      id: parameter-stage
+      uses: poad/get-aws-ssm-parameter@v1.0.0
+      with: 
+        parameter-name: /stageStable
+        aws-region: us-west-1
+    - name: 'Print out parameter'
+      run: echo ${{ steps.parameter-stage.outputs.value }}
+    
+# If tests pass and branch is develop or stage, tag the commit and update the tag on parameter store
+  tag-the-commit:
+    runs-on: ubuntu-latest
+    needs: [feature1-tests, feature2-tests]
+    if: success()
+    steps:
+    - name: Configure AWS credentials
+      id: aws-credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    - name: Tag Develop commit
+      if: github.ref_name == 'feature1'
+      uses: tvdias/github-tagger@v0.0.1
+      with:
+        repo-token: "${{ secrets.GHU_TOKEN }}"
+        tag: "${{github.sha}}-develop"
+        commit-sha: ${{github.sha}}
+    
+    - name: Update Parameter Store Develop secret
+      if: github.ref_name == 'feature1'
+      uses: joshghent/aws-ssm-parameter-store@v2
+      with:
+        ssm-path: "/developStable"
+        ssm-value: ${{github.sha}}-develop
+        aws-region: us-west-1
+        ssm-value-type: "String"
+
+
+    - name: Tag Stage commit
+      if: github.ref_name == 'feature2'
+      uses: tvdias/github-tagger@v0.0.1
+      with:
+        repo-token: "${{ secrets.GHU_TOKEN }}"
+        tag: "${{github.sha}}-stage"
+        commit-sha: ${{github.sha}}
+
+    - name: Update Parameter Store Develop secret
+      if: github.ref_name == 'feature2'
+      uses: joshghent/aws-ssm-parameter-store@v2
+      with:
+        ssm-path: "/stageStable"
+        ssm-value: ${{github.sha}}-stage
+        aws-region: us-west-1
+        ssm-value-type: "String"
+
+# If tests pass and branch is main, tag the commit and create a release
+  release:
+    runs-on: ubuntu-latest
+    needs: main-tests
+    if: ${{ github.ref_name }} == 'main' && success()
+    steps:
+      - uses: avakar/tag-and-release@v1
+        with:
+          tag_name: ${{ github.sha }}-production
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHU_TOKEN }}
+
+
+# If tests failed and branch is Develop or Stage, call the rollback workflow passing in the tag from parameter store as input
+# Update autoscaling group tag to re run migrations
+# -------------------------------
+  # rollback-environment:
+  #   needs: get-latest-stable-commit
+  #   uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main
+  #   with:
+  #     last-commit: ${{ needs.get-latest-commit.outputs.last-commit }}
+
+
+# If tests failed and branch is main, call the rollback workflow passing with the latest release
+# Update autoscaling group tag to re run migrations
+# -------------------------------------------
+  # rollback-environment:
+  #   needs: get-latest-stable-commit
+  #   uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main
+  #   with:
+  #     last-commit: ${{ needs.get-latest-commit.outputs.last-commit }}
+
+
+  rollback-environment:
+    name: Rollback Environment
+    runs-on: ubuntu-latest
+    needs: [get-latest-stable-commit, feature1-tests, feature2-tests, main-tests]
+    if: failure()
+    steps:
+      - name: Rolling back Develop or Stage
+        uses: ./.github/workflows/rollback.yml
+        with:
+          last-commit: ${{ needs.get-latest-commit.outputs.last-commit-develop }}
+      # - name: Rolling back Production
+      #   uses:

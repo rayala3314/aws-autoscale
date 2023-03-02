@@ -1,0 +1,25 @@
+# Check github event
+  # If workflow call:
+    # Check what branch it is from the tag
+    # Rollback that environment
+  # If release deletion:
+    # run rollback on main
+  
+name: Rollback
+on:
+  workflow_call:
+    inputs:
+      last-commit:
+        description: 'The latest stable commit'
+        required: true
+        type: string
+# TODO: 
+# - Check to see if you can run jobs depending on trigger event
+jobs:
+# Get the latest Tag's branch and store into variable 
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        run: |
+          echo "${{ inputs.last-commit }}"
