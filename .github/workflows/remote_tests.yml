@@ -55,7 +55,9 @@ jobs:
   get-latest-stable-commit:
     runs-on: ubuntu-latest
     outputs:
-      last-commit: ${{steps.parameter.outputs.value}}
+      last-commit-develop: ${{steps.parameter-develop.outputs.value}}
+      last-commit-stage: ${{steps.parameter-stage.outputs.value}}
+
     steps:
     - name: Configure AWS credentials
       id: aws-credentials
@@ -67,22 +69,23 @@ jobs:
 
     - name: 'Get Develop Value from Parameter Store'
       if: github.ref_name == 'feature1'
-      id: parameter
+      id: parameter-develop
       uses: poad/get-aws-ssm-parameter@v1.0.0
       with: 
         parameter-name: /developStable
         aws-region: us-west-1
     - name: 'Print out parameter'
-      run: echo ${{ steps.parameter.outputs.value }}
+      run: echo ${{ steps.parameter-develop.outputs.value }}
+
     - name: 'Get Stage Value from Parameter Store'
       if: github.ref_name == 'feature2'
-      id: parameter
+      id: parameter-stage
       uses: poad/get-aws-ssm-parameter@v1.0.0
       with: 
         parameter-name: /stageStable
         aws-region: us-west-1
     - name: 'Print out parameter'
-      run: echo ${{ steps.parameter.outputs.value }}
+      run: echo ${{ steps.parameter-stage.outputs.value }}
     
 # If tests pass and branch is develop or stage, tag the commit and update the tag on parameter store
   tag-the-commit:
@@ -173,8 +176,8 @@ jobs:
     if: failure()
     steps:
       - name: Rolling back Develop or Stage
-        uses: ./.github/workflows//rollback.yml
+        uses: ./.github/workflows/rollback.yml
         with:
-          last-commit: ${{ needs.get-latest-commit.outputs.last-commit }}
+          last-commit: ${{ needs.get-latest-commit.outputs.last-commit-develop }}
       # - name: Rolling back Production
       #   uses:
