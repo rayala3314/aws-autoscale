@@ -171,12 +171,11 @@ jobs:
 
   rollback-environment:
     name: Rollback Environment
-    uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@feature2
     runs-on: ubuntu-latest
     needs: [get-latest-stable-commit, feature1-tests, feature2-tests, main-tests]
     if: failure()
     steps:
-      - name: Rolling back Develop or Stage
+        uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@feature2
         with:
           last-commit: ${{ needs.get-latest-commit.outputs.last-commit-develop }}
       # - name: Rolling back Production
