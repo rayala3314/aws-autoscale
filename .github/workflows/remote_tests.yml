@@ -89,8 +89,8 @@ jobs:
 # If tests pass and branch is develop or stage, tag the commit and update the tag on parameter store
   tag-the-commit:
     runs-on: ubuntu-latest
-    needs: [feature1-tests, feature2-tests]
-    if: contains(needs.feature1-tests.result, 'success') || contains(needs.feature2-tests.result, 'success')
+    needs: feature2-tests
+    if: success()
     steps:
     - name: Configure AWS credentials
       id: aws-credentials
