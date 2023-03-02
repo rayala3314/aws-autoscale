@@ -169,10 +169,18 @@ jobs:
   #     last-commit: ${{ needs.get-latest-commit.outputs.last-commit }}
 
 
-  rollback-environment:
-    name: Rollback Environment
-    needs: [get-latest-stable-commit, feature1-tests, feature2-tests, main-tests]
-    if: failure()
+  rollback-environment-develop:
+    name: Rollback Develop Environment
+    needs: [get-latest-stable-commit, feature1-tests]
+    if: github.ref_name == 'feature1' && failure()
+    uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@feature2
+    with:
+      last-commit: ${{ needs.get-latest-stable-commit.outputs.last-commit-develop }}
+
+  rollback-environment-stage:
+    name: Rollback Stage Environment
+    needs: [get-latest-stable-commit, feature2-tests]
+    if: github.ref_name == 'feature2' && failure()
     uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@feature2
     with:
       last-commit: ${{ needs.get-latest-stable-commit.outputs.last-commit-stage }}
