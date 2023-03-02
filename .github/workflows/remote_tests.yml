@@ -155,9 +155,8 @@ jobs:
     if: failure()
     steps:
       - name: Rolling back Develop or Stage
-
-        uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml
+        uses: ./.github/workflows//rollback.yml
         with:
           last-commit: ${{ needs.get-latest-commit.outputs.last-commit }}
-      - name: Rolling back Production
-        uses:
+      # - name: Rolling back Production
+      #   uses:
