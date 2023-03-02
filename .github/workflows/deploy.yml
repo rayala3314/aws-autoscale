@@ -65,6 +65,16 @@ jobs:
         run: |
           echo "${{ github.sha }}"
           echo "${{ github.ref_name }}"
+
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref_name }} == 'main'
+    steps:
+      - uses: avakar/tag-and-release@v1
+        with:
+          tag_name: ${{ github.sha }}-production
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHU_TOKEN }}
   # tag-the-commit:
   #   runs-on: ubuntu-latest
   #   steps:
