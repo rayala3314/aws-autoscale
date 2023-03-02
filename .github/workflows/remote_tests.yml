@@ -131,20 +131,22 @@ jobs:
 
 # If tests failed and branch is Develop or Stage, call the rollback workflow passing in the tag from parameter store as input
 # Update autoscaling group tag to re run migrations
-  rollback-environment:
-    needs: get-latest-stable-commit
-    uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main
-    with:
-      last-commit: ${{ needs.get-latest-commit.outputs.last-commit }}
+# -------------------------------
+  # rollback-environment:
+  #   needs: get-latest-stable-commit
+  #   uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main
+  #   with:
+  #     last-commit: ${{ needs.get-latest-commit.outputs.last-commit }}
 
 
 # If tests failed and branch is main, call the rollback workflow passing with the latest release
 # Update autoscaling group tag to re run migrations
-  rollback-environment:
-    needs: get-latest-stable-commit
-    uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main
-    with:
-      last-commit: ${{ needs.get-latest-commit.outputs.last-commit }}
+# -------------------------------------------
+  # rollback-environment:
+  #   needs: get-latest-stable-commit
+  #   uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main
+  #   with:
+  #     last-commit: ${{ needs.get-latest-commit.outputs.last-commit }}
 
 
   rollback-environment:
