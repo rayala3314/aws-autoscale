@@ -11,9 +11,9 @@ name: Deploy Changes
 on:
   push:
     branches:
-      - main
-      - feature1 # Dev
-      - feature2 # Stage
+      # - main
+      # - feature1 # Dev
+      # - feature2 # Stage
 
   release:
     types: 

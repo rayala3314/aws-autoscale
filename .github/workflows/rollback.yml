@@ -13,9 +13,6 @@ on:
         description: 'The latest stable commit'
         required: true
         type: string
-  release:
-    types: 
-      - deleted
 # TODO: 
 # - Check to see if you can run jobs depending on trigger event
 jobs:
