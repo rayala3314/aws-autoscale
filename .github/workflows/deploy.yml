@@ -8,16 +8,16 @@
   # if yes check that tag is on correct branch deploy changess
 
 name: Deploy Changes
-on:
-  push:
-    branches:
-      # - main
-      # - feature1 # Dev
-      # - feature2 # Stage
+# on:
+#   push:
+#     branches:
+#       # - main
+#       # - feature1 # Dev
+#       # - feature2 # Stage
 
-  release:
-    types: 
-      - created
+  # release:
+  #   types: 
+  #     - created
 jobs:
 # Get the latest Tag's branch and store into variable 
   get-branch:
