@@ -175,8 +175,8 @@ jobs:
     needs: [get-latest-stable-commit, feature1-tests, feature2-tests, main-tests]
     if: failure()
     steps:
-        uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main 
       - name: Rolling back Develop or Stage
+      - uses: rayala3314/aws-autoscale/.github/workflows/rollback.yml@main 
         with:
           last-commit: ${{ needs.get-latest-commit.outputs.last-commit-develop }}
       # - name: Rolling back Production
