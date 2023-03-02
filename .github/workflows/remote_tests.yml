@@ -110,7 +110,7 @@ jobs:
     
     - name: Update Parameter Store Develop secret
       if: github.ref_name == 'feature1'
-      uses: joshghent/aws-ssm-parameter-store@v2
+      uses: joshghent/aws-ssm-parameter-store@v2.2.0
       with:
         ssm-path: "/developStable"
         ssm-value: ${{github.sha}}-develop
@@ -128,7 +128,8 @@ jobs:
 
     - name: Update Parameter Store Develop secret
       if: github.ref_name == 'feature2'
-      uses: joshghent/aws-ssm-parameter-store@v2
+      uses: joshghent/aws-ssm-parameter-store@v2.2.0
+
       with:
         ssm-path: "/stageStable"
         ssm-value: ${{github.sha}}-stage
