@@ -24,7 +24,7 @@ jobs:
   create-snapshot:
     if: github.ref_name == 'main'
     needs: aws-cli
-    name: Snapshot of blue db
+    name: Snapshot of Blue db
     runs-on: ubuntu-latest
     steps:
     - name: Blue Snapshot
