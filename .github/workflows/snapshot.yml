@@ -25,14 +25,16 @@ jobs:
   create-snapshot:
     if: github.ref_name == 'main'
     needs: aws-cli
+    outputs:
+      snapID: ${{steps.id.outputs.snapshotID}}
     name: Snapshot of blue db
     runs-on: ubuntu-latest
     steps:
     - name: Blue Snapshot
+      id: snapshot-id
       run: |
-        DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test120ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
-        echo "DBSnap_ID=$DBSnap_ID" >> $GITHUB_ENV
-    - run: echo ${{ env.DBSnap_ID }}
+        DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test121ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
+        echo "snapshotID=$DBSnap_ID" >> $GITHUB_OUTPUT
   restore-from-snapshot:
     if: github.ref_name == 'main'
     needs: [aws-cli, create-snapshot]
@@ -40,4 +42,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Restoring from blue
-      run: aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier $DBSnap_ID
+      run: aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier ${{needs.create-snapshot.outputs.snapID}}
