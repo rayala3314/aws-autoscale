@@ -35,7 +35,7 @@ jobs:
     - run: echo ${{ env.DBSnap_ID }}
   restore-from-snapshot:
     if: github.ref_name == 'main'
-    needs: aws-cli, create-snapshot
+    needs: [aws-cli, create-snapshot]
     name: Restore from blue
     runs-on: ubuntu-latest
     steps:
