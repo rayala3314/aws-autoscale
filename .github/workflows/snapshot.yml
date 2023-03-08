@@ -29,8 +29,9 @@ jobs:
     steps:
     - name: Blue Snapshot
       run: |
-        DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test201ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
+        DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test291ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
         echo "DBSNAP_ID=$DBSnap_ID" >> $GITHUB_ENV
+    - run:
         echo "${{env.DBSNAP_ID}}"
   restore-from-snapshot:
     if: github.ref_name == 'main'
