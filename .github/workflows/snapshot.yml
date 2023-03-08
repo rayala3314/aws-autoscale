@@ -33,3 +33,11 @@ jobs:
         DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test3ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
         echo "DBSnap_ID=$DBSnap_ID" >> $GITHUB_ENV
     - run: echo ${{ env.DBSnap_ID }}
+  restore-from-snapshot:
+    if: github.ref_name == 'main'
+    needs: aws-cli, create-snapshot
+    name: Restore from blue
+    runs-on: ubuntu-latest
+    steps:
+    - name: Restoring from blue
+      run: aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier {env.DBSnap_ID}
