@@ -40,4 +40,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Restoring from blue
-      run: aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier {env.DBSnap_ID}
+      run: aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier ${{ env.DBSnap_ID }}
