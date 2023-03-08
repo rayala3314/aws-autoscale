@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Blue Snapshot
-      run: aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier GHsnapshot
+      run: |
         DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier testghsnapshot --query "DBSnapshot[*].[DBSnapshotIdentifier]" --output text)
         echo "DBSnap_ID=$DBSnap_ID" >> $GITHUB_ENV
     - run: echo ${{ env.DBSnap_ID }}
