@@ -1,11 +1,11 @@
 # Will trigger the same as the deploy changes
-name: Run Tests
-on:
-  push:
-    branches:
-      - main     # Production
-      - feature1 # Develop
-      - feature2 # Stage
+# name: Run Tests
+# on:
+#   push:
+#     branches:
+#       - main     # Production
+#       - feature1 # Develop
+#       - feature2 # Stage
 
 jobs:
 # Run Internal Remote tests
