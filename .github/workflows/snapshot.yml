@@ -7,7 +7,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: "us-west-1"
-  DBSnap_ID: ""
+  DBSNAP_ID: ""
 
 jobs:
 # Run Internal Remote tests
@@ -25,16 +25,13 @@ jobs:
   create-snapshot:
     if: github.ref_name == 'main'
     needs: aws-cli
-    outputs:
-      snapID: ${{steps.id.outputs.snapshotID}}
     name: Snapshot of blue db
     runs-on: ubuntu-latest
     steps:
     - name: Blue Snapshot
-      id: snapshot-id
       run: |
-        DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test121ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
-        echo "snapshotID=$DBSnap_ID" >> $GITHUB_OUTPUT
+        DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test111ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
+        echo "DBSNAP_ID=$DBSnap_ID" >> $GITHUB_ENV
   restore-from-snapshot:
     if: github.ref_name == 'main'
     needs: [aws-cli, create-snapshot]
@@ -42,4 +39,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Restoring from blue
-      run: aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier ${{needs.create-snapshot.outputs.snapID}}
+      run: aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier ${{env.DBSNAP_ID}}
