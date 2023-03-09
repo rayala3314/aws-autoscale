@@ -58,6 +58,6 @@ jobs:
     steps:
     - name: Restoring from blue
       run: | 
-        aws rds db-snapshot-completed --db-snapshot-identifier ${{ needs.create-snapshot.outputs.snapshotIdentifier }}
+        aws rds wait db-snapshot-completed --db-snapshot-identifier ${{ needs.create-snapshot.outputs.snapshotIdentifier }}
         aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier ${{needs.create-snapshot.outputs.snapshotIdentifier}}
         echo "Testing outputs in resote job: ${{ needs.create-snapshot.snapshotIdentifier }}"
