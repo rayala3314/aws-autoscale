@@ -26,6 +26,7 @@ jobs:
 # Create Snapshot of Blue database
         # DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test291ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
         # echo "DBSNAP_ID=$DBSnap_ID" >> $GITHUB_ENV
+
   create-snapshot:
     if: github.ref_name == 'main'
     needs: aws-cli
@@ -57,5 +58,6 @@ jobs:
     steps:
     - name: Restoring from blue
       run: | 
+        aws rds db-snapshot-completed --db-snapshot-identifier ${{ needs.create-snapshot.outputs.snapshotIdentifier }}
         aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier ${{needs.create-snapshot.outputs.snapshotIdentifier}}
         echo "Testing outputs in resote job: ${{ needs.create-snapshot.snapshotIdentifier }}"
