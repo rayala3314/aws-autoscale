@@ -21,18 +21,30 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install awscli
+
+
+# Create Snapshot of Blue database
+        # DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test291ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
+        # echo "DBSNAP_ID=$DBSnap_ID" >> $GITHUB_ENV
   create-snapshot:
     if: github.ref_name == 'main'
     needs: aws-cli
+    outputs:
+      snapshotIdentifier: ${{steps.blue-db-snapshot.outputs.DBSnapshot}}
     name: Snapshot of Blue db
     runs-on: ubuntu-latest
     steps:
     - name: Blue Snapshot
+      id: blue-db-snapshot
       run: |
         DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test291ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
-        echo "DBSNAP_ID=$DBSnap_ID" >> $GITHUB_ENV
-    - run:
-        echo "${{env.DBSNAP_ID}}"
+        echo "DBSnapshot=$DBSnap_ID" >> $GITHUB_OUTPUT
+    - run: |
+        echo " Outputting from outputs: ${{snapshotIdentifier}}"
+        echo " Outputting from echo: ${{DBSnaphot}}"
+
+
+# Restoring From given snapshot
   restore-from-snapshot:
     if: github.ref_name == 'main'
     needs: [aws-cli, create-snapshot]
@@ -40,4 +52,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Restoring from blue
-      run: aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier ${{env.DBSNAP_ID}}
+      run: | 
+        aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-db --db-snapshot-identifier ${{needs.create-snapshot.outputs.snapshotIdentifier}}
+        echo "Testing outputs in resote job: ${{ needs.create-snapshot.snapshotIdentifier }}"
