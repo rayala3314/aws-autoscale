@@ -37,8 +37,15 @@ jobs:
     - name: Blue Snapshot
       id: blue-db-snapshot
       run: |
-        DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test091ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
+        DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test1191ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
         echo "DBSnapshot=$DBSnap_ID" >> $GITHUB_OUTPUT
+  debug:
+    needs: [create-snapshot]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        run: |
+          echo "${{ toJson(needs.create-snapshot) }}"
 
 
 # Restoring From given snapshot
