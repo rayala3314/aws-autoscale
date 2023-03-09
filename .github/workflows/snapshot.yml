@@ -39,7 +39,6 @@ jobs:
       run: |
         DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier test291ghsnapshot --query "DBSnapshot.DBSnapshotIdentifier" --output text)
         echo "DBSnapshot=$DBSnap_ID" >> $GITHUB_OUTPUT
-    - run: echo "Outputting from previous step - ${{ DBSnapshot }}"
 
 
 # Restoring From given snapshot
