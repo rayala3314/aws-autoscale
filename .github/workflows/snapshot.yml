@@ -73,7 +73,7 @@ jobs:
         echo "endpointURL=$RestoredEndpointURL" >> $GITHUB_OUTPUT
         echo "$RestoredEndpointURL"
 
-  debug:
+  debugTwo:
     needs: [restore-from-snapshot]
     runs-on: ubuntu-latest
     steps:
