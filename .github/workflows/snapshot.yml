@@ -41,6 +41,8 @@ jobs:
     - name: Blue Snapshot
       id: blue-db-snapshot
       # Name for snapshot? {commitHash}-{env}
+      # Notes - Potential issue with this naming convention as first character has to be a letter
+      # Maybe change to {env}-commitHash
       run: |
         DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier ${{github.sha}}-production --query "DBSnapshot.DBSnapshotIdentifier" --output text)
         echo "DBSnapshot=$DBSnap_ID" >> $GITHUB_OUTPUT
