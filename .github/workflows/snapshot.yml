@@ -85,6 +85,7 @@ jobs:
 
   delete-green-db:
     needs: aws-cli
+    runs-on: ubuntu-latest
     steps:
       - name: Terminating DB instance
         run: aws rds delete-db-instance --db-instance-identifier ${{github.sha}}-green --skip-final-snapshot
