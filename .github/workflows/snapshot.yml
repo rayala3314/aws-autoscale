@@ -83,7 +83,7 @@ jobs:
         run: |
           echo "${{ toJson(needs.restore-from-snapshot) }}"
 
-  delete-green-db:
+  delete-green-db-job:
     needs: aws-cli
     runs-on: ubuntu-latest
     steps:
