@@ -44,7 +44,7 @@ jobs:
       # Notes - Potential issue with this naming convention as first character has to be a letter
       # Maybe change to {env}-commitHash
       run: |
-        DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier ${{github.sha}}-production --query "DBSnapshot.DBSnapshotIdentifier" --output text)
+        DBSnap_ID=$(aws rds create-db-snapshot --db-instance-identifier gh-blue-database --db-snapshot-identifier production-${{github.sha}} --query "DBSnapshot.DBSnapshotIdentifier" --output text)
         echo "DBSnapshot=$DBSnap_ID" >> $GITHUB_OUTPUT
   debug:
     needs: [create-snapshot]
@@ -68,10 +68,10 @@ jobs:
       id: restored-db
       run: | 
         aws rds wait db-snapshot-completed --db-snapshot-identifier ${{ needs.create-snapshot.outputs.snapshotIdentifier }}
-        aws rds restore-db-instance-from-db-snapshot --db-instance-identifier ${{github.sha}}-green --db-snapshot-identifier ${{needs.create-snapshot.outputs.snapshotIdentifier}}
-        aws rds wait db-instance-available --db-instance-identifier ${{github.sha}}-green
-        echo "Testing outputs in resote job- ${{ needs.create-snapshot.snapshotIdentifier }}"
-        RestoredEndpointURL=$(aws rds describe-db-instances --db-instance-identifier ${{github.sha}}-green --query "DBInstances[*].Endpoint.Address" --output text)
+        aws rds restore-db-instance-from-db-snapshot --db-instance-identifier green-${{github.sha}} --db-snapshot-identifier ${{needs.create-snapshot.outputs.snapshotIdentifier}}
+        aws rds wait db-instance-available --db-instance-identifier green-${{github.sha}}
+        echo "Testing outputs in restore job- ${{ needs.create-snapshot.snapshotIdentifier }}"
+        RestoredEndpointURL=$(aws rds describe-db-instances --db-instance-identifier green-${{github.sha}} --query "DBInstances[*].Endpoint.Address" --output text)
         echo "endpointURL=$RestoredEndpointURL" >> $GITHUB_OUTPUT
         echo "The URL- $RestoredEndpointURL"
 
@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Terminating DB instance
-        run: aws rds delete-db-instance --db-instance-identifier ${{github.sha}}-green --skip-final-snapshot
+        run: aws rds delete-db-instance --db-instance-identifier green-${{github.sha}} --skip-final-snapshot
 
 # Db instance identifier {commitHash}-green
 # Get endpoint url for green db
