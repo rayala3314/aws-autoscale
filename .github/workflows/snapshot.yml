@@ -73,7 +73,7 @@ jobs:
         echo "Testing outputs in resote job- ${{ needs.create-snapshot.snapshotIdentifier }}"
         RestoredEndpointURL=$(aws rds describe-db-instances --db-instance-identifier ${{github.sha}}-green --query "DBInstances[*].Endpoint.Address" --output text)
         echo "endpointURL=$RestoredEndpointURL" >> $GITHUB_OUTPUT
-        echo "$RestoredEndpointURL"
+        echo "The URL- $RestoredEndpointURL"
 
   debugTwo:
     needs: [restore-from-snapshot]
