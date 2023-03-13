@@ -84,7 +84,8 @@ jobs:
           echo "${{ toJson(needs.restore-from-snapshot) }}"
 
   delete-green-db:
-    needs: aws-cli
+    needs: [aws-cli, restore-from-snapshot]
+    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Terminating DB instance
