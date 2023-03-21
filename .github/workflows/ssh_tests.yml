@@ -40,7 +40,7 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}        
     - name: Deploy Main
       run: |          
-        aws autoscaling update-auto-scaling-group --auto-scaling-group-name testing-autoscaling --max-size 1 --desired-capacity 1
+        aws autoscaling update-auto-scaling-group --auto-scaling-group-name test-autoscaling --max-size 1 --desired-capacity 1
 
  # Example from marketplace            
   start-runner:
@@ -76,7 +76,7 @@ jobs:
     if: github.ref_name == 'main'
     name: Get Host of Green Instance
     runs-on: ubuntu-latest
-    needs: aws-cli
+    needs: [aws-cli, scale-green]
     outputs:
       instanceHost: ${{ steps.instance-host.ouputs.InstanceHost}}
     steps:
@@ -156,4 +156,4 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
       - name: Scaling Down Green ASG
-        run: aws autoscaling update-auto-scaling-group --auto-scaling-group-name testing-autoscaling --max-size 0 --desired-capacity 0
+        run: aws autoscaling update-auto-scaling-group --auto-scaling-group-name test-autoscaling --max-size 0 --desired-capacity 0
