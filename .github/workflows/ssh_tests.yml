@@ -119,7 +119,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: echo "Overriden Completed" > userDataGithubTest.txt
 
-  #This job will run everytime pass or fail and wil delete the EC2 that was created above. 
+  #This job will run everytime pass or fail and wil delete the EC2 that was created above. s
   # stop-runner:
   #   name: Stop self-hosted EC2 runner
   #   needs:
