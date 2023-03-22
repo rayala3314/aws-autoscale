@@ -97,7 +97,7 @@ jobs:
         echo "InstanceHost=$HOST" >> $GITHUB_OUTPUT
 
 
-  #running the prod tests on the EC2 that was created 
+  #running the production tests on the EC2 that was created 
   main-tests:
     if: github.ref_name == 'main'
     name: Run Internal Remote Tests
