@@ -8,6 +8,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: "us-west-1"
+  HOST_GREEN: ""
 
 jobs:
   #Starting the ec2 server that will run our GH action
@@ -114,7 +115,7 @@ jobs:
       - name: Debug output
         id: jobSecret
         run: |
-          echo "awsSecretValue=${{secrets.AWS_REGION}}" >> $GITHUB_ENV
+          echo "HOST_GREEN=${{secrets.AWS_REGION}}" >> $GITHUB_ENV
 
   secret-debug:
     needs: get-secret
@@ -123,7 +124,7 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ toJson(needs.get-secret) }}"
-          echo "${{env.awsSecretValue}}"
+          echo "${{env.HOST_GREEN}}"
 
   #running the production tests on the EC2 that was created 
   main-tests:
