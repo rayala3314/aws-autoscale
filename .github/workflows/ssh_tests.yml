@@ -95,7 +95,13 @@ jobs:
       run: | 
         HOST=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)
         echo "InstanceHost=$HOST" >> $GITHUB_OUTPUT
-
+  debug:
+    needs: get-host
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        run: |
+          echo "${{ toJson(needs.get-host) }}"
 
   #running the production tests on the EC2 that was created 
   main-tests:
