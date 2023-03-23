@@ -89,7 +89,7 @@ jobs:
     - name: Wait 5 minutes for main deployment
       uses: jakejarvis/wait-action@master
       with:
-        time: '5m'
+        time: '3m'
     - name: Set Output of instance Host
       id: instance-host
       run: | 
@@ -104,6 +104,25 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ toJson(needs.get-host) }}"
+
+
+  get-secret:
+    runs-on: ubuntu-latest
+    outputs:
+      secret-value: ${{steps.jobSecret.outputs.awsSecret}}
+    steps:
+      - name: Debug output
+        id: jobSecret
+        run: |
+          echo "awsSecret=${{secrets.AWS_REGION}}" >> $GITHUB_OUTPUT
+
+  secret-debug:
+    needs: get-secret
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        run: |
+          echo "${{ toJson(needs.get-secret) }}"
 
   #running the production tests on the EC2 that was created 
   main-tests:
