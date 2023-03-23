@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [aws-cli, scale-green]
     outputs:
-      instanceHost: ${{ steps.instance-host.ouputs.InstanceHost}}
+      instanceHost: ${{ steps.instance-host.outputs.InstanceHost}}
     steps:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
