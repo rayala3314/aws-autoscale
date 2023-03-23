@@ -134,10 +134,12 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.label }}
     steps:
     - uses: actions/checkout@v2
-    - name: Wait 5 minutes for main deployment
-      uses: jakejarvis/wait-action@master
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        time: '5m'
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}      
     - name: Get HOST
       run: echo "GLOBAL_VERSION=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)" >> $GITHUB_ENV
  # Run the SSH stuff here
