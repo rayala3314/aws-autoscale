@@ -87,10 +87,10 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}        
-    - name: Wait 5 minutes for main deployment
+    - name: Wait 2 minutes for main deployment
       uses: jakejarvis/wait-action@master
       with:
-        time: '3m'
+        time: '2m'
     - name: Set Output of instance Host
       id: instance-host
       run: | 
@@ -146,7 +146,7 @@ jobs:
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: $GLOBAL_VERSION
+        host: ${{env.GLOBAL_VERSION}}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
