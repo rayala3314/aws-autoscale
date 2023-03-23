@@ -7,8 +7,6 @@ on:
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: "us-west-1"
-  HOST_GREEN: "test"
 
 jobs:
   #Starting the ec2 server that will run our GH action
@@ -38,7 +36,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}        
+        aws-region: us-west-1       
     - name: Deploy Main
       run: |          
         aws autoscaling update-auto-scaling-group --auto-scaling-group-name test-autoscaling --max-size 1 --desired-capacity 1
@@ -56,7 +54,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: us-west-1
       - name: Start EC2 runner
         id: start-ec2-runner
         uses: machulav/ec2-github-runner@v2
@@ -86,7 +84,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}        
+        aws-region: us-west-1       
     - name: Wait 2 minutes for main deployment
       uses: jakejarvis/wait-action@master
       with:
@@ -115,7 +113,7 @@ jobs:
       - name: Debug output
         id: jobSecret
         run: |
-          echo "HOST_GREEN=${{secrets.AWS_REGION}}" >> $GITHUB_ENV
+          echo "HOST_GREEN=us-west-1" >> $GITHUB_ENV
 
   secret-debug:
     needs: get-secret
@@ -139,14 +137,14 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}      
+        aws-region: us-west-1      
     - name: Get HOST
       run: echo "GLOBAL_VERSION=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)" >> $GITHUB_ENV
  # Run the SSH stuff here
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{env.GLOBAL_VERSION}}
+        host: ${{ needs.get-host.outputs.instanceHost}}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
