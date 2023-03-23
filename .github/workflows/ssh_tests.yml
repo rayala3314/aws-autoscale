@@ -123,7 +123,7 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ toJson(needs.get-secret) }}"
-          echo "${{needs.get-secret.env.awsSecretValue}}"
+          echo "${{env.awsSecretValue}}"
 
   #running the production tests on the EC2 that was created 
   main-tests:
