@@ -154,7 +154,7 @@ jobs:
           aws ssm get-parameter --name /scriptGithub --with-decryption --region us-west-1 --query Parameter.Value --output text > test.sh
           bash test.sh
 
-  #This job will run everytime pass or fail and wil delete the EC2 that was created above. s
+  #This job will run everytime pass or fail and wil delete the EC2 that was created above.
   # stop-runner:
   #   name: Stop self-hosted EC2 runner
   #   needs:
