@@ -96,38 +96,12 @@ jobs:
         echo "$HOST"
         echo "InstanceHost=$HOST" >> $GITHUB_OUTPUT
 
-  debug:
-    needs: get-host
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug output
-        run: |
-          echo "${{ toJson(needs.get-host) }}"
 
-
-  get-secret:
-    runs-on: ubuntu-latest
-    outputs:
-      secret-value: ${{steps.jobSecret.outputs.awsSecret}}
-    steps:
-      - name: Debug output
-        id: jobSecret
-        run: |
-          echo "HOST_GREEN=us-west-1" >> $GITHUB_ENV
-
-  secret-debug:
-    needs: get-secret
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug output
-        run: |
-          echo "${{ toJson(needs.get-secret) }}"
-          echo "$HOST_GREEN"
 
   #running the production tests on the EC2 that was created 
   main-tests:
     if: github.ref_name == 'main'
-    name: Run Internal Remote Tests
+    name: Run Remote Tests
     needs: [start-runner, get-host, aws-cli]
     runs-on: ${{ needs.start-runner.outputs.label }}
     steps:
@@ -141,13 +115,14 @@ jobs:
     - name: Get HOST
       run: echo "GLOBAL_VERSION=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)" >> $GITHUB_ENV
  # Run the SSH stuff here
-    - name: executing remote ssh commands using ssh key
+    - name: Install Dependencies
       uses: appleboy/ssh-action@v0.1.8
       with:
         host: ${{ needs.get-host.outputs.instanceHost}}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
+        script_stop: true
         script: |
           echo "Overriden Completed" > userDataGithubTest.txt
           sudo yum -y update
