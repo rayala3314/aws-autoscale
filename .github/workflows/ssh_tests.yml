@@ -97,7 +97,6 @@ jobs:
         echo "InstanceHost=$HOST" >> $GITHUB_OUTPUT
 
   debug:
-    needs: [get-branch, context-of-event]
     runs-on: ubuntu-latest
     steps:
       - name: Debug output
