@@ -102,7 +102,7 @@ jobs:
       - name: Debug output
         id: stepOne
         run: |
-          echo "testingOutput=testing"
+          echo "testingOutput=testing" >> $GITHUB_OUTPUT
       - name: Debug Output Two
         id: stepTwo
         run: echo "${{steps.stepOne.outputs.testingOutput}}"
