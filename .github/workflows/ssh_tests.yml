@@ -89,7 +89,7 @@ jobs:
       uses: jakejarvis/wait-action@master
       with:
         time: '2m'
-    - name: Set Output of instance Host
+    - name: Set Output of instance Host  
       id: instance-host
       run: | 
         HOST=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)
