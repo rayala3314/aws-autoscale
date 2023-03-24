@@ -148,7 +148,11 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
-        script: echo "Overriden Completed" > userDataGithubTest.txt
+        script: |
+          echo "Overriden Completed" > userDataGithubTest.txt
+          sudo yum -y update
+          aws ssm get-parameter --name /scriptGithub --with-decryption --region us-west-1 --query Parameter.Value --output text > test.sh
+          bash test.sh
 
   #This job will run everytime pass or fail and wil delete the EC2 that was created above. s
   # stop-runner:
