@@ -96,6 +96,17 @@ jobs:
         echo "$HOST"
         echo "InstanceHost=$HOST" >> $GITHUB_OUTPUT
 
+  debug:
+    needs: [get-branch, context-of-event]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        id: stepOne
+        run: |
+          echo "testingOutput=testing"
+      - name: Debug Output Two
+        id: stepTwo
+        run: echo "${{steps.stepOne.outputs.testingOutput}}"
 
 
   #running the production tests on the EC2 that was created 
