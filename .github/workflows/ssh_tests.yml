@@ -92,7 +92,7 @@ jobs:
     - name: Set Output of instance Host
       id: instance-host
       run: | 
-        HOST=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)
+        HOST=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)
         echo "$HOST"
         echo "InstanceHost=$HOST" >> $GITHUB_OUTPUT
 
