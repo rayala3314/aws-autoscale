@@ -152,7 +152,9 @@ jobs:
 
     - name: Test Output
       id: output-test
-      run: echo "GLOBAL_VERSION=Test" >> $GITHUB_OUTPUT
+      run: |
+        echo "GLOBAL_VERSION=Test" >> $GITHUB_OUTPUT
+        echo "$GLOBAL_VERSION"
  # Run the SSH stuff here..
     - name: Install Dependencies
       uses: appleboy/ssh-action@v0.1.8
