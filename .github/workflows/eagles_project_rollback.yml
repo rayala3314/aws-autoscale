@@ -1,0 +1,166 @@
+name: Testing SSH into ASG
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  #Starting the ec2 server that will run our GH action
+# AWS CLI
+  aws-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install awscli
+
+  scale-green:
+    name: Scale up the Green ASG
+    runs-on: ubuntu-latest
+    needs: aws-cli
+    if: github.ref_name == 'main'
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1       
+    - name: Deploy Main
+      run: |          
+        aws autoscaling update-auto-scaling-group --auto-scaling-group-name test-autoscaling --max-size 1 --desired-capacity 1
+ # Example from marketplace            
+  start-runner:
+    name: Start self-hosted EC2 runner
+    runs-on: ubuntu-latest
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-1
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: start
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          ec2-image-id: ami-0fe6c44552c705289
+          ec2-instance-type: t2.micro
+          subnet-id: subnet-055aea77492ca2688
+          security-group-id: sg-0068472dce4497023
+          aws-resource-tags: > # optional, requires additional permissions for this --
+            [
+              {"Key": "Name", "Value": "ec2-github-runner"},
+              {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
+            ]
+# Get host of the new green asg instance
+  get-host:
+    if: github.ref_name == 'main'
+    name: Get Host of Green Instance
+    runs-on: ubuntu-latest
+    needs: [aws-cli, scale-green]
+    outputs:
+      instanceHost: ${{ steps.instance-host.outputs.InstanceHost}}
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1       
+    - name: Wait 2 minutes for main deployment
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '2m'
+    - name: Set Output of instance Host  
+      id: instance-host
+      run: | 
+        HOST=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)
+        echo "$HOST"
+        echo "InstanceHost=$HOST" >> $GITHUB_OUTPUT
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        id: stepOne
+        run: |
+          echo "testingOutput=testing" >> $GITHUB_OUTPUT
+      - name: Debug Output Two
+        id: stepTwo
+        run: echo "${{steps.stepOne.outputs.testingOutput}}"
+
+
+  #running the production tests on the EC2 that was created 
+  main-tests:
+    if: github.ref_name == 'main'
+    name: Run Remote Tests
+    needs: [start-runner, get-host, aws-cli]
+    runs-on: ${{ needs.start-runner.outputs.label }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1      
+    - name: Get HOST
+      run: echo "GLOBAL_VERSION=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)" >> $GITHUB_ENV
+ # Run the SSH stuff here..
+    - name: Install Dependencies
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ needs.get-host.outputs.instanceHost}}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script_stop: true
+        script: |
+          echo "Overriden Completed" > userDataGithubTest.txt
+          sudo yum -y update
+          sudo yum install git-all python3 -y
+
+  
+  rollback-environment:
+    needs: [start-runner, get-host, aws-cli, main-tests]
+    if: failure()
+    name: Run Remote Tests
+    runs-on: ${{ needs.start-runner.outputs.label }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1      
+ # Run the SSH stuff here..
+    - name: Install Dependencies
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ needs.get-host.outputs.instanceHost}}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script_stop: true
+        script: |
+          echo "Rolling Back...."
+          git clone https://github.com/rayala3314/aws-autoscale.git
+          cd aws-autoscale
+          chkTag=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text) 
+          echo "$chkTag"
+          git checkout tags/$chkTag
