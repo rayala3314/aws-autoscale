@@ -155,6 +155,8 @@ jobs:
       run: |
         echo "GLOBAL_VERSION=Test" >> $GITHUB_OUTPUT
         echo "$GLOBAL_VERSION"
+    - name: Print Out
+      run: echo "${{steps.output-test.outputs.GLOBAL_VERSION}}"
  # Run the SSH stuff here..
     - name: Install Dependencies
       uses: appleboy/ssh-action@v0.1.8
