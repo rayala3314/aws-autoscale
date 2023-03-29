@@ -148,7 +148,9 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-1      
+    - name: Test Output
+      id: output-test
+      run: echo "GLOBAL_VERSION="Test" >> $GITHUB_OUTPUT
  # Run the SSH stuff here..
     - name: Install Dependencies
       uses: appleboy/ssh-action@v0.1.8
@@ -165,3 +167,11 @@ jobs:
           chkTag=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text) 
           echo "$chkTag"
           git checkout tags/$chkTag
+  debug:
+    needs: rollback-environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug Rollback Output
+        run: |
+          echo "${{ toJson(needs.getTB) }}"
+          echo "${{needs.rollback-environment.steps.output-test.outputs.GLOBAL_VERSION}}"
