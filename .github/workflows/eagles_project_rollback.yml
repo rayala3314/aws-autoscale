@@ -148,6 +148,8 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1      
+
     - name: Test Output
       id: output-test
       run: echo "GLOBAL_VERSION="Test" >> $GITHUB_OUTPUT
@@ -169,6 +171,7 @@ jobs:
           git checkout tags/$chkTag
   debugTwo:
     needs: rollback-environment
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Debug Rollback Output
