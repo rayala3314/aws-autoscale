@@ -167,7 +167,7 @@ jobs:
           chkTag=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text) 
           echo "$chkTag"
           git checkout tags/$chkTag
-  debug:
+  debugTwo:
     needs: rollback-environment
     runs-on: ubuntu-latest
     steps:
