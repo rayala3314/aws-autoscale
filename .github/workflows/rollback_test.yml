@@ -117,6 +117,7 @@ jobs:
     
     - name: Attach old Instance if fail
       if: steps.cypress-tests.outcome == 'failure'
+      continue-on-error: true
       run: aws autoscaling attach-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}} --auto-scaling-group-name test-autoscaling
     
     - name: Remove old Instance if pass
