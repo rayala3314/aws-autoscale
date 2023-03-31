@@ -150,7 +150,7 @@ jobs:
     - name: Get Host of Old Instance
       id: old-instance-host
       run: | 
-        HOST=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq 'sort_by(.time) | .[0] | .ip')
+        HOST=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq -r 'sort_by(.time) | .[0] | .ip')
         echo "oldInstanceHost=$HOST" >> $GITHUB_OUTPUT
 
     - name: Rollback
