@@ -187,3 +187,7 @@ jobs:
 # --query 'Reservations[].Instances[].{ip: PublicDnsName, tm: LaunchTime}' \
 # --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | \
 # jq 'sort_by(.tm) | .[0] | .ip'
+
+Thu Mar 30 2023 17:59:46 GMT-0700 (Pacific Daylight Time) (4 minutes)
+
+Thu Mar 30 2023 17:52:39 GMT-0700 (Pacific Daylight Time) (12 minutes)
