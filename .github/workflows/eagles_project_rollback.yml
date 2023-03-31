@@ -173,6 +173,7 @@ jobs:
 
   scale-down:
     needs: [aws-cli, rollback-environment]
+    if: ${{ contains(needs.rollback-environment.rsult, 'success')}}
     name: Scale down new instance
     runs-on: ubuntu-latest
     steps:
