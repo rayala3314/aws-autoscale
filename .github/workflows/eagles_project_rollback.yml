@@ -1,4 +1,4 @@
-name: Testing SSH into ASG
+name: Testing Rollback Features
 on:
   push:
     branches:
@@ -23,6 +23,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install awscli
 
+
+# Scaling to two so we can have old and new insance there
   scale-green:
     name: Scale up the Green ASG - Rollback Tests
     runs-on: ubuntu-latest
@@ -37,7 +39,8 @@ jobs:
         aws-region: us-west-1       
     - name: Deploy Main
       run: |          
-        aws autoscaling update-auto-scaling-group --auto-scaling-group-name test-autoscaling --max-size 1 --desired-capacity 1
+        aws autoscaling update-auto-scaling-group --auto-scaling-group-name test-autoscaling --max-size 2 --desired-capacity 2
+
  # Example from marketplace            
   start-runner:
     name: Start self-hosted EC2 runner
@@ -58,7 +61,7 @@ jobs:
         with:
           mode: start
           github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-          ec2-image-id: ami-0fe6c44552c705289
+          ec2-image-id: ami-06bbf12a5c4acb311
           ec2-instance-type: t2.micro
           subnet-id: subnet-055aea77492ca2688
           security-group-id: sg-0068472dce4497023
@@ -92,16 +95,6 @@ jobs:
         HOST=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)
         echo "$HOST"
         echo "InstanceHost=$HOST" >> $GITHUB_OUTPUT
-  debug:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug output
-        id: stepOne
-        run: |
-          echo "testingOutput=testing" >> $GITHUB_OUTPUT
-      - name: Debug Output Two
-        id: stepTwo
-        run: echo "${{steps.stepOne.outputs.testingOutput}}"
 
 
   #running the production tests on the EC2 that was created 
@@ -120,6 +113,7 @@ jobs:
         aws-region: us-west-1      
     - name: Get HOST
       run: echo "GLOBAL_VERSION=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)" >> $GITHUB_ENV
+
  # Run the SSH stuff here..
     - name: Install Dependencies
       uses: appleboy/ssh-action@v0.1.8
@@ -136,8 +130,11 @@ jobs:
           exit 1
 
   
+# SSH into old instance if test failure, pull latest stable tag, and checkout to it
+# Get host of the old instance
+
   rollback-environment:
-    needs: [start-runner, get-host, aws-cli, main-tests]
+    needs: [start-runner, aws-cli, main-tests]
     if: failure()
     name: Rollback Environment
     runs-on: ${{ needs.start-runner.outputs.label }}
@@ -150,18 +147,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-1      
 
-    - name: Test Output
-      id: output-test
-      run: |
-        echo "GLOBAL_VERSION=Test" >> $GITHUB_OUTPUT
-        echo "$GLOBAL_VERSION"
-    - name: Print Out
-      run: echo "${{steps.output-test.outputs.GLOBAL_VERSION}}"
+
+    - name: Get Host of Old Instance
  # Run the SSH stuff here..
-    - name: Install Dependencies
+    - name: RollBack
+      id: old-instance-host
+      run: | 
+        HOST=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime} --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq 'sort_by(.time) | .[0] | .ip')
+        echo "oldInstanceHost=$HOST" >> $GITHUB_OUTPUT
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ needs.get-host.outputs.instanceHost}}
+        host: ${{ steps.old-instance-host.outputs.oldInstanceHost }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
@@ -173,12 +169,22 @@ jobs:
           chkTag=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text) 
           echo "$chkTag"
           git checkout tags/$chkTag
-  debugTwo:
-    needs: rollback-environment
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug Rollback Output
-        run: |
-          echo "${{ toJson(needs.getTB) }}"
-          echo "${{needs.rollback-environment.steps.output-test.outputs.GLOBAL_VERSION}}"
+
+
+# # Scale Down
+# # Update termination policy to kill old instance
+
+# # Command to update tags
+#  aws autoscaling create-or-update-tags --tags ResourceId=test-autoscaling,ResourceType=auto-scaling-group,Key=InstanceType,Value=New,PropagateAtLaunch=true --region us-west-1
+
+# #  Command to describe instances
+# aws ec2 describe-instances --query "Reservations[*].Instances[*]" --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling"
+
+# # Command to get the latest launched
+# aws ec2 describe-instances  --query 'sort_by(Reservations[*].Instances[*], &LaunchTime)[:-1].[InstanceId,PublicIpAddress,LaunchTime] '
+
+# # aws ec2 describe-instances  \
+# aws ec2 describe-instances \
+# --query 'Reservations[].Instances[].{ip: PublicDnsName, tm: LaunchTime}' \
+# --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | \
+# jq 'sort_by(.tm) | .[0] | .ip'
