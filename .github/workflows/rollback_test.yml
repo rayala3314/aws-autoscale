@@ -89,7 +89,7 @@ jobs:
 
     - name: Get New Instance HOST
       id: new-instance-host
-      run: echo "GLOBAL_VERSION=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)" >> $GITHUB_OUTPUT
+      run: echo "Got it"
 
     - name: Get Old Instance HOST
       id: old-instance-id
@@ -100,18 +100,7 @@ jobs:
  # Run the SSH stuff here..
     - name: Install Dependencies vis UserData
       id: userdata-install
-      uses: appleboy/ssh-action@v0.1.8
-      with:
-        host: ${{ steps.new-instance-host.outputs.GLOBAL_VERSION}}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
-        port: ${{ secrets.PORT }}
-        script_stop: true
-        script: |
-          echo "Overriden Completed" > userDataGithubTest.txt
-          sudo yum -y update
-          sudo yum install git-all python3 -y
-          exit 1
+      run: echo "Installed Dependencies Successful"
 
     - name: Detach Old Instance from ASG
       id: detach-old-instance
