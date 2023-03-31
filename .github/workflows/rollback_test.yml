@@ -123,7 +123,7 @@ jobs:
       run: aws ec3 terminate-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}}
   
 # SSH into old instance if test failure, pull latest stable tag, and checkout to it
-# Get host of the old instance
+# Get host of the old instance in asg
 
   rollback-environment:
     needs: [start-runner, aws-cli, main-tests]
