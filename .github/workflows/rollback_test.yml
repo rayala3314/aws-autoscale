@@ -76,6 +76,9 @@ jobs:
   main-tests:
     if: github.ref_name == 'main'
     name: Run Remote Tests
+    outputs:
+      detachedInstance: ${{steps.detach-old-instance.outputs.DETACHED}}
+      oInstanceID: ${{steps.detach-old-instance.outputs.INSTANCEID}}
     needs: [start-runner, aws-cli]
     runs-on: ${{ needs.start-runner.outputs.label }}
     steps:
@@ -104,25 +107,19 @@ jobs:
 
     - name: Detach Old Instance from ASG
       id: detach-old-instance
-      if: steps.userdata-install.outcome == 'success'
       run: |
+        echo "INSTANCEID=${{steps.old-instance-id.outputs.oldInstanceID}}" >> $GITHUB_OUTPUT
         aws autoscaling detach-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}} --auto-scaling-group-name test-autoscaling --should-decrement-desired-capacity
         echo "${{steps.userdata-install.conclusion}}"
+        echo "DETACHED=true" >> $GITHUB_OUTPUT
 
     - name: Run Cypress Tests
       id: cypress-tests
-      continue-on-error: true
       run: |
         echo "cypress"
         exit 1
     
-    - name: Attach old Instance if fail
-      if: steps.cypress-tests.outcome == 'failure'
-      continue-on-error: true
-      run: aws autoscaling attach-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}} --auto-scaling-group-name test-autoscaling
-    
     - name: Remove old Instance if pass
-      if: steps.cypress-tests.outcome == 'success'
       run: aws ec3 terminate-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}}
   
 # SSH into old instance if test failure, pull latest stable tag, and checkout to it
@@ -140,7 +137,17 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-1      
+        aws-region: us-west-1
+
+    - name: Attach old Instance 
+      if: needs.main-tests.outputs.detachedInstance == 'true'
+      run: aws autoscaling attach-instances --instance-ids ${{needs.main-tests.outputs.oInstanceID}} --auto-scaling-group-name test-autoscaling
+
+    - name: Wait 2 minutes for attachment
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '2m'
+
 
     - name: Get Host of Old Instance
       id: old-instance-host
@@ -170,3 +177,13 @@ jobs:
       run: | 
         InstanceID=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime, id: InstanceId}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq -r 'sort_by(.time) | reverse | .[0] | .id')
         aws autoscaling terminate-instance-in-auto-scaling-group --instance-id $InstanceID --should-decrement-desired-capacity
+
+
+# Install Userdata Via SSH
+# Dettach Instance
+# Cypress Tests
+  # Pass - Terminate Instance Dettached
+
+# Rollback 
+ # Attach old Instance back in
+ # SSH and do the rest
