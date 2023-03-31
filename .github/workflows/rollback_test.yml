@@ -97,7 +97,7 @@ jobs:
     - name: Get Old Instance HOST
       id: old-instance-id
       run: | 
-        Instance_ID=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime, id: InstanceId}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq -r 'sort_by(.time) | reverse | .[0] | .id')
+        Instance_ID=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime, id: InstanceId}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq -r 'sort_by(.time) | .[0] | .id')
         echo "oldInstanceID=$Instance_ID" >> $GITHUB_OUTPUT
 
  # Run the SSH stuff here..
