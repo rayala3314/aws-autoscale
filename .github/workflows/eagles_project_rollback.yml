@@ -112,13 +112,14 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-1      
     - name: Get HOST
-      run: echo "GLOBAL_VERSION=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PublicDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)" >> $GITHUB_ENV
+      id: new-instance-host
+      run: echo "GLOBAL_VERSION=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)" >> $GITHUB_OUTPUT
 
  # Run the SSH stuff here..
     - name: Install Dependencies
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ needs.get-host.outputs.instanceHost}}
+        host: ${{ steps.new-instance-host.outputs.GLOBAL_VERSION}}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
@@ -162,6 +163,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script_stop: true
         script: |
+          sudo yum install git -y
           echo "Rolling Back...."
           git clone https://github.com/rayala3314/aws-autoscale.git
           cd aws-autoscale
