@@ -111,6 +111,7 @@ jobs:
 
     - name: Run Cypress Tests
       id: cypress-tests
+      continue-on-error: true
       run: |
         echo "cypress"
         exit 1
