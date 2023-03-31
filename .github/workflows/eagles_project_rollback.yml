@@ -147,10 +147,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-1      
 
-
     - name: Get Host of Old Instance
- # Run the SSH stuff here..
-    - name: RollBack
       id: old-instance-host
       run: | 
         HOST=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime} --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq 'sort_by(.time) | .[0] | .ip')
