@@ -1,4 +1,4 @@
-name: Testing Rollback Featuress
+name: Testing Rollback Features
 on:
   push:
     branches:
