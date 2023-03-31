@@ -105,7 +105,9 @@ jobs:
     - name: Detach Old Instance from ASG
       id: detach-old-instance
       if: steps.userdata-install.outcome == 'success'
-      run: aws autoscaling detach-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}} --auto-scaling-group-name test-autoscaling --should-decrement-desired-capacity
+      run: |
+        aws autoscaling detach-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}} --auto-scaling-group-name test-autoscaling --should-decrement-desired-capacity
+        echo "${{steps.userdata-install.conclusion}}"
 
     - name: Run Cypress Tests
       id: cypress-tests
