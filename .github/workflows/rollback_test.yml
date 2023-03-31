@@ -1,0 +1,179 @@
+name: Testing Detach and Attach Instances
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  #Starting the ec2 server that will run our GH action
+# AWS CLI
+  aws-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install awscli
+
+
+# Scaling to two so we can have old and new insance there
+  scale-green:
+    name: Scale up the Green ASG - Rollback Tests
+    runs-on: ubuntu-latest
+    needs: aws-cli
+    if: github.ref_name == 'main'
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1       
+    - name: Deploy Main
+      run: |          
+        aws autoscaling update-auto-scaling-group --auto-scaling-group-name test-autoscaling --max-size 2 --desired-capacity 2
+
+ # Example from marketplace            
+  start-runner:
+    name: Start self-hosted EC2 runner
+    runs-on: ubuntu-latest
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-1
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: start
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          ec2-image-id: ami-06bbf12a5c4acb311
+          ec2-instance-type: t2.micro
+          subnet-id: subnet-055aea77492ca2688
+          security-group-id: sg-0068472dce4497023
+          aws-resource-tags: > # optional, requires additional permissions for this --
+            [
+              {"Key": "Name", "Value": "ec2-github-runner"},
+              {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
+            ]
+
+
+  #running the production tests on the EC2 that was created 
+  main-tests:
+    if: github.ref_name == 'main'
+    name: Run Remote Tests
+    needs: [start-runner, aws-cli]
+    runs-on: ${{ needs.start-runner.outputs.label }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1  
+
+    - name: Get New Instance HOST
+      id: new-instance-host
+      run: echo "GLOBAL_VERSION=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)" >> $GITHUB_OUTPUT
+
+    - name: Get Old Instance HOST
+      id: old-instance-id
+      run: | 
+        Instance_ID=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime, id: InstanceId}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq -r 'sort_by(.time) | reverse | .[0] | .id')
+        echo "oldInstanceID=$Instance_ID" >> $GITHUB_OUTPUT
+
+ # Run the SSH stuff here..
+    - name: Install Dependencies vis UserData
+      id: userdata-install
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ steps.new-instance-host.outputs.GLOBAL_VERSION}}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script_stop: true
+        script: |
+          echo "Overriden Completed" > userDataGithubTest.txt
+          sudo yum -y update
+          sudo yum install git-all python3 -y
+          exit 1
+
+    - name: Detach Old Instance from ASG
+      id: detach-old-instance
+      if: steps.userdata-install.outcome == 'success'
+      run: aws autoscaling detach-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}} --auto-scaling-group-name test-autoscaling --should-decrement-desired-capacity
+
+    - name: Run Cypress Tests
+      id: cypress-tests
+      run: |
+        echo "cypress"
+        exit 1
+    
+    - name: Attach old Instance if fail
+      if: steps.cypress-tests.outcome == 'failure'
+      run: aws autoscaling attach-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}} --auto-scaling-group-name test-autoscaling
+    
+    - name: Remove old Instance if pass
+      if: steps.cypress-tests.outcome == 'success'
+      run: aws ec3 terminate-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}}
+  
+# SSH into old instance if test failure, pull latest stable tag, and checkout to it
+# Get host of the old instance
+
+  rollback-environment:
+    needs: [start-runner, aws-cli, main-tests]
+    if: failure()
+    name: Rollback Environment
+    runs-on: ${{ needs.start-runner.outputs.label }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1      
+
+    - name: Get Host of Old Instance
+      id: old-instance-host
+      run: | 
+        HOST=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq -r 'sort_by(.time) | .[0] | .ip')
+        echo "oldInstanceHost=$HOST" >> $GITHUB_OUTPUT
+
+    - name: Rollback
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ steps.old-instance-host.outputs.oldInstanceHost }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script_stop: true
+        script: |
+          sudo yum install git -y
+          echo "Rolling Back...."
+          git clone https://github.com/rayala3314/aws-autoscale.git
+          cd aws-autoscale
+          chkTag=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text) 
+          echo "$chkTag"
+          git checkout tags/$chkTag
+
+
+    - name: Get Instance ID and Terminate
+      run: | 
+        InstanceID=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime, id: InstanceId}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq -r 'sort_by(.time) | reverse | .[0] | .id')
+        aws autoscaling terminate-instance-in-auto-scaling-group --instance-id $InstanceID --should-decrement-desired-capacity
