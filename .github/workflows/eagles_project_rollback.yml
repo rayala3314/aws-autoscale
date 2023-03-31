@@ -146,24 +146,31 @@ jobs:
           echo "$chkTag"
           git checkout tags/$chkTag
 
-  scale-down:
-    needs: [aws-cli, rollback-environment]
-    if: contains(needs.rollback-environment.result, 'success')
-    name: Scale down new instance
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-1      
 
     - name: Get Instance ID and Terminate
       run: | 
         InstanceID=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime, id: InstanceId}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq -r 'sort_by(.time) | reverse | .[0] | .id')
         aws autoscaling terminate-instance-in-auto-scaling-group --instance-id $InstanceID --should-decrement-desired-capacity
+
+
+  # scale-down:
+  #   needs: [aws-cli, rollback-environment]
+  #   if: always()
+  #   name: Scale down new instance
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Configure AWS credentials
+  #     uses: aws-actions/configure-aws-credentials@v1
+  #     with:
+  #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #       aws-region: us-west-1      
+
+  #   - name: Get Instance ID and Terminate
+  #     run: | 
+  #       InstanceID=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime, id: InstanceId}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=test-autoscaling" | jq -r 'sort_by(.time) | reverse | .[0] | .id')
+  #       aws autoscaling terminate-instance-in-auto-scaling-group --instance-id $InstanceID --should-decrement-desired-capacity
 
 # # Scale Down
 # # Update termination policy to kill old instance
