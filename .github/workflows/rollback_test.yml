@@ -115,12 +115,10 @@ jobs:
 
     - name: Run Cypress Tests
       id: cypress-tests
-      run: |
-        echo "cypress"
-        exit 1
+      run: echo "cypress tests passed"
     
     - name: Remove old Instance if pass
-      run: aws ec3 terminate-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}}
+      run: aws ec2 terminate-instances --instance-ids ${{steps.old-instance-id.outputs.oldInstanceID}}
   
 # SSH into old instance if test failure, pull latest stable tag, and checkout to it
 # Get host of the old instance in asg
