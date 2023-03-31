@@ -70,31 +70,6 @@ jobs:
               {"Key": "Name", "Value": "ec2-github-runner"},
               {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
             ]
-# Get host of the new green asg instance
-  get-host:
-    if: github.ref_name == 'main'
-    name: Get Host of Green Instance
-    runs-on: ubuntu-latest
-    needs: [aws-cli, scale-green]
-    outputs:
-      instanceHost: ${{ steps.instance-host.outputs.InstanceHost}}
-    steps:
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-1       
-    - name: Wait 2 minutes for main deployment
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '2m'
-    - name: Set Output of instance Host  
-      id: instance-host
-      run: | 
-        HOST=$(aws ec2 describe-instances --query "Reservations[*].Instances[*].PrivateDnsName" --filters "Name=instance-state-name,Values=running" "Name=tag:Override-UserData,Values=true" --output text)
-        echo "$HOST"
-        echo "InstanceHost=$HOST" >> $GITHUB_OUTPUT
 
 
   #running the production tests on the EC2 that was created 
@@ -173,7 +148,7 @@ jobs:
 
   scale-down:
     needs: [aws-cli, rollback-environment]
-    if: ${{ always() && contains(needs.rollback-environment.result, 'success')}}
+    if: contains(needs.rollback-environment.result, 'success')
     name: Scale down new instance
     runs-on: ubuntu-latest
     steps:
