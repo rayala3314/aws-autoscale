@@ -103,7 +103,9 @@ jobs:
  # Run the SSH stuff here..
     - name: Install Dependencies vis UserData
       id: userdata-install
-      run: echo "Installed Dependencies Successful"
+      run: |
+        echo "Installed Dependencies Failed"
+        exit 1
 
     - name: Detach Old Instance from ASG
       id: detach-old-instance
