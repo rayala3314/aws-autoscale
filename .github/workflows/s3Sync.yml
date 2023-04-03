@@ -40,5 +40,24 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-1
 
-    - name: Syncing Buckets
+    - name: Get Latest SubDirectory
+      id: subdirectory
+      run: |
+        objectFolderName=$(aws s3api list-objects-v2 --bucket dev-test-eagles --query 'sort_by(Contents, &LastModified)[-1].Key' | tr -d '"' | grep -oE '[^\"].*\/\s*')
+        echo "oFolderName=$objectFolderName" >> $GITUB_OUTPUT
+
+    - name: Check if Directory in Stage
+      id: check-directory-existence
+      run: |
+        existence=$(aws s3api list-objects-v2 --bucket stage-tests-eagles --query "contains(Contents[].Key, '${{steps.subdirectory.outputs.oFolderName}}')") 
+        echo "existenceDirectory=$existence" >> $GITHUB_OUTPUT
+
+    - name: Run Sync
+      if: ${{steps.check-directory-existence}} == 'true'
       run: aws s3 sync s3://dev-test-eagles/dev-tests/ s3://stage-tests-eagles/stage-tests/
+
+          
+
+
+
+
