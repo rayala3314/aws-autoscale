@@ -1,0 +1,44 @@
+name: Sync S3 Bucket
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: "us-west-1"
+
+jobs:
+# AWS CLI
+  aws-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install awscli
+  
+
+#running the dev tests on the EC2 thart was created 
+  sync-buclet:
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    name: Sync Dev Bucket to Stage Bucket
+    needs:
+      - aws-cli
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-1
+
+    - name: Syncing Buckets
+      run: aws s3 sync s3://dev-test-eagles/dev-tests/ s3://stage-tests-eagles/stage-tests/
