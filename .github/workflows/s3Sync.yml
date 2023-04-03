@@ -25,8 +25,8 @@ jobs:
           pip install awscli
   
 
-#running the dev tests on the EC2 thart was created 
-  sync-buclet:
+# Sync Command
+  sync-bucket:
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     name: Sync Dev Bucket to Stage Bucket
