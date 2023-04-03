@@ -25,7 +25,7 @@ jobs:
           pip install awscli
   
 
-# Sync Command
+# Sync Commands
   sync-bucket:
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
@@ -44,7 +44,7 @@ jobs:
       id: subdirectory
       run: |
         objectFolderName=$(aws s3api list-objects-v2 --bucket dev-test-eagles --query 'sort_by(Contents, &LastModified)[-1].Key' | tr -d '"' | grep -oE '[^\"].*\/\s*')
-        echo "objectFolderName"
+        echo "$objectFolderName"
         echo "oFolderName=$objectFolderName" >> $GITHUB_OUTPUT
 
     - name: Check if Directory in Stage
