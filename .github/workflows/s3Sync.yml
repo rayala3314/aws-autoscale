@@ -25,6 +25,7 @@ jobs:
           pip install awscli
   
 
+
 # Sync Commands
   sync-bucket:
     if: github.ref_name == 'main'
