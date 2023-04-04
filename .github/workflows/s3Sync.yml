@@ -46,12 +46,14 @@ jobs:
         objectFolderName=$(aws s3api list-objects-v2 --bucket dev-test-eagles --query 'sort_by(Contents, &LastModified)[-1].Key' | tr -d '"' | grep -oE '[^\"].*\/\s*')
         echo "$objectFolderName"
         echo "oFolderName=$objectFolderName" >> $GITHUB_OUTPUT
-        PREFIX=$(aws s3api list-objects-v2 --bucket stage-tests-eagles --prefix "$objectFolderName")
-        existence='false'
+        PREFIX=$(aws s3api list-objects-v2 --bucket stage-tests-eagles --prefix "$objectFolderName" --query "Contents[0].Key" --output text)
         echo "$PREFIX"
+        existence=''
         if [ -z $PREFIX ]
         then
           existence='true'
+        else
+          existence='false'
         fi
         echo "$existence"
         echo "existenceDirectory=$existence" >> $GITHUB_OUTPUT
