@@ -40,13 +40,6 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-1
 
-    # - name: Get Latest SubDirectory
-    #   id: subdirectory
-    #   run: |
-    #     objectFolderName=$(aws s3api list-objects-v2 --bucket dev-test-eagles --query 'sort_by(Contents, &LastModified)[-1].Key' | tr -d '"' | grep -oE '[^\"].*\/\s*')
-    #     echo "$objectFolderName"
-    #     echo "oFolderName=$objectFolderName" >> $GITHUB_OUTPUT
-
     - name: Check if Directory in Stage
       id: check-directory-existence
       run: |
@@ -58,9 +51,11 @@ jobs:
         echo "existenceDirectory=$existence" >> $GITHUB_OUTPUT
 
 
-    - name: Run Sync
+    - name: Create Copy and Sync
       if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'true')
-      run: aws s3 sync --delete s3://dev-test-eagles/ s3://stage-tests-eagles/
+      run: |
+        aws s3 cp --recursive s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/old-${{steps.check-directory-existence.outputs.oFolderName}}
+        aws s3 sync --delete s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}}
 
     - name: Create Copy
       if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'false')
