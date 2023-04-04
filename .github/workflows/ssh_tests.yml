@@ -1,8 +1,8 @@
-name: Testing SSH into ASG
-on:
-  push:
-    branches:
-      - main
+# name: Testing SSH into ASG
+# on:
+#   push:
+#     branches:
+#       - main
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
