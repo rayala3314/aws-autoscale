@@ -57,7 +57,7 @@ jobs:
         aws s3 cp --recursive s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/old-${{steps.check-directory-existence.outputs.oFolderName}}
         aws s3 sync --delete s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}}
 
-    - name: Create Copy
+    - name: Create Copy if it doesn't exist
       if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'false')
       run: aws s3 cp --recursive s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}}
 
