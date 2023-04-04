@@ -64,7 +64,7 @@ jobs:
 
     - name: Create Copy
       if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'false')
-      run: aws s3 cp s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://baby-photo-application/old-files/
+      run: aws s3 cp s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}}* s3://baby-photo-application/old-files/
       # Create copy into another bucket-old
       
           
