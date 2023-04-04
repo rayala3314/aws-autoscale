@@ -48,6 +48,7 @@ jobs:
         echo "oFolderName=$objectFolderName" >> $GITHUB_OUTPUT
         PREFIX=$(aws s3api list-objects-v2 --bucket stage-tests-eagles --prefix "$objectFolderName")
         existence='false'
+        echo "$PREFIX"
         if [ -z $PREFIX ]
         then
           existence='true'
