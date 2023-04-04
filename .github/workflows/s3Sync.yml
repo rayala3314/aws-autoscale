@@ -59,6 +59,11 @@ jobs:
       if: ${{steps.check-directory-existence.outputs.existenceDirectory}} == 'true'
       run: aws s3 sync --delete s3://dev-test-eagles/ s3://stage-tests-eagles/
 
+    - name: Create Copy
+      if: ${{steps.check-directory-existence.outputs.existenceDirectory}} == 'false'
+      run: aws s3 cp s3://dev-test-eagles/${{steps.subdirectory.outputs.oFolderName}} s3://baby-photo-application/${{steps.subdirectory.outputs.oFolderName}}-old
+      # Create copy into another bucket-old
+      
           
 
 
