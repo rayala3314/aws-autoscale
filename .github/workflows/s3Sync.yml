@@ -46,7 +46,12 @@ jobs:
         objectFolderName=$(aws s3api list-objects-v2 --bucket dev-test-eagles --query 'sort_by(Contents, &LastModified)[-1].Key' | tr -d '"' | grep -oE '[^\"].*\/\s*')
         echo "$objectFolderName"
         echo "oFolderName=$objectFolderName" >> $GITHUB_OUTPUT
-        existence=$(aws s3api list-objects-v2 --bucket stage-tests-eagles --query "contains(Contents[].Key, '$objectFolderName')") 
+        PREFIX=$(aws s3api list-objects-v2 --bucket stage-tests-eagles --query "contains(Contents[].Key, '$objectFolderName')")
+        existence='false'
+        if [ -z $PREFIX ]
+        then
+          existence='true'
+        fi
         echo "$existence"
         echo "existenceDirectory=$existence" >> $GITHUB_OUTPUT
 
@@ -59,11 +64,11 @@ jobs:
 
     - name: Create copy if it doesn't exist
       if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'false')
+      #if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'None')
       run: aws s3 cp --recursive s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}}
 
-      
+      # In case of rollback sync back to old-backups with this command
+      # aws s3 sync --delete s3://tribehealth-backups-stage/old-${{steps.check-directory-existence.outputs.oFolderName}} s3://tribehealth-backups-stage/${{steps.check-directory-existence.outputs.oFolderName}}
           
-
-
 
 
