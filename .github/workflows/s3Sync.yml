@@ -67,7 +67,6 @@ jobs:
 
     - name: Create copy if it doesn't exist
       if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'false')
-      #if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'None')
       run: aws s3 cp --recursive s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}}
 
       # In case of rollback sync back to old-backups with this command
