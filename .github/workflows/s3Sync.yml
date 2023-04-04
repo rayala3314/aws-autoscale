@@ -51,9 +51,9 @@ jobs:
         existence=''
         if [ -z $PREFIX ]
         then
-          existence='true'
-        else
           existence='false'
+        else
+          existence='true'
         fi
         echo "$existence"
         echo "existenceDirectory=$existence" >> $GITHUB_OUTPUT
