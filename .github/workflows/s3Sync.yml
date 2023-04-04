@@ -51,7 +51,7 @@ jobs:
         echo "existenceDirectory=$existence" >> $GITHUB_OUTPUT
 
 
-    - name: Create Copy and Sync
+    - name: Create Copy and Sync in Stage
       if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'true')
       run: |
         aws s3 cp --recursive s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/old-${{steps.check-directory-existence.outputs.oFolderName}}
@@ -59,7 +59,7 @@ jobs:
 
     - name: Create Copy
       if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'false')
-      run: aws s3 cp --recursive s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://baby-photo-application/old-files/
+      run: aws s3 cp --recursive s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}}
 
       
           
