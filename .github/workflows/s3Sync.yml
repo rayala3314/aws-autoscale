@@ -57,7 +57,7 @@ jobs:
 
     - name: Run Sync
       if: ${{steps.check-directory-existence.outputs.existenceDirectory}} == 'true'
-      run: aws s3 sync s3://dev-test-eagles/ s3://stage-tests-eagles/
+      run: aws s3 sync --delete s3://dev-test-eagles/ s3://stage-tests-eagles/
 
           
 
