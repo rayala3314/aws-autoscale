@@ -31,7 +31,7 @@ jobs:
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     outputs:
-      folderName: ${{steps.check-directory-existence.subDirectoryName}}
+      folderName: ${{steps.check-directory-existence.outputs.oFolderName}}
     name: Sync Dev Bucket to Stage Bucket
     needs:
       - aws-cli
