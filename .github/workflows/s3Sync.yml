@@ -30,6 +30,8 @@ jobs:
   sync-bucket:
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
+    outputs:
+      folderName: ${{steps.check-directory-existence.oFolderName}}
     name: Sync Dev Bucket to Stage Bucket
     needs:
       - aws-cli
@@ -47,31 +49,36 @@ jobs:
         objectFolderName=$(aws s3api list-objects-v2 --bucket dev-test-eagles --query 'sort_by(Contents, &LastModified)[-1].Key' | tr -d '"' | grep -oE '[^\"].*\/\s*')
         echo "$objectFolderName"
         echo "oFolderName=$objectFolderName" >> $GITHUB_OUTPUT
-        PREFIX=$(aws s3api list-objects-v2 --bucket stage-tests-eagles --prefix "$objectFolderName" --query "Contents[0].Key" --output text)
-        echo "$PREFIX"
+        PREFIXCHECK=$(aws s3api list-objects-v2 --bucket stage-tests-eagles --prefix "$objectFolderName" --query "Contents[0].Key" --output text)
         existence=''
-        if [ $PREFIX == 'None' ]
+        if [ $PREFIXCHECK == 'None' ]
         then
           existence='false'
         else
           existence='true'
         fi
-        echo "$existence"
         echo "existenceDirectory=$existence" >> $GITHUB_OUTPUT
 
 
     - name: Create Copy and Sync in Stage
       if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'true')
       run: |
-        aws s3 cp --recursive s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/old-${{steps.check-directory-existence.outputs.oFolderName}}
-        aws s3 sync --delete s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}}
+        aws s3 cp --recursive s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/backup-${{steps.check-directory-existence.outputs.oFolderName}}
+        aws s3 cp --recursive s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}}
 
     - name: Create copy if it doesn't exist
       if: contains(steps.check-directory-existence.outputs.existenceDirectory, 'false')
       run: aws s3 cp --recursive s3://dev-test-eagles/${{steps.check-directory-existence.outputs.oFolderName}} s3://stage-tests-eagles/${{steps.check-directory-existence.outputs.oFolderName}}
 
+  debug:
+    runs-on: ubuntu-latest
+    needs: sync-bucket
+    steps:
+      - name: Debug Output Two
+        id: stepTwo
+        run: echo "${{ toJson(needs.sync-bucket) }}"
       # In case of rollback sync back to old-backups with this command
-      # aws s3 sync --delete s3://tribehealth-backups-stage/old-${{steps.check-directory-existence.outputs.oFolderName}} s3://tribehealth-backups-stage/${{steps.check-directory-existence.outputs.oFolderName}}
+      # aws s3 cp --recursive s3://tribehealth-backups-stage/old-${{steps.check-directory-existence.outputs.oFolderName}} s3://tribehealth-backups-stage/${{steps.check-directory-existence.outputs.oFolderName}}
           
 
 
