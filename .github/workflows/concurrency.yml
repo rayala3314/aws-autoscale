@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ahmadnassri/action-workflow-queue@v1
 
-      # only runs additional steps if there is no other instance of `my-workflow.yml` currently runnings
+      # only runs additional steps if there is no other instance of `my-workflow.yml` currently runningss
   timer-wait:
     if: github.ref_name == 'testingConcurrency'
     runs-on: ubuntu-latest
