@@ -36,7 +36,7 @@ jobs:
       # only runs additional steps if there is no other instance of `my-workflow.yml` currently runnings
   timer-wait:
     if: github.ref_name == 'testingConcurrency'
-    runs-on: ubuntut-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Wait 5 minutes for attachment to complete
         uses: jakejarvis/wait-action@master
