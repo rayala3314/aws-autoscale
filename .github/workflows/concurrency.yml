@@ -10,7 +10,7 @@ env:
   AWS_DEFAULT_REGION: "us-west-1"
 
 jobs:
-# AWS CLI
+# AWS CLI test
   aws-cli:
     runs-on: ubuntu-latest
     steps:
@@ -35,7 +35,7 @@ jobs:
 
       # only runs additional steps if there is no other instance of `my-workflow.yml` currently running
   timer-wait:
-    if: github.ref_name == "testingConcurrency"
+    if: github.ref_name == 'testingConcurrency'
     runs-on: ubuntut-latest
     steps:
       - name: Wait 5 minutes for attachment to complete
