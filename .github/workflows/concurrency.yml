@@ -11,7 +11,6 @@ env:
 
 concurrency:
   group: ${{ github.head_ref || github.ref_name }} 
-  cancel-in-queue: false
   cancel-in-progress: false
 
 jobs:
