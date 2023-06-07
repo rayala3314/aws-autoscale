@@ -17,23 +17,23 @@ jobs:
           time: '1m'
 
   slackNotification:
-      name: Slack Notification
-      runs-on: ubuntu-latest
-      needs: 
-        - timer-wait
-      if: always()
-      steps:
-        - uses: actions/checkout@v2
-        - name: Work Flow Failed
-          uses: rtCamp/action-slack-notify@v2
-          env:
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-            SLACK_CHANNEL: github-notifications
-            SLACK_ICON: 'https://user-images.githubusercontent.com/98909645/173383354-c303d398-d64a-49ff-b796-261a54e92f1e.png'
-            SLACK_COLOR: ${{ job.status }} 
-            SLACK_USERNAME: Ray
-            SLACK_TITLE: Deloyment
-            SLACK_MESSAGE: ":red_circle: ${{needs.timer-wait.status}} :red_circle:"
+    name: Slack Notification
+    runs-on: ubuntu-latest
+    needs: 
+      - timer-wait
+    if: always()
+    steps:
+      - uses: actions/checkout@v2
+      - name: Work Flow Failed
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: github-notifications
+          SLACK_ICON: 'https://user-images.githubusercontent.com/98909645/173383354-c303d398-d64a-49ff-b796-261a54e92f1e.png'
+          SLACK_COLOR: ${{ job.status }} 
+          SLACK_USERNAME: Ray
+          SLACK_TITLE: Deloyment
+          SLACK_MESSAGE: ":red_circle: ${{needs.timer-wait.status}} :red_circle:"
 
 
 
