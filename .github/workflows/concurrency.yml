@@ -17,7 +17,7 @@ jobs:
            echo "test"
            echo "jobName=Get Host" >> $GITHUB_OUTPUT
            exit 1 
-           
+
       - name: SSH
         id: ssh-install
         run: |
@@ -26,6 +26,7 @@ jobs:
            echo "jobName=ssh-install" >> $GITHUB_OUTPUT
 
       - name: Check Status
+        if: always()
         run: |
           echo "${{steps.ssh-install.outputs.jobName}} has outcome: ${{steps.ssh-install.outcome}} "
           echo "${{steps.get-host.outputs.jobName}} has outcome: ${{steps.get-host.outcome}} "
