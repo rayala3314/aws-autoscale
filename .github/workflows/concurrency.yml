@@ -3,27 +3,12 @@ on:
   push:
     branches:
       - testingConcurrency
-
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: "us-west-1"
-
+      
 concurrency:
   group: ${{ github.head_ref || github.ref_name }} 
   cancel-in-progress: false
 
 jobs:
-
- # Sync Commandsss
-#   wait-for-workflows:
-#     if: github.ref_name == 'testingConcurrency'
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-#       - uses: ahmadnassri/action-workflow-queue@v1
-
-      # only runs additional steps if there is no other instance of `my-workflow.yml` currently runningsss
   timer-wait:
     if: github.ref_name == 'testingConcurrency'
     runs-on: ubuntu-latest
