@@ -3,12 +3,13 @@ on:
   push:
     branches:
       - testingConcurrency
-      
+
 concurrency:
   group: ${{ github.head_ref || github.ref_name }} 
   cancel-in-progress: false
 
 jobs:
+# Waits for presetm time
   timer-wait:
     if: github.ref_name == 'testingConcurrency'
     runs-on: ubuntu-latest
