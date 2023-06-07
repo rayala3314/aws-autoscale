@@ -7,13 +7,11 @@ on:
 jobs:
 # Waits for presetm timea
   timer-wait:
+    name: Timer wait
     if: github.ref_name == 'notifyslack'
     runs-on: ubuntu-latest
     steps:
-      - name: Wait 1 minutes for attachment to complete
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '1m'
+      run: echo "test"
   status:
     needs:
       - timer-wait
