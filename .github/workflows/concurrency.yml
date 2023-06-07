@@ -7,9 +7,7 @@ on:
 jobs:
 # Waits for presetm timea
   timer-wait:
-    name: Timer wait
-    outputs:
-      name: ${{ steps.ssh-install.outputs.jobName }}
+    name: Install NGINX
     if: github.ref_name == 'notifyslack'
     runs-on: ubuntu-latest
     steps:
@@ -19,16 +17,10 @@ jobs:
            echo "test"
            echo "${{steps.Test.name}}"
            echo "jobName=ssh-install" >> $GITHUB_OUTPUT
-  status:
-    needs:
-      - timer-wait
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug output
+      - name: Check Status
         run: |
-          echo "${{ toJson(needs.timer-wait) }}"
-          echo "${{ needs.timer-wait.outputs.name}}"
-          echo "${{ needs.timer-wait.result}}"
+          echo "${{steps.ssh-install.outputs.jobName}}"
+          echo "${{steps.ssh-install.outcome}}"
 
   # slackNotification:
   #   name: Slack Notification
