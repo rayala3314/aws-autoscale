@@ -11,10 +11,10 @@ jobs:
     if: github.ref_name == 'notifyslack'
     runs-on: ubuntu-latest
     steps:
-      - name: Tes
+      - name: Test
         run: |
            echo "test"
-           echo "job.timer-wait.name"
+           echo "${{steps.Test.name}}"
   status:
     needs:
       - timer-wait
