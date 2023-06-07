@@ -5,7 +5,7 @@ on:
       - notifyslack
 
 jobs:
-# Waits for presetm time
+# Waits for presetm timea
   timer-wait:
     if: github.ref_name == 'notifyslack'
     runs-on: ubuntu-latest
