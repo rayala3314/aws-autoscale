@@ -12,7 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Tes
-        run: echo "test"
+        run: |
+           echo "test"
+           echo "job.timer-wait.name"
   status:
     needs:
       - timer-wait
@@ -21,7 +23,7 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ toJson(needs.timer-wait) }}"
-          echo "${{ needs}}"
+          echo "${{ needs.timer-wait.name}}"
           echo "${{ needs.timer-wait.result}}"
 
   # slackNotification:
