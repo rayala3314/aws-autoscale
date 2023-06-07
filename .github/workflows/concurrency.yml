@@ -22,6 +22,8 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ toJson(needs.timer-wait) }}"
+          echo "${{ needs.timer-wait}}"
+          echo "${{ needs.timer-wait.result}}"
 
   # slackNotification:
   #   name: Slack Notification
