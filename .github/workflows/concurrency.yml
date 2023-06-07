@@ -8,13 +8,16 @@ jobs:
 # Waits for presetm timea
   timer-wait:
     name: Timer wait
+    outputs:
+      name: ${{ steps.ssh-install.outputs.jobName }}
     if: github.ref_name == 'notifyslack'
     runs-on: ubuntu-latest
     steps:
-      - name: Test
+      - name: ssh-install
         run: |
            echo "test"
            echo "${{steps.Test.name}}"
+           echo "jobName=ssh-install" >> $GITHUB_OUTPUT
   status:
     needs:
       - timer-wait
@@ -23,7 +26,7 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ toJson(needs.timer-wait) }}"
-          echo "${{ needs.timer-wait.name}}"
+          echo "${{ needs.timer-wait.outputs.name}}"
           echo "${{ needs.timer-wait.result}}"
 
   # slackNotification:
