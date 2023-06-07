@@ -14,14 +14,14 @@ jobs:
         uses: jakejarvis/wait-action@master
         with:
           time: '1m'
-    status:
-      needs:
-        - timer-wait
-      runs-on: ubuntu-latest
-      steps:
-        - name: Debug output
-          run: |
-            echo "${{ toJson(needs.timer-wait) }}"
+  status:
+    needs:
+      - timer-wait
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        run: |
+          echo "${{ toJson(needs.timer-wait) }}"
 
   # slackNotification:
   #   name: Slack Notification
