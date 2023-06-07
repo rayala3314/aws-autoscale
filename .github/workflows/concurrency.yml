@@ -1,4 +1,4 @@
-name: Testing Workflow Concurrency
+name: Testing Slack Notify
 on:
   push:
     branches:
@@ -31,8 +31,8 @@ jobs:
           SLACK_ICON: 'https://user-images.githubusercontent.com/98909645/173383354-c303d398-d64a-49ff-b796-261a54e92f1e.png'
           SLACK_COLOR: ${{ job.status }} 
           SLACK_USERNAME: Ray
-          SLACK_TITLE: Deloyment
-          SLACK_MESSAGE: ":red_circle: ${{needs.timer-wait.status}} :red_circle:"
+          SLACK_TITLE: ${{ needs.timer-wait.outputs.build_id }}
+          SLACK_MESSAGE: "{{needs.timer-wait.result}}"
 
 
 
