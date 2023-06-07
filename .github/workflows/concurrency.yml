@@ -32,7 +32,7 @@ jobs:
           SLACK_COLOR: ${{ job.status }} 
           SLACK_USERNAME: Ray
           SLACK_TITLE: ${{ needs.timer-wait.outputs.build_id }}
-          SLACK_MESSAGE: "{{needs.timer-wait.result}}"
+          SLACK_MESSAGE: "${{needs.timer-wait.result}}"
 
 
 
