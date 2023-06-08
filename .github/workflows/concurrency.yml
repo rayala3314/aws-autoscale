@@ -10,26 +10,100 @@ jobs:
     name: Install NGINX
     if: github.ref_name == 'notifyslack'
     runs-on: ubuntu-latest
+    outputs:
+      name: ${{steps.deploy.outputs.jobName}}
     steps:
-      - name: Get Host
+      - name: Deploy Prod
+        id: deploy
+        run: |
+           echo "test"
+           echo "jobName=Deploy Prod" >> $GITHUB_OUTPUT
+           exit 1 
+
+      - name: Get Instance Host
         id: get-host
         run: |
            echo "test"
-           echo "jobName=Get Host" >> $GITHUB_OUTPUT
-           exit 1 
+           echo "${{steps.Test.name}}"
+           echo "stepName=Get Instance Host" >> $GITHUB_OUTPUT
 
-      - name: SSH
-        id: ssh-install
-        run: |
+      - name: SSH and Install Nginx Gunicorn Supervisor and Run Django Commands
+        id: ssh-and-nginx
+        run: | 
            echo "test"
            echo "${{steps.Test.name}}"
-           echo "jobName=ssh-install" >> $GITHUB_OUTPUT
+           echo "stepName=SSH and NGIXN Install" >> $GITHUB_OUTPUT
+
 
       - name: Check Status
         if: always()
         run: |
-          echo "${{steps.ssh-install.outputs.jobName}} has outcome: ${{steps.ssh-install.outcome}} "
-          echo "${{steps.get-host.outputs.jobName}} has outcome: ${{steps.get-host.outcome}} "
+          echo "${{steps.deploy.outputs.jobName}} has outcome: ${{steps.deploy.outcome}} "
+          echo "${{steps.get-host.outputs.stepName}} has outcome: ${{steps.get-host.outcome}} "
+          echo "${{steps.ssh-and-nginx.outputs.jobName}} has outcome: ${{steps.ssh-and-nginx.outcome}} "
+  
+  check-outcome:
+    name: Notify
+    need:
+      - timer-wait
+    runs-on: ubuntu-latest:
+    if: always()
+    steps:
+      - name: Notify Slack Channel
+        run: |
+          echo "${{ needs.timer-wait.outputs.name}} with result: ${{needs.timer-wait.result}}"
+
+
+
+
+  # deploy-prod:
+  #     runs-on: ${{ needs.start-runner.outputs.label }}
+  #     needs: 
+  #       - aws-cli
+  #       - start-runner  
+  #     if: ${{ contains(github.event_name, 'release') }}
+  #     # if: github.ref_name == 'main' # <-----------> if: ${{ contains(github.event_name, 'release')
+  #     steps:
+  #     - name: Configure AWS Assume Role in Prod
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #        role-to-assume: ${{ secrets.AWS_PROD_ROLE }}
+  #        aws-region: us-east-1
+  #        role-session-name: RefreshInstance
+  #        role-duration-seconds: 7200
+  #        #backing up the operational data, scaling up from 1 to 2, new instance will have the new code. 
+  #     - name: Deploy Prod
+  #       run: |
+  #         objectFolderName=$(aws s3api list-objects-v2 --bucket tribehealth-backups-dev --query 'sort_by(Contents, &LastModified)[-1].Key' | tr -d '"' | grep -oE '[^\"].*\/\s*')
+  #         echo "$objectFolderName"
+  #         aws autoscaling create-or-update-tags --tags ResourceId=tribehealth-platform-prod,ResourceType=auto-scaling-group,Key=GHInstallApp,Value=true,PropagateAtLaunch=true --region us-east-1
+  #         aws autoscaling create-or-update-tags --tags ResourceId=tribehealth-platform-prod,ResourceType=auto-scaling-group,Key=GithubTag,Value=${{github.ref_name}},PropagateAtLaunch=true
+  #         aws autoscaling update-auto-scaling-group --auto-scaling-group-name tribehealth-platform-prod --max-size 2 --desired-capacity 2
+  #     - uses: actions/checkout@v2
+  #     - name: Wait 2 minutes for Prod Deployment
+  #       uses: jakejarvis/wait-action@master
+  #       with:
+  #         time: '2m'
+  #     - name: Get Instance Host #Getting the newly launched instance IP to ssh into 
+  #       id: prod-instance-host
+  #       run: | 
+  #         sudo yum install jq -y
+  #         HOST=$(aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime, id: InstanceId}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=tribehealth-platform-prod" | jq -r 'sort_by(.time) | reverse | .[0] | .ip')
+  #         echo "prodInstanceHost=$HOST" >> $GITHUB_OUTPUT
+  #     - name: SSH and Install Nginx Gunicorn Supervisor and Run Django Commands #SSHing into the new instance to run the userdata. 
+  #       uses: appleboy/ssh-action@v0.1.8
+  #       with:
+  #         command_timeout: 120m #Sertting a timeout of 30 mins, this should be more than enough time for userdata to complete
+  #         host: ${{ steps.prod-instance-host.outputs.prodInstanceHost}}
+  #         username: ec2-user
+  #         key: ${{ secrets.PROD_SSH_KEY }}
+  #         script_stop: true
+  #         script: |
+  #           INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+  #           aws ec2 create-tags --resources $INSTANCE_ID --region us-east-1 --tags Key=GHInstallApp,Value=false
+  #           aws ssm get-parameter --name /prod/tribehealth/userdata --with-decryption --region us-east-1 --query Parameter.Value --output text > userDataScript.sh
+  #           sudo bash /home/ec2-user/userDataScript.sh
+
 
   # slackNotification:
   #   name: Slack Notification
