@@ -22,7 +22,6 @@ jobs:
            echo "jobName=Deploy Prod" >> $GITHUB_OUTPUT
 
       - name: Get Instance Host
-        id: get-host
         run: |
            echo "test"
            echo "${{steps.Test.name}}"
