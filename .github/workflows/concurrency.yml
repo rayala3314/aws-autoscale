@@ -119,7 +119,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_CHANNEL: github-notifications
           SLACK_ICON: 'https://user-images.githubusercontent.com/98909645/173383354-c303d398-d64a-49ff-b796-261a54e92f1e.png'
-          SLACK_COLOR: ${{ job.status }} 
+          SLACK_COLOR: ${{ needs.timer-wait.result }} 
           SLACK_USERNAME: Ray
           SLACK_TITLE: ${{ needs.timer-wait.outputs.name }}
           SLACK_MESSAGE: "Status of Job: ${{needs.timer-wait.result}}"
