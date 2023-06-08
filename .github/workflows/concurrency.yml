@@ -43,8 +43,8 @@ jobs:
           echo "${{steps.ssh-and-nginx.outputs.stepName}} Step had outcome: ${{steps.ssh-and-nginx.outcome}} "
       
       - name: Slack
-      - uses: act10ns/slack@v1
         if: always()
+        uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
