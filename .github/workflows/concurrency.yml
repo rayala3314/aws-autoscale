@@ -46,7 +46,7 @@ jobs:
     name: Notify
     need:
       - timer-wait
-    runs-on: ubuntu-latest:
+    runs-on: ubuntu-latest
     if: always()
     steps:
       - name: Notify Slack Channel
