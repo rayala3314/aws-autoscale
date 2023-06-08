@@ -18,7 +18,6 @@ jobs:
         run: |
            echo "test"
            echo "jobName=Deploy Prod" >> $GITHUB_OUTPUT
-           exit 1 
 
       - name: Get Instance Host
         id: get-host
@@ -38,9 +37,9 @@ jobs:
       - name: Check Status
         if: always()
         run: |
-          echo "${{steps.deploy.outputs.jobName}} has outcome: ${{steps.deploy.outcome}} "
-          echo "${{steps.get-host.outputs.stepName}} has outcome: ${{steps.get-host.outcome}} "
-          echo "${{steps.ssh-and-nginx.outputs.jobName}} has outcome: ${{steps.ssh-and-nginx.outcome}} "
+          echo "${{steps.deploy.outputs.jobName}} Step had outcome: ${{steps.deploy.outcome}} "
+          echo "${{steps.get-host.outputs.stepName}} Step had outcome: ${{steps.get-host.outcome}} "
+          echo "${{steps.ssh-and-nginx.outputs.jobName}} Step had outcome: ${{steps.ssh-and-nginx.outcome}} "
   
   check-outcome:
     name: Notify
@@ -51,7 +50,7 @@ jobs:
     steps:
       - name: Notify Slack Channel
         run: |
-          echo "${{ needs.timer-wait.outputs.name}} with result: ${{needs.timer-wait.result}}"
+          echo "${{ needs.timer-wait.outputs.name}} Job had result of: ${{needs.timer-wait.result}}"
 
 
 
