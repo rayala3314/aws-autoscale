@@ -20,7 +20,6 @@ jobs:
         run: |
            echo "test"
            echo "jobName=Deploy Prod" >> $GITHUB_OUTPUT
-           exit 1
 
       - name: Get Instance Host
         id: get-host
