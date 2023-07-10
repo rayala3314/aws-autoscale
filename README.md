@@ -1,3 +1,2 @@
 # aws-autoscale
-Testing github actionssssssssssss
-sssssssssassssssssss
+Repo to Test different AWS automations
