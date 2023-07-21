@@ -30,7 +30,7 @@ jobs:
           host: ec2-13-57-17-208.us-west-1.compute.amazonaws.com
           username: ec2-user
           key: ${{ secrets.SSH_KEY }}
-          script_stop: true
+          script_stop: false
           script: |
             INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
             pwd
