@@ -23,7 +23,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-1
       
-      - name: SSH and Install Nginx Gunicorn Supervisor and Run Django Commands
+      - name: SSH
         uses: appleboy/ssh-action@v0.1.8
         with:
           command_timeout: 120m
