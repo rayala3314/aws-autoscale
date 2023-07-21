@@ -47,7 +47,7 @@ jobs:
   
 # aws ec2 create-tags --resources $INSTANCE_ID --region us-east-1 --tags Key=GHInstallApp,Value=false
   # slackNotification:
-  #   name: Slack Notifications
+  #   name: Slack Notificationss
   #   runs-on: ubuntu-latest
   #   needs: 
   #     - timer-wait
