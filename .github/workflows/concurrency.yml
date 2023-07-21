@@ -42,7 +42,7 @@ jobs:
               fi
               echo 'tag value:'
               echo $GH_INSTALL_APP
-              sleep 5
+              sleep 7
             done 
   
 # aws ec2 create-tags --resources $INSTANCE_ID --region us-east-1 --tags Key=GHInstallApp,Value=false
