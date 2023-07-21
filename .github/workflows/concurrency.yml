@@ -41,7 +41,6 @@ jobs:
                 echo "Tag Updated"
               fi
               echo "tag value: $GH_INSTALL_APP"
-              echo $GH_INSTALL_APP
               sleep 7
             done 
   
