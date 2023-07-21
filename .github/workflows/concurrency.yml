@@ -10,10 +10,7 @@ jobs:
     if: github.ref_name == 'testingConcurrency'
     runs-on: ubuntu-latest
     steps:
-      - name: Wait 1 minutes for attachment to complete
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '1m'
+      - uses: actions/checkout@v2
       - name: Configure AWS credentials
         id: aws-credentials
         uses: aws-actions/configure-aws-credentials@v1
