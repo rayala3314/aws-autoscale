@@ -38,7 +38,7 @@ jobs:
               GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
               if [ "$GH_INSTALL_APP" = "true" ]
               then
-                exit 0
+                echo "Tag Updated"
               fi
               echo 'tag value:'
               echo $GH_INSTALL_APP
