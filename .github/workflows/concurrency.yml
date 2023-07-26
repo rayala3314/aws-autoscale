@@ -32,8 +32,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script_stop: true
           script: |
-            set +e
-            INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
             pwd
             for i in {1..6}; do
               GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
