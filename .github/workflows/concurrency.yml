@@ -49,7 +49,7 @@ jobs:
 
 
   # INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-  # aws ec2 create-tags --resources $INSTANCE_ID --region us-east-1 --tags Key=GHInstallApp,Value=false
+  # awss ec2 create-tags --resources $INSTANCE_ID --region us-east-1 --tags Key=GHInstallApp,Value=false
   # aws ec2 create-tags --resources $INSTANCE_ID --region us-east-1 --tags Key=GithubTag,Value=
   # pwd
   # for i in {1..6}; do
