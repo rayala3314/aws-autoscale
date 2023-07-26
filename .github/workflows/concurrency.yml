@@ -39,7 +39,6 @@ jobs:
               if [ "$GH_INSTALL_APP" = "true" ]
               then
                 echo "Tag Updated"
-                break
               fi
               echo "tag value: $GH_INSTALL_APP"
               sleep 7
