@@ -27,11 +27,12 @@ jobs:
         uses: appleboy/ssh-action@v0.1.8
         with:
           command_timeout: 120m
-          host: ec2-13-57-17-208.us-west-1.compute.amazonaws.com
+          host: ec2-54-153-47-145.us-west-1.compute.amazonaws.com
           username: ec2-user
           key: ${{ secrets.SSH_KEY }}
           script_stop: false
           script: |
+            set +e
             INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
             pwd
             for i in {1..6}; do
@@ -39,11 +40,30 @@ jobs:
               if [ "$GH_INSTALL_APP" = "true" ]
               then
                 echo "Tag Updated"
+                break
               fi
               echo "tag value: $GH_INSTALL_APP"
               sleep 7
             done 
-  
+            sudo bash /home/ec2-user/test.sh
+
+
+  # INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+  # aws ec2 create-tags --resources $INSTANCE_ID --region us-east-1 --tags Key=GHInstallApp,Value=false
+  # aws ec2 create-tags --resources $INSTANCE_ID --region us-east-1 --tags Key=GithubTag,Value=
+  # pwd
+  # for i in {1..6}; do
+  #   GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
+  #   if [ "$GH_INSTALL_APP" = "true" ]
+  #   then
+  #     echo "Tag Updated"
+  #   fi
+  #   echo "tag value: $GH_INSTALL_APP"
+  #   sleep 7
+  # done 
+  # aws ssm get-parameter --name /dev/tribehealth/userdata --with-decryption --region us-east-1 --query Parameter.Value --output text > userDataScript.sh
+  # sudo bash /home/ec2-user/userDataScript.sh
+
 # aws ec2 create-tags --resources $INSTANCE_ID --region us-east-1 --tags Key=GHInstallApp,Value=false
   # slackNotification:
   #   name: Slack Notificationss
