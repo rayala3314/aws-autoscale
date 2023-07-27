@@ -31,18 +31,13 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_KEY }}
           debug: true
-          script_stop: false
+          script_stop: true
           script: |
             pwd
-            bash --version
-            mv abc/def
             cat /home/ec2-user/test.py
-            cat /home/ec2-user/test.py
-
             for i in {1..6}; 
             do
               GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-deta/tags/instance/GHINSTALL`"
-              cat /home/ec2-user/test.py
               if [ "$GH_INSTALL_APP" = "true" ]
               then
                 echo "Tag Updated"
