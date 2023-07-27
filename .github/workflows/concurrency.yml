@@ -31,7 +31,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.SSH_KEY }}
           debug: true
-          script_stop: true
+          script_stop: false
           script: |
             pwd
             bash --version
@@ -39,9 +39,9 @@ jobs:
             do
               GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-deta/tags/instance/GHINSTALL`"
               if [ "$GH_INSTALL_APP" = "true" ]
-                then
-                  echo "Tag Updated"
-                  break
+              then
+                echo "Tag Updated"
+                break
               fi
               echo "tag value: $GH_INSTALL_APP"
               sleep 5
