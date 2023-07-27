@@ -35,15 +35,18 @@ jobs:
           script: |
             pwd
             for i in {1..6}; do
-              GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
+              GH_INSTALL_APP="`wget -q0- http://169.254.169.254/latest/meta-deta/tags/instance/GHINSTALL`"
               if [ "$GH_INSTALL_APP" = "true" ]
               then
                 echo "Tag Updated"
+                break
               fi
               echo "tag value: $GH_INSTALL_APP"
-              sleep 7
-            done 
-            sudo bash /home/ec2-user/test.sh
+              sleep 5
+            done
+            echo "Continued with script"
+            
+
 
 
   # INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
