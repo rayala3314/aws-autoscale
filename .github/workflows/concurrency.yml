@@ -38,13 +38,22 @@ jobs:
             echo "Before variable Definition"
             GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
             echo "$GH_INSTALL_APP"
-            echo "Before Loop"
-            sudo bash /home/ec2-user/test.sh
+            for i in {1..6}; do
+              GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
+              if [ "$GH_INSTALL_APP" = "true" ]
+              then
+                echo "Tag Updated"
+              fi
+              echo "tag value: $GH_INSTALL_APP"
+              sleep 7
+            done 
             echo "Continued with script"
             echo "Test"
 
 
 
+  # echo "Before Loop"
+  # sudo bash /home/ec2-user/test.sh
 
   # INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
   # awss ec2 create-tags --resources $INSTANCE_ID --region us-east-1 --tags Key=GHInstallApp,Value=false
