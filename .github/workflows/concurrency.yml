@@ -43,7 +43,8 @@ jobs:
             while [ "$GH_INSTALL_APP" = "false" ]
             do
               echo "Sleeping"
-              GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-deta/tags/instance/GHINSTALL`"
+              GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
+              echo "$GH_INSTALL_APP"
               echo "tag value: $GH_INSTALL_APP"
               sleep 5
             done
