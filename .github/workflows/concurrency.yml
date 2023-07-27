@@ -39,20 +39,8 @@ jobs:
             GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
             echo "$GH_INSTALL_APP"
             echo "Before Loop"
-            for i in {1..6}; do
-              GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
-              echo "$GH_INSTALL_APP"
-              if [ "$GH_INSTALL_APP" = "true" ]
-              then
-                echo "Inside If"
-                break
-              fi
-              echo "tag value: $GH_INSTALL_APP"
-              echo "Sleeping for 5 seconds..."
-              sleep 5
-            done
-            echo "Continued with script"
             sudo bash /home/ec2-user/test.sh
+            echo "Continued with script"
 
 
 
