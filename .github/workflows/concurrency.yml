@@ -44,6 +44,8 @@ jobs:
               if [ "$GH_INSTALL_APP" = "true" ]
               then
                 echo "Inside IF"
+              else
+                echo "Test"
               fi
               echo "tag value: $GH_INSTALL_APP"
               sleep 7
