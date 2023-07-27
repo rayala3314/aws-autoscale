@@ -34,23 +34,23 @@ jobs:
           script_stop: true
           script: |
             whoami
-            wget --version
             pwd
             echo "Before variable Definition"
             GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
-            echo "Before Loop"
             echo "$GH_INSTALL_APP"
+            echo "Before Loop"
             for i in {1..6}; do
               GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-data/tags/instance/GHINSTALL`"
-              echo "Sleeping"
-              if [ "$GH_INSTALL_APP" = "false" ]
+              if [ "$GH_INSTALL_APP" = "true" ]
               then
                 break
               fi
               echo "tag value: $GH_INSTALL_APP"
+              echo "Sleeping for 5 seconds..."
               sleep 5
             done
             echo "Continued with script"
+            sudo bash /home/ec2-user/test.sh
 
 
 
