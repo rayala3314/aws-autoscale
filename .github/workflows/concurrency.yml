@@ -35,6 +35,7 @@ jobs:
           script: |
             pwd
             bash --version
+            mv abc/def
             for i in {1..6}; 
             do
               GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-deta/tags/instance/GHINSTALL`"
@@ -47,6 +48,7 @@ jobs:
               sleep 5
             done
             echo "Continued with script"
+            cat /home/ec2-user/test.py
 
 
 
