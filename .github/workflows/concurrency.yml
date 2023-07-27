@@ -44,6 +44,7 @@ jobs:
               echo "$GH_INSTALL_APP"
               if [ "$GH_INSTALL_APP" = "true" ]
               then
+                echo "Inside If"
                 break
               fi
               echo "tag value: $GH_INSTALL_APP"
