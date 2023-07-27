@@ -27,11 +27,11 @@ jobs:
         uses: appleboy/ssh-action@v0.1.8
         with:
           command_timeout: 120m
-          host: ec2-54-153-47-145.us-west-1.compute.amazonaws.com
+          host: ec2-54-176-109-94.us-west-1.compute.amazonaws.com
           username: ec2-user
           key: ${{ secrets.SSH_KEY }}
           debug: true
-          script_stop: false
+          script_stop: true
           script: |
             pwd
             for i in {1..6}; do
