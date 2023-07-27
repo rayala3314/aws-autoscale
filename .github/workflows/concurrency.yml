@@ -37,14 +37,14 @@ jobs:
             bash --version
             for i in {1..6} 
             do
-              GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-deta/tags/instance/GHINSTALL`"
+              GH_INSTALL_APP="`wget -qO- http://169.254.169.254/latest/meta-deta/tags/instance/GHINSTALL`";
               if [ "$GH_INSTALL_APP" = "true" ]
               then
-                echo "Tag Updated"
-                break
+                echo "Tag Updated";
+                break;
               fi
-              echo "tag value: $GH_INSTALL_APP"
-              sleep 5
+              echo "tag value: $GH_INSTALL_APP";
+              sleep 5;
             done
             echo "Continued with script"
 
