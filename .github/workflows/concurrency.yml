@@ -49,7 +49,7 @@ jobs:
               sleep 7
             done 
             echo "Continued with script"
-            echo "Test"
+            echo "Test again"
 
 
 
