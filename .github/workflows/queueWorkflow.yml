@@ -15,7 +15,7 @@ concurrency:
 jobs:
 
  # Sync Commandsss
-#   wait-for-workflowss:
+#   wait-for-workflowsss:
 #     if: github.ref_name == 'testingConcurrency'
 #     runs-on: ubuntu-latest
 #     steps:
