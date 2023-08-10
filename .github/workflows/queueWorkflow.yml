@@ -40,7 +40,7 @@ jobs:
       - name: Job One
         run: |
           echo "Job 1"
-          
+
   timer-wait-four:
     needs:
       - timer-wait
@@ -50,7 +50,7 @@ jobs:
       - name: Job One
         run: |
           echo "Job 1"
-          exit 1
+          exit 0
 
   timer-wait-three:
     needs:
