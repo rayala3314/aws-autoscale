@@ -35,7 +35,7 @@ jobs:
     if: github.ref_name == 'testingConcurrency'
     needs:
       - timer-wait
-    if: success()
+    if: ${{ needs.timer-wait.result == 'success'}}
     runs-on: ubuntu-latest
     steps:
       - name: Job One
