@@ -9,8 +9,8 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: "us-west-1"
 
-concurrency:
-  group: ${{ github.head_ref || github.ref_name }} 
+# concurrency:
+#   group: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
 
@@ -27,7 +27,16 @@ jobs:
     if: github.ref_name == 'testingConcurrency'
     runs-on: ubuntu-latest
     steps:
-      - name: Wait 2 minutes for attachment to complete
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '2m'
+      - name: Job One
+        run: |
+          echo "Job 1"
+
+  timer-wait-two:
+    needs:
+      - timer-wait
+    if: success()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Job Two
+        run: |
+          echo "Job 2"
