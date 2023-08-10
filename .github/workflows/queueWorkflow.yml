@@ -50,7 +50,7 @@ jobs:
       - name: Job One
         run: |
           echo "Job 1"
-          exit
+          ahfgsd
 
   timer-wait-three:
     needs:
