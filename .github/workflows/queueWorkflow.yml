@@ -57,8 +57,7 @@ jobs:
     needs:
       - timer-wait
       - timer-wait-two
-      - timer-wait-four
-    if: ${{ always() && needs.timer-wait-two.result == 'success'}}
+    if: failure()
     runs-on: ubuntu-latest
     steps:
       - name: Job Three
