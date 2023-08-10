@@ -38,7 +38,7 @@ jobs:
     steps:
       - name: Job One
         run: |
-          echo "Job 1 - Eigth Run"
+          echo "Job 1 - Ninth Run"
           exit 1
 
   timer-wait-two:
