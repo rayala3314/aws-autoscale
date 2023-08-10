@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: Job One
         run: |
-          echo "Job 1"
+          echo "Job 1 - Second Run"
 
   timer-wait-two:
     needs:
