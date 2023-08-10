@@ -32,10 +32,9 @@ jobs:
           echo "Job 1"
 
   timer-wait-two:
-    if: github.ref_name == 'testingConcurrency'
     needs:
       - timer-wait
-    if: ${{ needs.timer-wait.result == 'success'}}
+    if: success()
     runs-on: ubuntu-latest
     steps:
       - name: Job One
