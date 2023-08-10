@@ -30,11 +30,13 @@ jobs:
       - name: Job One
         run: |
           echo "Job 1"
-          exit 1
 
   timer-wait-two:
     if: github.ref_name == 'testingConcurrency'
     runs-on: ubuntu-latest
+    needs:
+      - timer-wait
+    if: success()
     steps:
       - name: Job One
         run: |
