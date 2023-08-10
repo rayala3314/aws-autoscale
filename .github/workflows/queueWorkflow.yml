@@ -24,18 +24,12 @@ jobs:
 
       # only runs additional steps if there is no other instance of `my-workflow.yml` currently runningsss
   jobs:
-  
-  xyz:
+
+  timer-wait:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: ahmadnassri/action-workflow-queue@v1
-
-
-  timer-wait:
-    if: github.ref_name == 'testingConcurrency'
-    runs-on: ubuntu-latest
-    steps:
       - name: Job One
         run: |
           echo "Job 1"
