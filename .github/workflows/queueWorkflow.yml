@@ -50,7 +50,7 @@ jobs:
       - name: Job One
         run: |
           echo "Job 1"
-          exit 0
+          exit
 
   timer-wait-three:
     needs:
