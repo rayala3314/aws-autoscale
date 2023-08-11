@@ -39,7 +39,6 @@ jobs:
       - name: Job One
         run: |
           echo "Job 1 - Ninth Run"
-          exit 1
 
   timer-wait-two:
     needs:
@@ -50,7 +49,7 @@ jobs:
       - name: Wait 2 minutes for attachment to complete
         uses: jakejarvis/wait-action@master
         with:
-          time: '3m'
+          time: '30m'
     # steps:
     #   - name: Job One
     #     run: |
