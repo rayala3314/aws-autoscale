@@ -8,11 +8,8 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: "us-west-1"
 
-# concurrency:
-#   group: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
-
 
 # only runs additional steps if there is no other instance of `my-workflow.yml` currently runningsss
   debug:
