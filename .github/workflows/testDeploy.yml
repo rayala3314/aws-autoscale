@@ -18,6 +18,9 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ github.ref_name }}"
+          echo "${{ github.event.after }}"
+          echo "${{ github.event.before }}"
+          echo "${{ github.event.branch }}"
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
