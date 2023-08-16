@@ -18,9 +18,13 @@ jobs:
       - name: Debug output
         run: |
           echo "${{ github.ref_name }}"
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
 
   wait-for-queued-workflow:
-    if: github.ref_name == 'testingConcurrency'
+    if: github.ref_name == 'testa'
     runs-on: ubuntu-latest
     name: workflow-last
     steps:
