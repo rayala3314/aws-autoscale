@@ -45,17 +45,19 @@ jobs:
       - name: Job One
         run: |
           echo "Testing and Deploying"
+          exit 1
 
-  timer-wait-two:
-    needs:
-      - deploy-dev
-    if: success()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait 1 minutes for attachment to complete
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '1m'
+  # timer-wait-two:
+  #   needs:
+  #     - deploy-dev
+  #   if: success()
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Wait 1 minutes for attachment to complete
+  #       uses: jakejarvis/wait-action@master
+  #       with:
+  #         time: '1m'
+  #     - name: Fail
   
   rollback-failure:
     runs-on: ubuntu-latest
