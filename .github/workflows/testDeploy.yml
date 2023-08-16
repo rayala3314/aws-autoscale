@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Debug output
         run: |
-          echo "${{ github.ref_name }}
+          echo "${{ github.ref_name }}"
 
   wait-for-queued-workflow:
     if: github.ref_name == 'testingConcurrency'
