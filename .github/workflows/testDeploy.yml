@@ -68,8 +68,6 @@ jobs:
     needs:
       - deploy-dev
     if: failure()
-    env:
-      GITHUB_WORKSPACE: "/home/runner/work/aws-autoscale/aws-autoscale"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
