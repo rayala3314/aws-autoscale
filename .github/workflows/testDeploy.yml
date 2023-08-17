@@ -26,15 +26,15 @@ jobs:
   #         GITHUB_CONTEXT: ${{ toJson(github) }}
   #       run: echo "$GITHUB_CONTEXT"
 
-  wait-for-queued-workflow:
-    if: github.ref_name == 'main'
-    runs-on: ubuntu-latest
-    name: workflow-last
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ahmadnassri/action-workflow-queue@v1
-        with:
-          timeout: 24000000
+  # wait-for-queued-workflow:
+  #   if: github.ref_name == 'main'
+  #   runs-on: ubuntu-latest
+  #   name: workflow-last
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: ahmadnassri/action-workflow-queue@v1
+  #       with:
+  #         timeout: 24000000
 
 
   deploy-dev:
@@ -47,7 +47,7 @@ jobs:
       - name: Job One
         run: |
           echo "Testing and Deploying"
-          exit 1
+        # exit 1
         
 
   # timer-wait-two:
