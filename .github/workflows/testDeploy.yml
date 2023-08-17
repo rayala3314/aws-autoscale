@@ -7,7 +7,6 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: "us-west-1"
-  GITHUB_WORKSPACE: "/home/runner/work/aws-autoscale/aws-autoscale"
 
 
 jobs:
@@ -74,6 +73,7 @@ jobs:
         with:
            ref: ${{ github.ref_name }}
            fetch-depth: 0
+           token: ${{ secrets.GHU_TOKEN }}
 
       - name: Debug Workspace Contents
         run: pwd
