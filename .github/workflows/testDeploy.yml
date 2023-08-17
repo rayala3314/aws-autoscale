@@ -90,6 +90,9 @@ jobs:
 
       - name: Revert
         run: |
+          git checkout ${{github.ref_name}}
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git reset --hard ${{ github.event.before }}
           git commit -m "Reverting code [skip actions]"
           git push --force
