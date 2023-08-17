@@ -72,6 +72,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@vv3.1.0
         with:
+           set-safe-directory: true
            ref: ${{ github.ref_name }}
            fetch-depth: 0
 
