@@ -47,7 +47,7 @@ jobs:
       - name: Job One
         run: |
           echo "Testing and Deploying"
-        # exit 1
+          exit 1
         
 
   # timer-wait-two:
