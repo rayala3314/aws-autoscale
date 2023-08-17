@@ -43,7 +43,7 @@ jobs:
       - wait-for-queued-workflow
     steps:
       - name: Debug Workspace Contents
-        run: pwd
+        run: ls -la /home/runner/work/aws-autoscale/aws-autoscale
       - name: Job One
         run: |
           echo "Testing and Deploying"
