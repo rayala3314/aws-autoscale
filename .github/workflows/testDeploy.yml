@@ -94,9 +94,9 @@ jobs:
           git rev-parse HEAD
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git reset --hard ${{ github.event.before }}
+          git revert ${{ github.event.before }} --edit "[skip actions]"
+          git push --force
 
-          git push --force 
 
 
   # Revert commit (only should run on failure of some phase in a CI/CD pipeline)
