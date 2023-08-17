@@ -73,7 +73,7 @@ jobs:
            fetch-depth: 0
       - name: Debug Workspace Contents
         run: |
-          ls -la /github/workspace
+          ls -la /github/aws-autoscale
       - name: Rolls back to a certain version
         uses: fivebluepetals/rollback-action@v1.0
         with:
