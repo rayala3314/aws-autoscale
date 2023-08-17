@@ -71,9 +71,16 @@ jobs:
            set-safe-directory: true
            ref: ${{ github.ref_name }}
            fetch-depth: 0
-      - name: Debug Workspace Contents
+
+      - name: Debug Git Config
         run: |
-          ls -la /rayala3314/aws-autoscale
+          git config --list
+          
+      - name: Debug Git Status
+        run: git status
+        
+      - name: Debug Git Log
+        run: git log -n 10
       - name: Rolls back to a certain version
         uses: fivebluepetals/rollback-action@v1.0
         with:
