@@ -89,3 +89,4 @@ jobs:
         with:
           branch: ${{ github.ref_name }}
           revision: ${{ github.event.before }}
+          github_workspace: "/home/runner/work/aws-autoscale/aws-autoscale"
