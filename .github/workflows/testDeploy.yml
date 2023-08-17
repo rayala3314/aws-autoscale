@@ -70,7 +70,7 @@ jobs:
           echo "Rolling back to latest stable version"
 
       - name: Checkout
-        uses: actions/checkout@vv3.1.0
+        uses: actions/checkout@v3.1.0
         with:
            set-safe-directory: true
            ref: ${{ github.ref_name }}
