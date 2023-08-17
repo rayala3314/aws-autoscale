@@ -47,7 +47,7 @@ jobs:
       - name: Job One
         run: |
           echo "Testing and Deploying"
-          exit 1
+        # exit 1
         
 
   # timer-wait-two:
@@ -88,13 +88,14 @@ jobs:
       - name: Debug Git Log
         run: git log -n 10
 
-      - name: Revert
-        run: |
-          git checkout ${{github.ref_name}}
-          git rev-parse HEAD
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git revert ${{ github.event.before }}
+      # - name: Revert
+      #   run: |
+      #     git checkout ${{github.ref_name}}
+      #     git rev-parse HEAD
+      #     git config --global user.name "github-actions[bot]"
+      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      #     git revert ${{ github.event.before }}
+      #     git commit --ammend -m "Reverting back code [skip actions]"
 
 
 
