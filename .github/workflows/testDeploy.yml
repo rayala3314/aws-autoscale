@@ -76,7 +76,6 @@ jobs:
         with:
            ref: ${{ github.ref_name }}
            fetch-depth: 0
-           token: ${{secrets.GHU_TOKEN}}
 
       - name: Debug Workspace Contents
         run: pwd
