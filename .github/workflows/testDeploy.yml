@@ -91,18 +91,18 @@ jobs:
       - name: Debug Git Log
         run: git log -n 10
 
-      - name: Revert
-        run: |
-          git reset --hard ${{ github.event.before }}
-          git push --force
+      # - name: Revert
+      #   run: |
+      #     git reset --hard ${{ github.event.before }}
+      #     git push --force
 
 
   # Revert commit (only should run on failure of some phase in a CI/CD pipeline)
-      # - name: Automatic Commit Revert
-      #   uses: 'tofu-apis/revert-commit-action@v0.0.37'
-      #   with:
-      #     github-token: ${{ secrets.GHU_TOKEN }}
-      #     is-push-enabled: 'true'
+      - name: Automatic Commit Revert
+        uses: 'tofu-apis/revert-commit-action@v0.0.37'
+        with:
+          github-token: ${{ secrets.GHU_TOKEN }}
+          is-push-enabled: 'true'
       # - name: Rolls back to a certain version
       #   env:
       #     GITHUB_WORKSPACE: "/home/runner/work/aws-autoscale/aws-autoscale"
