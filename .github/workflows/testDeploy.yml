@@ -91,10 +91,17 @@ jobs:
       - name: Debug Git Log
         run: git log -n 10
 
-
-      - name: Rolls back to a certain version
-        uses: fivebluepetals/rollback-action@v1.0
+  # Revert commit (only should run on failure of some phase in a CI/CD pipeline)
+      - name: Automatic Commit Revert
+        uses: 'tofu-apis/revert-commit-action@v0.0.37'
         with:
-          branch: ${{ github.ref_name }}
-          revision: ${{ github.event.before }}
-          github_workspace: "/home/runner/work/aws-autoscale/aws-autoscale"
+          github-token: ${{ secrets.GHU_TOKEN }}
+          is-push-enabled: 'true'
+      # - name: Rolls back to a certain version
+      #   env:
+      #     GITHUB_WORKSPACE: "/home/runner/work/aws-autoscale/aws-autoscale"
+      #   uses: fivebluepetals/rollback-action@v1.0
+      #   with:
+      #     branch: ${{ github.ref_name }}
+      #     revision: ${{ github.event.before }}
+      #     github_workspace: "/home/runner/work/aws-autoscale/aws-autoscale"
