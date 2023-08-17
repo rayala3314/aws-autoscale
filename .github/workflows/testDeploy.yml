@@ -91,13 +91,14 @@ jobs:
       - name: Revert
         run: |
           git checkout ${{github.ref_name}}
+          git rev-parse HEAD
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git reset --hard ${{ github.event.before }}
-          git push --force -m "Reverting code [skip actions]"
+          git commit -m "Reverting code [skip actions]"
+          git push --force 
 
 
-      # git commit -m "Reverting code [skip actions]"
   # Revert commit (only should run on failure of some phase in a CI/CD pipeline)
       # - name: Automatic Commit Revert
       #   uses: 'tofu-apis/revert-commit-action@v0.0.37'
