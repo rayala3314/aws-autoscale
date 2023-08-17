@@ -95,7 +95,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git revert ${{ github.event.before }}
-          git commit --ammend -m "Reverting back code [skip actions]"
+          git commit --amend -m "Reverting back code [skip actions]"
           git push --force
 
 
