@@ -42,10 +42,13 @@ jobs:
     needs:
       - wait-for-queued-workflow
     steps:
+      - name: Debug Workspace Contents
+        run: ls -la /github/workspace
       - name: Job One
         run: |
           echo "Testing and Deploying"
           exit 1
+        
 
   # timer-wait-two:
   #   needssss:
