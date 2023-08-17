@@ -75,6 +75,9 @@ jobs:
            ref: ${{ github.ref_name }}
            fetch-depth: 0
 
+      - name: Debug Workspace Contents
+        run: pwd
+        
       - name: Debug Git Config
         run: |
           git config --list
