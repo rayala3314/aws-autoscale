@@ -71,6 +71,9 @@ jobs:
            set-safe-directory: true
            ref: ${{ github.ref_name }}
            fetch-depth: 0
+      - name: Debug Workspace Contents
+        run: |
+          ls -la /github/workspace
       - name: Rolls back to a certain version
         uses: fivebluepetals/rollback-action@v1.0
         with:
