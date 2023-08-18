@@ -75,7 +75,7 @@ jobs:
       - deploy-dev
     steps:
       - name: Update Parameter Store Endpoint secret
-        uses: joshghent/aws-ssm-parameter-store@v2
+        uses: joshghent/aws-ssm-parameter-store@v2.2.0
         with:
           ssm-path: "/developStable"
           ssm-value: ${{github.event.after}}   # This references the tag from the release that triggered the workflow
