@@ -35,6 +35,17 @@ jobs:
   #     - uses: ahmadnassri/action-workflow-queue@v1
   #       with:
   #         timeout: 24000000
+  aws-cli: #Installing the AWS CLI on the runner, needed for the autoscaling cli commands. 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install awscli
 
 
   deploy-dev:
@@ -81,11 +92,24 @@ jobs:
           ssm-value: ${{github.event.after}}   # This references the tag from the release that triggered the workflow
           aws-region: us-west-1
           ssm-value-type: "String"
+          
+  parmater-sto:
+    runs-on: ubuntu-latest
+    needs:
+      - store-latest-tag
+    steps:
+      - name: Check Parameter Store Endpoint secret
+        run: |
+          stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
+          echo "$stableCommit"
+
+    
   
   rollback-failure:
     runs-on: ubuntu-latest
     needs:
       - deploy-dev
+      - aws-cli
     if: failure()
     steps:
       - name: Checkout
@@ -110,8 +134,9 @@ jobs:
 
       - name: Revert
         run: |
+          stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
+          echo "$stableCommit"
           git checkout ${{github.ref_name}}
-          echo "${{github.event.before}}"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git revert ${{ github.event.before }}
