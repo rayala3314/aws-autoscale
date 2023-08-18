@@ -89,7 +89,7 @@ jobs:
         uses: joshghent/aws-ssm-parameter-store@v2.2.0
         with:
           ssm-path: "/developStable"
-          ssm-value: ${{github.event.after}}   # This references the tag from the release that triggered the workflow
+          ssm-value: develop-${{github.event.after}}   # This references the tag from the release that triggered the workflow
           aws-region: us-west-1
           ssm-value-type: "String"
 
@@ -136,6 +136,7 @@ jobs:
       - name: Revert
         run: |
           stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
+          temp_var="${stableCommit#develop-}"
           echo "$stableCommit"
           git checkout ${{github.ref_name}}
           git config --global user.name "github-actions[bot]"
