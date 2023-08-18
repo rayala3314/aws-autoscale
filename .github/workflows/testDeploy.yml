@@ -100,7 +100,7 @@ jobs:
       - name: Revert
         run: |
           git checkout ${{github.ref_name}}
-          git rev-parse HEAD
+          echo "${{github.event.before}}"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git revert ${{ github.event.before }}
