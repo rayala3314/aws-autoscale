@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run smoke tests
-          run: |
+        run: |
             echo 'Running smoke tests!'
 
   # timer-wait-two:
