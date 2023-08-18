@@ -69,18 +69,18 @@ jobs:
   #       with:
   #         time: '1m'
   #     - name: Fail
-  # store-latest-tag:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - deploy-dev
-  #   steps:
-  #     - name: Update Parameter Store Endpoint secret
-  #       uses: joshghent/aws-ssm-parameter-store@v2
-  #       with:
-  #         ssm-path: "/developStable"
-  #         ssm-value: ${{github.event.before}}   # This references the tag from the release that triggered the workflow
-  #         aws-region: us-east-1
-  #         ssm-value-type: "String"
+  store-latest-tag:
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-dev
+    steps:
+      - name: Update Parameter Store Endpoint secret
+        uses: joshghent/aws-ssm-parameter-store@v2
+        with:
+          ssm-path: "/developStable"
+          ssm-value: ${{github.event.after}}   # This references the tag from the release that triggered the workflow
+          aws-region: us-west-1
+          ssm-value-type: "String"
   
   rollback-failure:
     runs-on: ubuntu-latest
