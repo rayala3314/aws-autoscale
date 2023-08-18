@@ -57,7 +57,6 @@ jobs:
       - name: Run smoke tests
         run: |
             echo 'Running smoke tests!'
-            exit 1
 
   # timer-wait-two:
   #   needssss:
