@@ -92,16 +92,17 @@ jobs:
           ssm-value: ${{github.event.after}}   # This references the tag from the release that triggered the workflow
           aws-region: us-west-1
           ssm-value-type: "String"
-          
-  parmater-sto:
-    runs-on: ubuntu-latest
-    needs:
-      - store-latest-tag
-    steps:
-      - name: Check Parameter Store Endpoint secret
-        run: |
-          stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
-          echo "$stableCommit"
+
+  # parmater-sto:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - store-latest-tag
+  #     - aws-cli
+  #   steps:
+  #     - name: Check Parameter Store Endpoint secret
+  #       run: |
+  #         stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
+  #         echo "$stableCommit"
 
     
   
@@ -139,7 +140,7 @@ jobs:
           git checkout ${{github.ref_name}}
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git revert ${{ github.event.before }}
+          git revert $stableCommit
           git commit --amend -m "Reverting back code [skip actions]"
           git push --force
 
