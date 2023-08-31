@@ -136,13 +136,13 @@ jobs:
       - name: Revert
         run: |
           stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
-          temp_var="${stableCommit#develop-}"
+          parsedCommit="${stableCommit#develop-}"
           echo "$stableCommit"
-          echo "$temp_var"
+          echo "$parsedCommit"
           git checkout ${{github.ref_name}}
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git revert $stableCommit
+          git revert $parsedCommit
           git commit --amend -m "Reverting back code [skip actions]"
           git push --force
 
