@@ -142,7 +142,7 @@ jobs:
           git checkout ${{github.ref_name}}
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git revert $parsedCommit -m 1 "back to parent"
+          git revert $parsedCommit -m 1 
           git commit --amend -m "Reverting back code [skip actions]"
           git push --force
 
