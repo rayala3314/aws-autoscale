@@ -142,60 +142,9 @@ jobs:
           git checkout ${{github.ref_name}}
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Check if the commit is a merge commit
-          if git cat-file -p $parsedCommit | grep -q "parent"; then
-            git revert $parsedCommit -m 1
-          else
-            git revert $parsedCommit
-          fi
-          
+          git revert $parsedCommit -m 1 
           git commit --amend -m "Reverting back code [skip actions]"
           git push --force
-
-
-          # stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
-          # parsedCommit="${stableCommit#develop-}"
-          # echo "$stableCommit"
-          # echo "$parsedCommit"
-          # git checkout ${{github.ref_name}}
-          # git config --global user.name "github-actions[bot]"
-          # git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # git revert $parsedCommit -m 1 
-          # git commit --amend -m "Reverting back code [skip actions]"
-          # git push --force
-# Example with resolving merge conflicts
-
-# - name: Revert
-#   run: |
-#     stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
-#     parsedCommit="${stableCommit#develop-}"
-#     echo "$stableCommit"
-#     echo "$parsedCommit"
-#     git checkout ${{ github.ref_name }}
-#     git config --global user.name "github-actions[bot]"
-#     # Attempt to revert the commit
-#     git revert $parsedCommit -m 1
-    
-#     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-    
-#     # Check for conflicts
-#     if [[ $? -ne 0 ]]; then
-#       echo "Merge conflict detected. Resolve the conflict and commit."
-#       # Handle the conflict resolution manually in the 'testMerge.py' file
-    
-#       # Stage the resolved changes
-#       git add testMerge.py
-      
-#       # Continue the revert
-#       git revert --continue
-#     fi
-    
-#     # Commit the resolution
-#     git commit -m "Resolved merge conflict and completed revert [skip actions]"
-    
-#     # Push the changes (force push might be required if you rewrote history)
-#     git push --force
 
 
 
