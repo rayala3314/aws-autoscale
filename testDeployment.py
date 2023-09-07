@@ -22,3 +22,4 @@
 start of test
 
 feature first commit
+feature second commit
