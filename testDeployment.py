@@ -24,3 +24,6 @@ start of test
 feature first commit
 feature second commit
 feature third commit
+
+Feature two test one
+Feature two test two
