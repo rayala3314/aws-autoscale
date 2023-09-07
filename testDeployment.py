@@ -20,3 +20,7 @@
 #reset Test commit 3 from resTest branch
 
 start of test
+
+feature first commit
+feature second commit
+feature third commit
