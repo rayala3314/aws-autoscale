@@ -26,3 +26,5 @@ feature second commit
 feature third commit
 
 Testing reset starting now
+
+Feature Three test one
