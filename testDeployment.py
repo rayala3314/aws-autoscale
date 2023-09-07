@@ -18,3 +18,5 @@
 #reset Test commit 1 from resTest branch
 #reset Test commit 2 from resTest branch
 #reset Test commit 3 from resTest branch
+
+start of test
