@@ -29,3 +29,4 @@ Testing reset starting now
 
 Feature Three test one
 Feature Three test two
+Feature Three test three
