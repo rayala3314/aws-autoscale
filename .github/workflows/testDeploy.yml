@@ -64,8 +64,7 @@ jobs:
         with:
           mode: lock
           github_token: ${{ secrets.GHU_TOKEN }}
-          environment: main
-
+          environment: ${{ github.ref_name }}
 
   deploy-dev:
     runs-on: ubuntu-latest
