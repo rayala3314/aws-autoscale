@@ -175,10 +175,10 @@ jobs:
     runs-on: ubuntu-latest
     name: workflow-last
     steps:
-      - uses: actions/checkout@v2
-      - uses: ahmadnassri/action-workflow-queue@v1
+      - name: Wait 1 minutes for attachment to complete
+        uses: jakejarvis/wait-action@master
         with:
-          timeout: 120
+          time: '3m'
 
   unlock-pr:
     runs-on: ubuntu-latest
