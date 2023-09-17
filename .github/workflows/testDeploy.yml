@@ -46,6 +46,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install awscli
+  
+  lock-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: github/lock@v2.1.1
+        id: lock
+        with:
+          mode: lock
+          github_token: ${{ secrets.GHU_TOKEN }}
+          environment: main
 
 
   deploy-dev:
