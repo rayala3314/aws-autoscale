@@ -47,6 +47,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install awscli
   
+  # wait-for-queued-workflow:
+  #   if: github.ref_name == 'main'
+  #   runs-on: ubuntu-latest
+  #   name: workflow-last
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: ahmadnassri/action-workflow-queue@v1
+  #       with:
+  #         timeout: 24000000
   lock-branch:
     runs-on: ubuntu-latest
     steps:
@@ -163,6 +172,27 @@ jobs:
           git commit --amend -m "Reverting back code [skip actions]"
           git push --force
 
+  wait-for-queued-workflow:
+    if: github.ref_name == 'main'
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    name: workflow-last
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ahmadnassri/action-workflow-queue@v1
+        with:
+          timeout: 60
+
+  unlock-branch:
+    runs-on: ubuntu-latest
+    needs: wait-for-queued-workflow
+    steps:
+      - uses: github/lock@v2.1.1
+        id: unlock
+        with:
+          mode: unlock
+          github_token: ${{ secrets.GHU_TOKEN }}
+          environment: main
 
           # stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
           # parsedCommit="${stableCommit#develop-}"
