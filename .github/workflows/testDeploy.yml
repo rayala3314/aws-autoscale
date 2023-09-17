@@ -63,7 +63,6 @@ jobs:
         with:
           github-token: ${{ secrets.GHU_TOKEN }}
           lock-pr: true
-          pr-lock-reason: 'Current Deployment in progress'
           log-output: true
   deploy-dev:
     runs-on: ubuntu-latest
@@ -189,7 +188,6 @@ jobs:
         with:
           github-token: ${{ secrets.GHU_TOKEN }}
           lock-pr: false
-          pr-lock-reason: 'unlock prs'
           log-output: true
 
           # stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
