@@ -63,7 +63,7 @@ jobs:
         id: lock
         with:
           mode: lock
-          environment_targets: ${{ github.ref_name }}
+          environment: 'global'
   deploy-dev:
     runs-on: ubuntu-latest
     # needs:
@@ -188,7 +188,7 @@ jobs:
         id: unlock
         with:
           mode: unlock
-          environment_targets: ${{ github.ref_name }}
+          environment: 'global'
 
           # stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
           # parsedCommit="${stableCommit#develop-}"
