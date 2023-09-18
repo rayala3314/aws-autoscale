@@ -64,14 +64,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: Update branch protection
-      #   uses: Hatzelencio/branch-protection@v1.0.0
-      #   env:
-      #     GITHUB_TOKEN: ${{secrets.GHU_TOKEN}}
-      #   with:
-      #       branch: main
-      #       protection:
-      #         lock_branch: true
+      - name: Update branch protection
+        uses: Hatzelencio/branch-protection@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{secrets.GHU_TOKEN}}
+
 
       - name: Update Lock Branch
         uses: octokit/request-action@v2.x
