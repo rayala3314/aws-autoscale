@@ -56,7 +56,7 @@ jobs:
   #     - uses: ahmadnassri/action-workflow-queue@v1
   #       with:
   #         timeout: 24000000
- gh-cli:
+ gh-cli-install:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -70,7 +70,7 @@ jobs:
 
   lock-branch:
     runs-on: ubuntu-latest
-    needs: gh-cli
+    needs: gh-cli-install
     steps:
       - name: Lock Branch
         run: |
