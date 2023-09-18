@@ -63,7 +63,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       - name: Update Lock Branch
         run: |
           TOKEN=${{secrets.GHU_TOKEN}}
@@ -74,7 +74,7 @@ jobs:
           echo "API_URL: $API_URL"
           # Replace <YOUR-TOKEN> with your GitHub token
           curl -L \
-            -X PATCH \  # Use PATCH instead of PUT
+            -X PUT \  # Use PATCH instead of PUT
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
