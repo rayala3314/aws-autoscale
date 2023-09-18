@@ -69,12 +69,13 @@ jobs:
           CONTEXT="block-merges-during-workflow"
           STATUS="failure"
           DESCRIPTION="Workflow is running, merges are blocked"
+          SHA=$GITHUB_SHA
 
           curl -H "Authorization: token $TOKEN" \
-               -H "Content-Type: application/json" \
-               --request POST \
-               --data "{\"state\":\"$STATUS\",\"description\":\"$DESCRIPTION\",\"context\":\"$CONTEXT\"}" \
-               "https://api.github.com/repos/$REPO/statuses/$BRANCH"
+              -H "Content-Type: application/json" \
+              --request POST \
+              --data "{\"state\":\"$STATUS\",\"description\":\"$DESCRIPTION\",\"context\":\"$CONTEXT\",\"sha\":\"$SHA\"}" \
+              "https://api.github.com/repos/$REPO/statuses/$SHA"
 
   deploy-dev:
     runs-on: ubuntu-latest
@@ -208,7 +209,7 @@ jobs:
             BRANCH="main" # Replace with the branch you want to protect
             CONTEXT="block-merges-during-workflow"
             STATUS="success"
-            
+
             curl -H "Authorization: token $TOKEN" \
                 -H "Content-Type: application/json" \
                 --request POST \
