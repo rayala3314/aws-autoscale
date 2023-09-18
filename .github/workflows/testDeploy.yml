@@ -64,7 +64,7 @@ jobs:
       - name: Set Status Check (Blocking)
         run: |
           # Use GitHub's API to set a blocking status check
-          TOKEN=$GITHUB_TOKEN
+          TOKEN=${{secrets.GHU_TOKEN}}
           REPO=$GITHUB_REPOSITORY
           BRANCH="main" # Replace with the branch you want to protect
           CONTEXT="block-prs-during-workflow"
