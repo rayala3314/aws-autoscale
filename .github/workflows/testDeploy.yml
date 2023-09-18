@@ -212,8 +212,10 @@ jobs:
             SHA=$GITHUB_SHA
 
             curl -H "Authorization: token $TOKEN" \
-                          --request DELETE \
-                          "https://api.github.com/repos/$REPO/statuses/$GITHUB_SHA/$CONTEXT"
+                -H "Content-Type: application/json" \
+                --request POST \
+                --data "{\"state\":\"$STATUS\",\"description\":\"$DESCRIPTION\",\"context\":\"$CONTEXT\",\"sha\":\"$SHA\"}" \
+                "https://api.github.com/repos/$REPO/statuses/$SHA"
 
   # unlock-branch:d
   #   runs-on: ubuntu-latest
