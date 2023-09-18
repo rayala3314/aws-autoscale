@@ -65,9 +65,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Update Branch Protection
-        env:
-          GITHUB_TOKEN: ${{ secrets.GHU_TOKEN }}
         run: |
+          token=${{secrets.GHU_TOKEN}}
           owner=$GITHUB_REPOSITORY_OWNER
           repo=$GITHUB_REPOSITORY
           branch=main  # Change this to the branch you want to protect
@@ -86,7 +85,7 @@ jobs:
 
           curl -X PATCH \
             -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token $GHU_TOKEN" \
+            -H "Authorization: token $token" \
             -d "$protection_settings" \
             "https://api.github.com/repos/$owner/$repo/branches/$branch/protection"
 
