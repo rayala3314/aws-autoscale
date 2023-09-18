@@ -1,3 +1,3 @@
 - branch: main
   protection:
-    lock_branch: true
+    lock_branch: false
