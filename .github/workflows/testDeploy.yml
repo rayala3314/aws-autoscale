@@ -57,37 +57,25 @@ jobs:
   #       with:
   #         timeout: 24000000
 
-  update-branch-protection:
+  block_merges:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Update Branch Protection
+      - name: Set Status Check (Blocking)
         run: |
-          token=${{secrets.GHU_TOKEN}}
-          owner=$GITHUB_REPOSITORY_OWNER
-          repo=$GITHUB_REPOSITORY
-          branch=main  # Change this to the branch you want to protect
+          # Use GitHub's API to set a blocking status check
+          TOKEN=${{ secrets.GHU_TOKEN }}
+          REPO=$GITHUB_REPOSITORY
+          BRANCH="main" # Replace with the branch you want to protect
+          CONTEXT="block-merges-during-workflow"
+          STATUS="failure"
+          DESCRIPTION="Workflow is running, merges are blocked"
+          SHA=$GITHUB_SHA
 
-          protection_settings='{
-            "required_status_checks": null,
-            "enforce_admins": null,
-            "required_pull_request_reviews": {
-              "dismissal_restrictions": {},
-              "dismiss_stale_reviews": false,
-              "require_code_owner_reviews": true,
-              "lock_branch": true,
-              "required_approving_review_count": 1
-            }
-          }'
-
-          curl -X PATCH \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token $token" \
-            -d "$protection_settings" \
-            "https://api.github.com/repos/$owner/$repo/branches/$branch/protection"
+          curl -H "Authorization: token $TOKEN" \
+              -H "Content-Type: application/json" \
+              --request POST \
+              --data "{\"state\":\"$STATUS\",\"description\":\"$DESCRIPTION\",\"context\":\"$CONTEXT\",\"sha\":\"$SHA\"}" \
+              "https://api.github.com/repos/$REPO/statuses/$SHA"
 
   deploy-dev:
     runs-on: ubuntu-latest
@@ -210,7 +198,7 @@ jobs:
 
   unblock_merges:
       runs-on: ubuntu-latest
-      needs: [update-branch-protection, wait-for-queued-workflow]
+      needs: [block_merges, wait-for-queued-workflow]
       if: always() # Ensure this job runs even if the previous job fails
       steps:
         - name: Remove Status Check (Unblocking)
@@ -223,13 +211,11 @@ jobs:
             STATUS="success"
             SHA=$GITHUB_SHA
 
-            curl -L \
-              -X PUT \
-              -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer $TOKEN" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              https://api.github.com/repos/rayala3314/REPO/branches/BRANCH/protection \
-              -d '{"lock_branch":false}'
+            curl -H "Authorization: token $TOKEN" \
+                -H "Content-Type: application/json" \
+                --request POST \
+                --data "{\"state\":\"$STATUS\",\"description\":\"$DESCRIPTION\",\"context\":\"$CONTEXT\",\"sha\":\"$SHA\"}" \
+                "https://api.github.com/repos/$REPO/statuses/$SHA"
 
   # unlock-branch:d
   #   runs-on: ubuntu-latest
