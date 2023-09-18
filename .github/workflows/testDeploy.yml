@@ -86,7 +86,7 @@ jobs:
 
           curl -X PATCH \
             -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Authorization: token $GHU_TOKEN" \
             -d "$protection_settings" \
             "https://api.github.com/repos/$owner/$repo/branches/$branch/protection"
 
