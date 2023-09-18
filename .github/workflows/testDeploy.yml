@@ -64,8 +64,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Update branch protection
+        uses: Hatzelencio/branch-protection@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{secrets.GHU_TOKEN}}
+        with:
+          - branch: my-branch
+            protection:
+              lock_branch: true
+
       - name: Update Lock Branch
         uses: octokit/request-action@v2.x
+        env:
+          GITHUB_TOKEN: ${{secrets.GHU_TOKEN}}
         with:
           route: PUT /repos/:owner/:repo/branches/main/protection
           owner: ${{ github.repository_owner }}
@@ -77,7 +88,8 @@ jobs:
             {
               "lock_branch": true
             }
-            
+
+
       - name: Update Lock Branch
         run: |
           TOKEN=${{secrets.GHU_TOKEN}}
