@@ -75,7 +75,17 @@ jobs:
     steps:
       - name: Lock Branch
         run: |
-          hub issue create -m "Locking branch" -l "branch-lock" -f "Locking the branch to prevent merges during this workflow."
+          TOKEN=${{secrets.GHU_TOKEN}}
+          REPO=aws-autoscale
+          BRANCH="main" # Replace with the name of the branch to lock
+          curl -X PUT \
+               -H "Authorization: token $TOKEN" \
+               -H "Accept: application/vnd.github.v3+json" \
+               "https://api.github.com/repos/$REPO/branches/$BRANCH/protection" \
+               -d '{
+                 "enforce_admins": true,
+                 "required_status_checks": null
+               }'
 
 
   deploy-dev:
@@ -200,7 +210,14 @@ jobs:
     steps:
       - name: Unlock Branch
         run: |
-          hub issue create -m "Unlocking branch" -l "branch-lock" -f "Unlocking the branch after workflow completion."
+          TOKEN=${{secrets.GHU_TOKEN}}
+          REPO=aws-autoscale
+          BRANCH="main" # Replace with the name of the branch to unlock
+
+          curl -X DELETE \
+              -H "Authorization: token $TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/$REPO/branches/$BRANCH/protection"
 
   
   
