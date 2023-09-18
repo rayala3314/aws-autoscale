@@ -63,13 +63,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+        
       - name: Update Lock Branch
         run: |
           TOKEN=${{secrets.GHU_TOKEN}}
           REPO=$GITHUB_REPOSITORY
           BRANCH="main" # Replace with the branch you want to protect
           SHA=$GITHUB_SHA
+          API_URL="https://api.github.com/repos/$REPO/branches/$BRANCH/protection"
+          echo "API_URL: $API_URL"
           # Replace <YOUR-TOKEN> with your GitHub token
           curl -L \
             -X PATCH \  # Use PATCH instead of PUT
