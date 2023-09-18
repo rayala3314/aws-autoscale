@@ -213,7 +213,7 @@ jobs:
 
             curl -H "Authorization: token $TOKEN" \
                 -H "Content-Type: application/json" \
-                --request PATCH \
+                --request POST \
                 --data "{\"state\":\"$STATUS\",\"description\":\"$DESCRIPTION\",\"context\":\"$CONTEXT\",\"sha\":\"$SHA\"}" \
                 "https://api.github.com/repos/$REPO/statuses/$SHA"
 
