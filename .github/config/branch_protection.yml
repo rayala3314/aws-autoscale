@@ -1,0 +1,3 @@
+- branch: main
+  protection:
+    lock_branch: true
