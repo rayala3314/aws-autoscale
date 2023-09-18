@@ -75,7 +75,7 @@ jobs:
               -H "Content-Type: application/json" \
               --request POST \
               --data "{\"state\":\"$STATUS\",\"description\":\"$DESCRIPTION\",\"context\":\"$CONTEXT\",\"sha\":\"$SHA\"}" \
-              "https://api.github.com/repos/$REPO/statuses/$SHA"
+              "https://api.github.com/repos/$REPO/statuses/$BRANCH/$SHA"
 
   deploy-dev:
     runs-on: ubuntu-latest
@@ -215,7 +215,7 @@ jobs:
                 -H "Content-Type: application/json" \
                 --request POST \
                 --data "{\"state\":\"$STATUS\",\"description\":\"$DESCRIPTION\",\"context\":\"$CONTEXT\",\"sha\":\"$SHA\"}" \
-                "https://api.github.com/repos/$REPO/statuses/$SHA"
+                "https://api.github.com/repos/$REPO/statuses/$BRANCH/$SHA"
 
   # unlock-branch:d
   #   runs-on: ubuntu-latest
