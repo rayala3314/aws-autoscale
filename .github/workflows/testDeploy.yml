@@ -89,7 +89,7 @@ jobs:
             -H "Authorization: token $GITHUB_TOKEN" \
             -d "$protection_settings" \
             "https://api.github.com/repos/$owner/$repo/branches/$branch/protection"
-            
+
   deploy-dev:
     runs-on: ubuntu-latest
     # needs:
@@ -211,7 +211,7 @@ jobs:
 
   unblock_merges:
       runs-on: ubuntu-latest
-      needs: [block_merges, wait-for-queued-workflow]
+      needs: [update-branch-protection, wait-for-queued-workflow]
       if: always() # Ensure this job runs even if the previous job fails
       steps:
         - name: Remove Status Check (Unblocking)
