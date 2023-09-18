@@ -56,7 +56,8 @@ jobs:
   #     - uses: ahmadnassri/action-workflow-queue@v1
   #       with:
   #         timeout: 24000000
- gh-cli-install:
+
+  gh-cli-install:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
