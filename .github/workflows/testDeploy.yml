@@ -56,14 +56,27 @@ jobs:
   #     - uses: ahmadnassri/action-workflow-queue@v1
   #       with:
   #         timeout: 24000000
-  lock:
+ gh-cli:
     runs-on: ubuntu-latest
     steps:
-      - uses: github/lock@v2.1.1
-        id: lock
-        with:
-          mode: lock
-          environment: 'global'
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install hub CLI
+        run: |
+          wget https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz
+          tar -xf hub-linux-amd64-2.14.2.tgz
+          sudo mv hub-linux-amd64-2.14.2/bin/hub /usr/local/bin/
+
+  lock-branch:
+    runs-on: ubuntu-latest
+    needs: gh-cli
+    steps:
+      - name: Lock Branch
+        run: |
+          hub issue create -m "Locking branch" -l "branch-lock" -f "Locking the branch to prevent merges during this workflow."
+
+      - name: Lock Branch
   deploy-dev:
     runs-on: ubuntu-latest
     # needs:
@@ -180,26 +193,26 @@ jobs:
         with:
           time: '3m'
 
-  unlock:
+  unlock-branch:
     runs-on: ubuntu-latest
-    needs: wait-for-queued-workflow
+    needs: [wait-for-queued-workflow, gh-cli]
     steps:
-      - uses: github/lock@v2.1.1
-        id: unlock
-        with:
-          mode: unlock
-          environment: 'global'
+      - name: Unlock Branch
+        run: |
+          hub issue create -m "Unlocking branch" -l "branch-lock" -f "Unlocking the branch after workflow completion."
 
-          # stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
-          # parsedCommit="${stableCommit#develop-}"
-          # echo "$stableCommit"
-          # echo "$parsedCommit"
-          # git checkout ${{github.ref_name}}
-          # git config --global user.name "github-actions[bot]"
-          # git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # git revert $parsedCommit -m 1 
-          # git commit --amend -m "Reverting back code [skip actions]"
-          # git push --force
+  
+  
+  # stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
+  # parsedCommit="${stableCommit#develop-}"
+  # echo "$stableCommit"
+  # echo "$parsedCommit"
+  # git checkout ${{github.ref_name}}
+  # git config --global user.name "github-actions[bot]"
+  # git config --global user.email "github-actions[bot]@users.noreply.github.com"
+  # git revert $parsedCommit -m 1 
+  # git commit --amend -m "Reverting back code [skip actions]"
+  # git push --force
 # Example with resolving merge conflicts
 
 # - name: Revert
