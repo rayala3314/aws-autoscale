@@ -209,12 +209,13 @@ jobs:
             BRANCH="main" # Replace with the branch you want to protect
             CONTEXT="block-merges-during-workflow"
             STATUS="success"
+            SHA=$GITHUB_SHA
 
             curl -H "Authorization: token $TOKEN" \
                 -H "Content-Type: application/json" \
                 --request POST \
-                --data "{\"state\":\"$STATUS\",\"context\":\"$CONTEXT\"}" \
-                "https://api.github.com/repos/$REPO/statuses/$BRANCH"
+                --data "{\"state\":\"$STATUS\",\"description\":\"$DESCRIPTION\",\"context\":\"$CONTEXT\",\"sha\":\"$SHA\"}" \
+                "https://api.github.com/repos/$REPO/statuses/$SHA"
 
   # unlock-branch:d
   #   runs-on: ubuntu-latest
