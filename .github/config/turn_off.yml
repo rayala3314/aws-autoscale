@@ -1,7 +1,4 @@
 - branch: main
   protection:
-    required_status_checks:
-      strict: false
-      contexts:
-        - wait-for-queued-workflow
+    required_status_checks: null
     lock_branch: false
