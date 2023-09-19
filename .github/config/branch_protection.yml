@@ -4,4 +4,4 @@
       strict: true
       contexts:
         - wait-for-queued-workflow
-    lock_branch: false
+    lock_branch: true
