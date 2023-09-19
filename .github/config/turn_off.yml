@@ -1,0 +1,5 @@
+- branch: main
+  protection:
+    required_status_checks:
+      strict: false
+    lock_branch: false

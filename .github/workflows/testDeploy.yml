@@ -207,6 +207,20 @@ jobs:
         with:
           time: '1m'
 
+  update-lock-branch:
+    runs-on: ubuntu-latest
+    needs: wait-for-queued-workflow
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update branch protection
+        uses: Hatzelencio/branch-protection@v1.0.0
+        with:
+          path: .github/config/turn_off.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHU_TOKEN }}
+
 
 
 
