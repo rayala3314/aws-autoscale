@@ -66,8 +66,10 @@ jobs:
 
       - name: Update branch protection
         uses: Hatzelencio/branch-protection@v1.0.0
+        with:
+          path: .github/config/branch_protection.yml
         env:
-          GITHUB_TOKEN: ${{secrets.GHU_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GHU_TOKEN }}
 
 
       # - name: Update Lock Branch
