@@ -2,4 +2,6 @@
   protection:
     required_status_checks:
       strict: false
+      contexts:
+        - wait-for-queued-workflow
     lock_branch: false
