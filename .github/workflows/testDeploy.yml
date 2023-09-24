@@ -255,20 +255,20 @@ jobs:
         with:
           time: '1m'
 
-  unlock-branch:
-    runs-on: ubuntu-latest
-    if: ${{ always() }}
-    needs: wait-for-queued-workflow
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # unlock-branch:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ always() }}
+  #   needs: wait-for-queued-workflow
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Update branch protection
-        uses: Hatzelencio/branch-protection@v1.0.0
-        with:
-          path: .github/config/turn_off.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GHU_TOKEN }}
+  #     - name: Update branch protection
+  #       uses: Hatzelencio/branch-protection@v1.0.0
+  #       with:
+  #         path: .github/config/turn_off.yml
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GHU_TOKEN }}
  
   delete-branch-rule:
     runs-on: ubuntu-latest
