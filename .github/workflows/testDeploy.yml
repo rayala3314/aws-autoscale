@@ -283,8 +283,9 @@ jobs:
           TOKEN=${{ secrets.GHU_TOKEN }}
           REPO=aws-autoscale
           BRANCH="main" # Replace with the name of the branch to unlock
-
+          echo "Starting test curl endpoint"
           curl https://httpbin.org/get
+          echo "Ending test curl endpoint"
 
           curl -v -i -L \                                         
             -X DELETE \
