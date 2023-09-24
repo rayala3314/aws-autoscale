@@ -187,6 +187,7 @@ jobs:
 
   store-latest-tag:
     runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'store_tag')
     needs:
       - deploy-dev
     steps:
