@@ -284,15 +284,15 @@ jobs:
           REPO=aws-autoscale
           BRANCH="main" # Replace with the name of the branch to unlock
           echo "Starting test curl endpoint"
-          curl https://httpbin.org/get
+          curl "https://httpbin.org/get"
           echo "Ending test curl endpoint"
 
-          curl -v -i -L \                                         
-            -X DELETE \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{secrets.GHU_TOKEN}}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/rayala3314/aws-autoscale/branches/main/protection"
+          # curl -v -i -L \                                         
+          #   -X DELETE \
+          #   -H "Accept: application/vnd.github+json" \
+          #   -H "Authorization: Bearer ${{secrets.GHU_TOKEN}}" \
+          #   -H "X-GitHub-Api-Version: 2022-11-28" \
+          #   "https://api.github.com/repos/rayala3314/aws-autoscale/branches/main/protection"
 
 
 
