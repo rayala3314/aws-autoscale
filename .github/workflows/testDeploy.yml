@@ -210,8 +210,8 @@ jobs:
   #       run: |
   #         stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
   #         echo "$stableCommit"
-
-    
+# aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=tribehealth-platform-dev" | jq -r 'sort_by(.time) | .[0] | .ip')
+# aws autoscaling describe-scaling-activities  --auto-scaling-group-name test-autoscaling --query 'Activities[0].Progress'
   
   rollback-failure:
     runs-on: ubuntu-latest
