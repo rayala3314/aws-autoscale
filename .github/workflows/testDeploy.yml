@@ -68,7 +68,7 @@ jobs:
           REPO=$GITHUB_REPOSITORY
           BRANCH=main
           STABLECOMMIT=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
-          parsedCommit="${stableCommit#develop-}"
+          parsedCommit="${STABLECOMMIT#develop-}"
           echo "Commit SHA: ${{github.sha}} and StableCommit: $STABLECOMMIT"
           if [ "$parsedCommit" == ${{github.sha}} ]; then
             echo "Variable not empty: $STABLECOMMIT";
