@@ -284,7 +284,7 @@ jobs:
           REPO=aws-autoscale
           BRANCH="main" # Replace with the name of the branch to unlock
 
-          curl -L \                                         
+          curl -i -L \                                         
             -X DELETE \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{secrets.GHU_TOKEN}}" \
