@@ -267,13 +267,13 @@ jobs:
           time: '1m'
 
   test-tag:
-  runs-on: ubuntu-latest
-  needs:
-    - wait-for-queued-workflow
-  if: ${{ always() && !(contains(github.jobs.wait-for-queued-workflow, 'cancelled')) }}
-  steps:
-    - name: Testing
-      run: echo "Didn't skip"
+    runs-on: ubuntu-latest
+    needs:
+      - wait-for-queued-workflow
+    if: ${{ always() && !(contains(github.jobs.wait-for-queued-workflow, 'cancelled')) }}
+    steps:
+      - name: Testing
+        run: echo "Didn't skip"
 
   # unlock-branch:
   #   runs-on: ubuntu-latest
