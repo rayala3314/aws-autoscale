@@ -35,6 +35,11 @@ jobs:
   #     - uses: ahmadnassri/action-workflow-queue@v1
   #       with:
   #         timeout: 24000000
+
+
+
+
+
   aws-cli: #Installing the AWS CLI on the runner, needed for the autoscaling cli commands. 
       runs-on: ubuntu-latest
       steps:
@@ -57,21 +62,25 @@ jobs:
 # Test with one revert
 # Parse describe scaling activities for progress and loop until it is at 100
 # Push one branch to the other on successful deployment
-  check-for-rerun:
-    runs-on: ubuntu-latest
-    needs: aws-cli
-    steps:
-      - name: Skip Workflow if reverting
-        shell: bash
-        run: |
-          STABLECOMMIT=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
-          PARSEDCOMMIT="${STABLECOMMIT#develop-}"
-          if [ $PARSEDCOMMIT == ${{github.sha}} ]; then
-            echo "Canceling workflow run now due to revert";
-            curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{secrets.GH_PERSONAL_ACCESS_TOKEN}}" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/rayala3314/aws-autoscale/actions/runs/${{github.run_id}}/cancel"
-          else
-            echo "Workflow will continue to run";
-          fi
+
+
+  # check-for-rerun:
+  #   runs-on: ubuntu-latest
+  #   needs: aws-cli
+  #   steps:
+  #     - name: Skip Workflow if reverting
+  #       shell: bash
+  #       run: |
+  #         STABLECOMMIT=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
+  #         PARSEDCOMMIT="${STABLECOMMIT#develop-}"
+  #         if [ $PARSEDCOMMIT == ${{github.sha}} ]; then
+  #           echo "Canceling workflow run now due to revert";
+  #           curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{secrets.GH_PERSONAL_ACCESS_TOKEN}}" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/rayala3314/aws-autoscale/actions/runs/${{github.run_id}}/cancel"
+  #         else
+  #           echo "Workflow will continue to run";
+  #         fi
+
+
 
   # Check if variable is empty
     #  - Not empty?
@@ -114,18 +123,21 @@ jobs:
   #       with:
   #         timeout: 24000000
 
-  lock-branch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
 
-      - name: Update branch protection
-        uses: Hatzelencio/branch-protection@v1.0.0
-        with:
-          path: .github/config/branch_protection.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GHU_TOKEN }}
+
+
+  # lock-branch:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     - name: Update branch protection
+  #       uses: Hatzelencio/branch-protection@v1.0.0
+  #       with:
+  #         path: .github/config/branch_protection.yml
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GHU_TOKEN }}
 
 
       # - name: Update Lock Branch
@@ -167,6 +179,15 @@ jobs:
             echo 'Running smoke tests!'
             exit 1
 
+  test-job:
+    needs:
+      - aws-cli
+      - deploy-dev
+    runs-on: ubuntu-latest
+    if: ${{ (needs.aws-cli.result == 'success' && needs.deploy-dev.result == 'success') || (contains(github.event.head_commit.message, 'bypass_tests')) }}
+    steps:
+      - name: Test
+
   # timer-wait-two:
   #   needssss:
   #     - deploy-dev
@@ -180,19 +201,19 @@ jobs:
   #     - name: Fail
 
 
-  store-latest-tag:
-    runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, 'store_tag')
-    needs:
-      - deploy-dev
-    steps:
-      - name: Update Parameter Store Endpoint secret
-        uses: joshghent/aws-ssm-parameter-store@v2.2.0
-        with:
-          ssm-path: "/developStable"
-          ssm-value: develop-${{github.event.after}}   # This references the tag from the release that triggered the workflow
-          aws-region: us-west-1
-          ssm-value-type: "String"
+  # store-latest-tag:
+  #   runs-on: ubuntu-latest
+  #   if: contains(github.event.head_commit.message, 'store_tag')
+  #   needs:
+  #     - deploy-dev
+  #   steps:
+  #     - name: Update Parameter Store Endpoint secret
+  #       uses: joshghent/aws-ssm-parameter-store@v2.2.0
+  #       with:
+  #         ssm-path: "/developStable"
+  #         ssm-value: develop-${{github.event.after}}   # This references the tag from the release that triggered the workflow
+  #         aws-region: us-west-1
+  #         ssm-value-type: "String"
   
 
   # parmater-sto:
@@ -208,72 +229,72 @@ jobs:
 # aws ec2 describe-instances --query 'Reservations[].Instances[].{ip: PrivateDnsName, time: LaunchTime}' --filters "Name=instance-state-name,Values=running" "Name=tag:aws:autoscaling:groupName,Values=tribehealth-platform-dev" | jq -r 'sort_by(.time) | .[0] | .ip')
 # aws autoscaling describe-scaling-activities  --auto-scaling-group-name test-autoscaling --query 'Activities[0].Progress'
   
-  rollback-failure:
-    runs-on: ubuntu-latest
-    needs:
-      - deploy-dev
-      - aws-cli
-    if: failure()
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-           ref: ${{ github.ref_name }}
-           fetch-depth: 0
-           token: ${{ secrets.GHU_TOKEN }}
+  # rollback-failure:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - deploy-dev
+  #     - aws-cli
+  #   if: failure()
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #          ref: ${{ github.ref_name }}
+  #          fetch-depth: 0
+  #          token: ${{ secrets.GHU_TOKEN }}
 
-      - name: Debug Workspace Contents
-        run: pwd
+  #     - name: Debug Workspace Contents
+  #       run: pwd
 
-      - name: Debug Git Config
-        run: |
-          git config --list
+  #     - name: Debug Git Config
+  #       run: |
+  #         git config --list
           
-      - name: Debug Git Status
-        run: git status
+  #     - name: Debug Git Status
+  #       run: git status
         
-      - name: Debug Git Log
-        run: git log -n 10
+  #     - name: Debug Git Log
+  #       run: git log -n 10
 
-      - name: Revert
-        run: |
-          stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
-          parsedCommit="${stableCommit#develop-}"
-          echo "$stableCommit"
-          echo "$parsedCommit"
-          git checkout ${{github.ref_name}}
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+  #     - name: Revert
+  #       run: |
+  #         stableCommit=$(aws ssm get-parameter --name /developStable --with-decryption --region us-west-1 --query Parameter.Value --output text)
+  #         parsedCommit="${stableCommit#develop-}"
+  #         echo "$stableCommit"
+  #         echo "$parsedCommit"
+  #         git checkout ${{github.ref_name}}
+  #         git config --global user.name "github-actions[bot]"
+  #         git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Check if the commit is a merge commit
-          if git cat-file -p $parsedCommit | grep -q "parent"; then
-            git revert $parsedCommit -m 1
-          else
-            git revert $parsedCommit
-          fi
+  #         # Check if the commit is a merge commit
+  #         if git cat-file -p $parsedCommit | grep -q "parent"; then
+  #           git revert $parsedCommit -m 1
+  #         else
+  #           git revert $parsedCommit
+  #         fi
           
-          git commit --amend -m "Reverting back code [skip actions]"
-          git push --force
+  #         git commit --amend -m "Reverting back code [skip actions]"
+  #         git push --force
 
-  wait-for-queued-workflow:
-    if: github.ref_name == 'main'
-    needs: deploy-dev
-    runs-on: ubuntu-latest
-    name: workflow-last
-    steps:
-      - name: Wait 1 minutes for attachment to complete
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '1m'
+  # wait-for-queued-workflow:
+  #   if: github.ref_name == 'main'
+  #   needs: deploy-dev
+  #   runs-on: ubuntu-latest
+  #   name: workflow-last
+  #   steps:
+  #     - name: Wait 1 minutes for attachment to complete
+  #       uses: jakejarvis/wait-action@master
+  #       with:
+  #         time: '1m'
 
-  test-tag:
-    runs-on: ubuntu-latest
-    needs:
-      - wait-for-queued-workflow
-    if: ${{ always() && !(contains(github.jobs.wait-for-queued-workflow, 'cancelled')) }}
-    steps:
-      - name: Testing
-        run: echo "Didn't skip"
+  # test-tag:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - wait-for-queued-workflow
+  #   if: ${{ always() && !(contains(github.jobs.wait-for-queued-workflow, 'cancelled')) }}
+  #   steps:
+  #     - name: Testing
+  #       run: echo "Didn't skip"
 
   # unlock-branch:
   #   runs-on: ubuntu-latest
@@ -290,30 +311,30 @@ jobs:
   #       env:
   #         GITHUB_TOKEN: ${{ secrets.GHU_TOKEN }}
  
-  delete-branch-rule:
-    runs-on: ubuntu-latest
-    if: ${{ always() }}
-    needs: wait-for-queued-workflow
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # delete-branch-rule:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ always() }}
+  #   needs: wait-for-queued-workflow
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Delete Rule
-        run: |
-          TOKEN=${{ secrets.GHU_TOKEN }}
-          REPO=aws-autoscale
-          BRANCH="main" # Replace with the name of the branch to unlock
-          curl -L -X DELETE -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{secrets.GHU_TOKEN}}" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/rayala3314/aws-autoscale/branches/main/protection"
+  #     - name: Delete Rule
+  #       run: |
+  #         TOKEN=${{ secrets.GHU_TOKEN }}
+  #         REPO=aws-autoscale
+  #         BRANCH="main" # Replace with the name of the branch to unlock
+  #         curl -L -X DELETE -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{secrets.GHU_TOKEN}}" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/rayala3314/aws-autoscale/branches/main/protection"
   
-  dummy-jopb:
-    runs-on: ubuntu-latest
-    needs: wait-for-queued-workflow
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  # dummy-jopb:
+  #   runs-on: ubuntu-latest
+  #   needs: wait-for-queued-workflow
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Run Echo
-        run: echo "Testing skip"
+  #     - name: Run Echo
+  #       run: echo "Testing skip"
 
 
 
