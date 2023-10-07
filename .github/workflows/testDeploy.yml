@@ -177,7 +177,7 @@ jobs:
         if: contains(github.event.head_commit.message, 'smoke_test')
         run: |
             echo 'Running smoke tests!'
-            cd test
+            # cd test
 
   test-job:
     needs:
@@ -186,7 +186,7 @@ jobs:
     runs-on: ubuntu-latest
     if: >- 
       (needs.aws-cli.result == 'success' && needs.deploy-dev.result == 'success') || 
-      (needs.deploy-dev.result != 'success' && contains(github.event.head_commit.message, 'bypass_tests'))
+      (!contains(needs.deploy-dev.result, 'success') && contains(github.event.head_commit.message, 'bypass_tests'))
     steps:
       - name: Test
         run: echo "success"
