@@ -184,9 +184,7 @@ jobs:
       - aws-cli
       - deploy-dev
     runs-on: ubuntu-latest
-    if: >- 
-      (needs.aws-cli.result == 'success' && needs.deploy-dev.result == 'success') || 
-      (always() && contains(github.event.head_commit.message, 'bypass_tests'))
+    if: ${{ (needs.aws-cli.result == 'success' && needs.deploy-dev.result == 'success') ||  (contains(github.event.head_commit.message, 'bypass_tests')) }}
     steps:
       - name: Test
         run: echo "success"
