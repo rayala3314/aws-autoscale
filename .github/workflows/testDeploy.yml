@@ -12,19 +12,19 @@ env:
 jobs:
 
 # only runs additional steps if there is no other instance of `my-workflow.yml` currently runningsss
-  # debug:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Debug output
-  #       run: |
-  #         echo "${{ github.ref_name }}"
-  #         echo "${{ github.event.after }}"
-  #         echo "${{ github.event.before }}"
-  #         echo "${{ github.event.branch }}"
-  #     - name: Dump GitHub context
-  #       env:
-  #         GITHUB_CONTEXT: ${{ toJson(github) }}
-  #       run: echo "$GITHUB_CONTEXT"
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug output
+        run: |
+          echo "${{ github.ref_name }}"
+          echo "${{ github.event.after }}"
+          echo "${{ github.event.before }}"
+          echo "${{ github.event.branch }}"
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
 
   # wait-for-queued-workflow:
   #   if: github.ref_name == 'main'
