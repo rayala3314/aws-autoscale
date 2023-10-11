@@ -162,6 +162,7 @@ jobs:
     runs-on: ubuntu-latest
     # needs:
     #   - wait-for-queued-workflow
+    if: ${{ github.ref_name == 'somethingRandom' }}
     steps:
       - name: Debug Workspace Contents
         run: ls -la /home/runner/work/aws-autoscale/aws-autoscale
