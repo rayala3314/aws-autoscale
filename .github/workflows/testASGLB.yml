@@ -7,6 +7,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: "us-west-1"
+  ASGLB: ""
 
 
 jobs:
@@ -35,6 +36,13 @@ jobs:
       - aws-cli
     runs-on: ubuntu-latest
     steps:
+      - name: Update Env Variable
+        run: |
+          CHCK=$(aws autoscaling describe-load-balancer-target-groups --auto-scaling-group-name testASGA --query 'LoadBalancerTargetGroups[0].LoadBalancerTargetGroupARN' --output text)
+          echo "$CHCK"
+          echo "ASGLB=$CHCK" >> $GITHUB_ENV
+          echo " Env: ${{env.ASGLB}}"
+
       - name: Attach ASG B to TG
         run: aws autoscaling attach-load-balancer-target-groups --auto-scaling-group-name testASGB --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
 
