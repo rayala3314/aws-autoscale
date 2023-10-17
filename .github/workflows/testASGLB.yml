@@ -1,4 +1,4 @@
-name: Deploy New Code 
+name: ASG LoadBalancer
 on:
   push:
     branches:
