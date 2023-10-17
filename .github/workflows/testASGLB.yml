@@ -30,7 +30,7 @@ jobs:
             python -m pip install --upgrade pip
             pip install awscli
   
-  
+
   deploy-dev:
     needs:
       - aws-cli
@@ -43,7 +43,7 @@ jobs:
           CHCK=$(aws autoscaling describe-load-balancer-target-groups --auto-scaling-group-name testASGA --query 'LoadBalancerTargetGroups[0].LoadBalancerTargetGroupARN' --output text)
           echo "$CHCK"
           echo "ASGLB=$CHCK" >> $GITHUB_ENV
-          echo " Env: ${{env.ASGLB}}"
+          echo " Env: $ASGLB"
 
       - name: Attach ASG B to TG
         run: aws autoscaling attach-load-balancer-target-groups --auto-scaling-group-name testASGB --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
