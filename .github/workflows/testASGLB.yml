@@ -54,8 +54,8 @@ jobs:
       - name: Attach ASG B to TG
         run: aws autoscaling attach-load-balancer-target-groups --auto-scaling-group-name testASGB --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
 
-      - name: Dettach ASG A
-        run: aws autoscaling detach-load-balancer-target-groups --auto-scaling-group-name testASGA --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
+      # - name: Dettach ASG A
+      #   run: aws autoscaling detach-load-balancer-target-groups --auto-scaling-group-name testASGA --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
 
       - name: Run smoke tests
         if: contains(github.event.head_commit.message, 'smoke_test')
