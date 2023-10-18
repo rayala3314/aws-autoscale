@@ -35,15 +35,21 @@ jobs:
     needs:
       - aws-cli
     runs-on: ubuntu-latest
-    env:
-      ASGLB: ""
+    outputs:
+      blueASG: ${{steps.asg-variables.outputs.BLUEASG}}
+      greenASG: ${{steps.asg-variables.outputs.GREENASG}}
     steps:
       - name: Update Env Variable
+        id: asg-variables
         run: |
           CHCK=$(aws autoscaling describe-load-balancer-target-groups --auto-scaling-group-name testASGA --query 'LoadBalancerTargetGroups[0].LoadBalancerTargetGroupARN' --output text)
-          echo "$CHCK"
-          echo "ASGLB=$CHCK" >> $GITHUB_ENV
-          echo " Env: $ASGLB"
+          if [[! -n "$CHCK"]]; then
+            echo "BLUEASG=testASGA" >> $GITHUB_OUTPUT
+            echo "GREEBASG=testASGB" >> $GITHUB_OUTPUT
+          else
+            echo "BLUEASG=testASGB" >> $GITHUB_OUTPUT
+            echo "GREEBASG=testASGA" >> $GITHUB_OUTPUT
+          fi
 
       - name: Attach ASG B to TG
         run: aws autoscaling attach-load-balancer-target-groups --auto-scaling-group-name testASGB --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
@@ -56,6 +62,16 @@ jobs:
         run: |
             echo 'Running smoke tests!'
             cd test
+
+  see-variables:
+    needs:
+      - deploy-dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Vars
+        run: |
+          echo " Blue is ${{needs.deploy-dev.outputs.blueASG}}"
+          echo " Green is ${{needs.deploy-dev.outputs.greenASG}}"
 
   rollback-job:
     needs:
