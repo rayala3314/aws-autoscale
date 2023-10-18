@@ -43,7 +43,7 @@ jobs:
         id: asg-variables
         run: |
           CHCK=$(aws autoscaling describe-load-balancer-target-groups --auto-scaling-group-name testASGA --query 'LoadBalancerTargetGroups[0].LoadBalancerTargetGroupARN' --output text)
-          if [[! -n "$CHCK"]]; then
+          if [[! -n $CHCK]]; then
             echo "BLUEASG=testASGA" >> $GITHUB_OUTPUT
             echo "GREENASG=testASGB" >> $GITHUB_OUTPUT
           else
