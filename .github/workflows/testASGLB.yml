@@ -45,10 +45,10 @@ jobs:
           CHCK=$(aws autoscaling describe-load-balancer-target-groups --auto-scaling-group-name testASGA --query 'LoadBalancerTargetGroups[0].LoadBalancerTargetGroupARN' --output text)
           if [[! -n "$CHCK"]]; then
             echo "BLUEASG=testASGA" >> $GITHUB_OUTPUT
-            echo "GREEBASG=testASGB" >> $GITHUB_OUTPUT
+            echo "GREENBASG=testASGB" >> $GITHUB_OUTPUT
           else
             echo "BLUEASG=testASGB" >> $GITHUB_OUTPUT
-            echo "GREEBASG=testASGA" >> $GITHUB_OUTPUT
+            echo "GREENBASG=testASGA" >> $GITHUB_OUTPUT
           fi
 
       - name: Attach ASG B to TG
