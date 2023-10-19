@@ -1,4 +1,4 @@
-name: Deploy New Code 
+name: Workflow To Bypass Tests
 on:
   push:
     branches:

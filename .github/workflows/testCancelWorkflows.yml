@@ -1,0 +1,53 @@
+name: Cancel workflow Test
+on:
+  push:
+    branches:
+      - main
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: "us-west-1"
+
+
+jobs:
+
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+  aws-cli: #Installing the AWS CLI on the runner, needed for the autoscaling cli commands. 
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-python@v2
+          with:
+            python-version: '3.7'
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install awscli
+  
+
+  timer-wait:
+    needs:
+      - aws-cli
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait 2 minutes for attachment
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '2m'
+
+  run-job:
+    needs:
+      - aws-cli
+      - timer-wait
+    runs-on: ubuntu-latest
+    if: cancelled()
+    steps:
+      - name: Attach ASG A to TG
+        run: echo "Ran after Cancel"
