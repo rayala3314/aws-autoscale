@@ -1,12 +1,20 @@
-name: ASG LoadBalancer
+# name: ASG LoadBalancer
+# on:
+#   push:
+#     branches:
+#       - main
+# Testing triggers
+name: Test Triggers on Directories
 on:
   push:
     branches:
       - main
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_DEFAULT_REGION: "us-west-1"
+    paths:
+      - testingTriggers/**
+# env:
+#   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#   AWS_DEFAULT_REGION: "us-west-1"
 
 
 jobs:
@@ -18,77 +26,77 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
 
-  aws-cli: #Installing the AWS CLI on the runner, needed for the autoscaling cli commands. 
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/setup-python@v2
-          with:
-            python-version: '3.7'
-        - name: Install dependencies
-          run: |
-            python -m pip install --upgrade pip
-            pip install awscli
+  # aws-cli: #Installing the AWS CLI on the runner, needed for the autoscaling cli commands. 
+  #     runs-on: ubuntu-latest
+  #     steps:
+  #       - uses: actions/checkout@v2
+  #       - uses: actions/setup-python@v2
+  #         with:
+  #           python-version: '3.7'
+  #       - name: Install dependencies
+  #         run: |
+  #           python -m pip install --upgrade pip
+  #           pip install awscli
   
 
-  deploy-dev:
-    needs:
-      - aws-cli
-    runs-on: ubuntu-latest
-    outputs:
-      blueASG: ${{steps.asg-variables.outputs.BLUEASG}}
-      greenASG: ${{steps.asg-variables.outputs.GREENASG}}
-    steps:
-      - name: Update Env Variable
-        id: asg-variables
-        run: |
-          CHCK=$(aws autoscaling describe-load-balancer-target-groups --auto-scaling-group-name testASGA --query 'LoadBalancerTargetGroups[0].LoadBalancerTargetGroupARN' --output text)
-          echo "$CHCK"
-          if [ "$CHCK" != "None" ]; then
-            echo "BLUEASG=testASGA" >> $GITHUB_OUTPUT
-            echo "GREENASG=testASGB" >> $GITHUB_OUTPUT
-          else
-            echo "BLUEASG=testASGB" >> $GITHUB_OUTPUT
-            echo "GREENASG=testASGA" >> $GITHUB_OUTPUT
-          fi
+  # deploy-dev:
+  #   needs:
+  #     - aws-cli
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     blueASG: ${{steps.asg-variables.outputs.BLUEASG}}
+  #     greenASG: ${{steps.asg-variables.outputs.GREENASG}}
+  #   steps:
+  #     - name: Update Env Variable
+  #       id: asg-variables
+  #       run: |
+  #         CHCK=$(aws autoscaling describe-load-balancer-target-groups --auto-scaling-group-name testASGA --query 'LoadBalancerTargetGroups[0].LoadBalancerTargetGroupARN' --output text)
+  #         echo "$CHCK"
+  #         if [ "$CHCK" != "None" ]; then
+  #           echo "BLUEASG=testASGA" >> $GITHUB_OUTPUT
+  #           echo "GREENASG=testASGB" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "BLUEASG=testASGB" >> $GITHUB_OUTPUT
+  #           echo "GREENASG=testASGA" >> $GITHUB_OUTPUT
+  #         fi
 
-      - name: Attach ASG B to TG
-        run: aws autoscaling attach-load-balancer-target-groups --auto-scaling-group-name testASGB --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
+  #     - name: Attach ASG B to TG
+  #       run: aws autoscaling attach-load-balancer-target-groups --auto-scaling-group-name testASGB --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
 
-      # - name: Dettach ASG A
-      #   run: aws autoscaling detach-load-balancer-target-groups --auto-scaling-group-name testASGA --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
-
-
+  #     # - name: Dettach ASG A
+  #     #   run: aws autoscaling detach-load-balancer-target-groups --auto-scaling-group-name testASGA --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
 
 
-      - name: Run smoke tests
-        if: contains(github.event.head_commit.message, 'smoke_test')
-        run: |
-            echo 'Running smoke tests!'
-            cd test
 
-  see-variables:
-    needs:
-      - deploy-dev
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print Vars
-        run: |
-          echo " Blue is ${{needs.deploy-dev.outputs.blueASG}}"
-          echo " Green is ${{needs.deploy-dev.outputs.greenASG}}"
 
-  rollback-job:
-    needs:
-      - aws-cli
-      - deploy-dev
-    runs-on: ubuntu-latest
-    if: failure()
-    steps:
-      - name: Attach ASG A to TG
-        run: aws autoscaling attach-load-balancer-target-groups --auto-scaling-group-name testASGA --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
+  #     - name: Run smoke tests
+  #       if: contains(github.event.head_commit.message, 'smoke_test')
+  #       run: |
+  #           echo 'Running smoke tests!'
+  #           cd test
 
-      - name: Detttach ASG B
-        run: aws autoscaling detach-load-balancer-target-groups --auto-scaling-group-name testASGB --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
+  # see-variables:
+  #   needs:
+  #     - deploy-dev
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Print Vars
+  #       run: |
+  #         echo " Blue is ${{needs.deploy-dev.outputs.blueASG}}"
+  #         echo " Green is ${{needs.deploy-dev.outputs.greenASG}}"
 
-      - name: Scale Down ASG B
-        run: echo "Scaling Down....."
+  # rollback-job:
+  #   needs:
+  #     - aws-cli
+  #     - deploy-dev
+  #   runs-on: ubuntu-latest
+  #   if: failure()
+  #   steps:
+  #     - name: Attach ASG A to TG
+  #       run: aws autoscaling attach-load-balancer-target-groups --auto-scaling-group-name testASGA --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
+
+  #     - name: Detttach ASG B
+  #       run: aws autoscaling detach-load-balancer-target-groups --auto-scaling-group-name testASGB --target-group-arns arn:aws:elasticloadbalancing:us-west-1:070431401263:targetgroup/testTGA/d202852376dea472
+
+  #     - name: Scale Down ASG B
+  #       run: echo "Scaling Down....."
