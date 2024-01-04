@@ -1,0 +1,36 @@
+# name: ASG LoadBalancer
+# on:
+#   push:
+#     branches:
+#       - main
+# Testing triggers
+name: Test Triggers on Directories
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  changes:
+      runs-on: ubuntu-latest
+      outputs:
+        migrations: ${{ steps.filter.outputs.migrations }}
+        frontend: ${{ steps.filter.outputs.frontend }}
+      steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            migrations:
+              - 'testingTriggers/**'
+
+    # JOB to build and test backend code
+    release:
+      needs: changes
+      if: ${{ needs.changes.outputs.migrations == 'false' }}
+      runs-on: ubuntu-latest
+      steps:
+        - name: Dump GitHub context
+          env:
+            GITHUB_CONTEXT: ${{ toJson(github) }}
+          run: echo "$GITHUB_CONTEXT"
