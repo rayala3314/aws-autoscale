@@ -4,7 +4,7 @@
 #     branches:
 #       - main
 # Testing triggers
-name: Test Triggers on Directories
+name: Test release on no changes to Directories
 on:
   push:
     branches:
@@ -12,11 +12,11 @@ on:
 
 jobs:
   changes:
-      runs-on: ubuntu-latest
-      outputs:
-        migrations: ${{ steps.filter.outputs.migrations }}
-        frontend: ${{ steps.filter.outputs.frontend }}
-      steps:
+    runs-on: ubuntu-latest
+    outputs:
+      migrations: ${{ steps.filter.outputs.migrations }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -24,13 +24,13 @@ jobs:
             migrations:
               - 'testingTriggers/**'
 
-    # JOB to build and test backend code
-    release:
-      needs: changes
-      if: ${{ needs.changes.outputs.migrations == 'false' }}
-      runs-on: ubuntu-latest
-      steps:
-        - name: Dump GitHub context
-          env:
-            GITHUB_CONTEXT: ${{ toJson(github) }}
-          run: echo "$GITHUB_CONTEXT"
+  # JOB to build and test backend code
+  release:
+    needs: changes
+    if: ${{ needs.changes.outputs.migrations == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
