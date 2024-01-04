@@ -15,14 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       migrations: ${{ steps.filter.outputs.migrations }}
-      frontend: ${{ steps.filter.outputs.frontend }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
           fetch-depth: 2
-          
+
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -30,6 +29,10 @@ jobs:
           filters: |
             migrations:
               - 'testingTriggers/**'
+      
+      - name: Check changes
+        if: steps.filter.outputs.migrations == 'true'
+        run: exit 0
 
   # JOB to build and test backend code
   release:
