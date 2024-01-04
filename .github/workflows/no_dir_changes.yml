@@ -32,7 +32,7 @@ jobs:
       
       - name: Check changes
         if: steps.filter.outputs.migrations == 'true'
-        run: exit 0
+        run: exit 1
 
   # JOB to build and test backend code
   release:
